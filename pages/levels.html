@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shimi - Niveles</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .levels-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-md) 0;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .header-section-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .progress-container {
+            flex: 0.8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 10px;
+            background-color: #E0E0E0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+
+        .progress-bar-fill {
+            width: 90%;
+            height: 100%;
+            background-color: var(--success-color);
+        }
+
+        .progress-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .settings-btn {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .main-title {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        /* Level Grid */
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .level-item {
+            aspect-ratio: 1/1;
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: var(--radius);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 0px #E0E0E0;
+            cursor: pointer;
+        }
+
+        .level-circle {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid #E0E0E0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        /* Completed Status */
+        .level-item.completed {
+            border-color: var(--success-color);
+            box-shadow: 0 4px 0px #00a383;
+        }
+        .level-item.completed .level-circle {
+            border-color: var(--success-color);
+            color: var(--success-color);
+        }
+        .check-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: var(--success-color);
+            font-size: 0.9rem;
+        }
+
+        /* Active/Large Level */
+        .level-item.active-level {
+            grid-column: span 3;
+            aspect-ratio: auto;
+            padding: var(--spacing-md);
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 6px 0px #e6952d;
+            color: white;
+            flex-direction: row;
+            gap: var(--spacing-md);
+        }
+
+        .active-level .level-circle {
+            border-color: white;
+            background-color: white;
+            color: var(--primary-color);
+        }
+
+        .active-level span {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* Locked Status */
+        .level-item.locked {
+            background-color: #F0F0F0;
+            border-color: #E0E0E0;
+            color: #BDBDBD;
+            box-shadow: 0 4px 0px #D0D0D0;
+            cursor: not-allowed;
+        }
+        .level-item.locked .level-circle {
+            border-color: #D0D0D0;
+        }
+
+        /* Section 6 Area */
+        .section-separator {
+            background-color: #F8F9FA;
+            border: 2px solid #E0E0E0;
+            border-radius: var(--radius);
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-xl);
+        }
+
+        .section-separator-title {
+            font-weight: 800;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-muted);
+        }
+
+        /* Navigation Footer */
+        .nav-footer {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-xl) 0;
+            margin-top: auto;
+        }
+
+        .nav-circle-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #E0E0E0;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            box-shadow: 0 4px 0px #E0E0E0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-circle-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <!-- Cabecera -->
+        <header class="levels-header">
+            <span class="header-section-name">Sección 5</span>
+            <div class="progress-container">
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill"></div>
+                </div>
+                <span class="progress-text">90 % completado</span>
+            </div>
+            <i class="fas fa-cog settings-btn"></i>
+        </header>
+
+        <h2 class="main-title">Selecciona un nivel</h2>
+
+        <!-- Niveles Sección 5 -->
+        <div class="levels-grid">
+            <!-- Niveles 1-6 (Completados) -->
+            <div class="level-item completed">
+                <i class="fas fa-check-circle check-badge"></i>
+                <div class="level-circle">1</div>
+            </div>
+            <div class="level-item completed">
+                <i class="fas fa-check-circle check-badge"></i>
+                <div class="level-circle">2</div>
+            </div>
+            <div class="level-item completed">
+                <i class="fas fa-check-circle check-badge"></i>
+                <div class="level-circle">3</div>
+            </div>
+            <div class="level-item completed">
+                <i class="fas fa-check-circle check-badge"></i>
+                <div class="level-circle">4</div>
+            </div>
+            <div class="level-item completed">
+                <i class="fas fa-check-circle check-badge"></i>
+                <div class="level-circle">5</div>
+            </div>
+            <div class="level-item completed">
+                <i class="fas fa-check-circle check-badge"></i>
+                <div class="level-circle">6</div>
+            </div>
+
+            <!-- Nivel 7 (Activo) -->
+            <div class="level-item active-level" onclick="window.location.href='lesson.html'">
+                <div class="level-circle">7</div>
+                <span>Comienza la lección</span>
+            </div>
+
+            <!-- Nivel 8 (Bloqueado) -->
+            <div class="level-item locked">
+                <i class="fas fa-lock"></i>
+            </div>
+        </div>
+
+        <!-- Sección 6 -->
+        <div class="section-separator">
+            <h3 class="section-separator-title">Sección 6</h3>
+            <div class="levels-grid" style="margin-bottom: 0;">
+                <div class="level-item locked"><i class="fas fa-lock"></i></div>
+                <div class="level-item locked"><i class="fas fa-lock"></i></div>
+                <div class="level-item locked"><i class="fas fa-lock"></i></div>
+                <div class="level-item locked"><i class="fas fa-lock"></i></div>
+                <div class="level-item locked"><i class="fas fa-lock"></i></div>
+                <div class="level-item locked"><i class="fas fa-lock"></i></div>
+            </div>
+        </div>
+
+        <!-- Footer Navegación -->
+        <footer class="nav-footer">
+            <div class="nav-circle-btn"><i class="fas fa-chevron-left"></i></div>
+            <div class="nav-circle-btn"><i class="fas fa-chevron-right"></i></div>
+        </footer>
+    </div>
+</body>
+</html>

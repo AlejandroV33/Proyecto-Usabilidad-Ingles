@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lección - Shimi</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .lesson-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+            padding-top: var(--spacing-md);
+        }
+        .progress-bar {
+            flex: 1;
+            height: 12px;
+            background-color: #E0E0E0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            width: 30%;
+            height: 100%;
+            background-color: var(--success-color);
+            border-radius: 6px;
+            transition: width 0.3s ease;
+        }
+        .close-btn {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+        
+        .question-container {
+            flex: 1;
+        }
+        
+        .question-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-xl);
+        }
+        
+        .option-card {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: var(--radius);
+            padding: var(--spacing-md);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 0px #E0E0E0;
+        }
+        
+        .option-card:hover {
+            background-color: #F8F9FA;
+            border-color: var(--primary-color);
+        }
+        
+        .option-card.selected {
+            background-color: #FFF3E0;
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 0px var(--primary-color);
+        }
+        
+        .option-image {
+            width: 80px;
+            height: 80px;
+            background-color: #F0F0F0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: var(--spacing-sm);
+            font-size: 2rem;
+        }
+        
+        .option-text {
+            font-weight: 600;
+        }
+        
+        .footer {
+            margin-top: auto;
+            padding: var(--spacing-lg) 0;
+            border-top: 2px solid #F0F0F0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <div class="lesson-header">
+            <a href="dashboard.html" class="close-btn"><i class="fas fa-times"></i></a>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div style="color: var(--text-muted); font-weight: 700;"><i class="fas fa-heart" style="color: var(--error-color);"></i> 5</div>
+        </div>
+
+        <div class="question-container">
+            <h2 class="question-title">¿Cómo se dice "Manzana" en inglés?</h2>
+            
+            <div class="options-grid">
+                <div class="option-card" onclick="selectOption(this)">
+                    <div class="option-image">🍎</div>
+                    <span class="option-text">Apple</span>
+                </div>
+                <div class="option-card" onclick="selectOption(this)">
+                    <div class="option-image">🍌</div>
+                    <span class="option-text">Banana</span>
+                </div>
+                <div class="option-card" onclick="selectOption(this)">
+                    <div class="option-image">🍊</div>
+                    <span class="option-text">Orange</span>
+                </div>
+                <div class="option-card" onclick="selectOption(this)">
+                    <div class="option-image">🍇</div>
+                    <span class="option-text">Grape</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <button id="check-btn" class="btn btn-primary" disabled onclick="checkAnswer()">COMPROBAR</button>
+        </div>
+    </div>
+
+    <script>
+        function selectOption(el) {
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            el.classList.add('selected');
+            document.getElementById('check-btn').disabled = false;
+        }
+
+        function checkAnswer() {
+            const selected = document.querySelector('.option-card.selected');
+            if (selected.innerText.includes('Apple')) {
+                alert('¡Correcto! Well done.');
+                window.location.href = 'dashboard.html';
+            } else {
+                alert('Incorrecto. Inténtalo de nuevo.');
+            }
+        }
+    </script>
+</body>
+</html>

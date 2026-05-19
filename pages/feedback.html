@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shimi - Feedback</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .feedback-header {
+            padding-top: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .close-btn {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 5px;
+        }
+
+        .feedback-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-color);
+            margin-bottom: var(--spacing-xl);
+            line-height: 1.2;
+        }
+
+        .section-label {
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-sm);
+            display: block;
+        }
+
+        /* Feedback Card */
+        .feedback-card {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 20px;
+            padding: var(--spacing-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+            box-shadow: 0 4px 0px #E0E0E0;
+        }
+
+        .feedback-icon {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .feedback-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .highlight {
+            color: var(--primary-color);
+            font-weight: 800;
+        }
+
+        /* Explanation Card */
+        .explanation-card {
+            background: #F8F9FA;
+            border: 2px solid #E0E0E0;
+            border-radius: 20px;
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .explanation-text {
+            font-size: 1rem;
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .footer-action {
+            margin-top: auto;
+            padding: var(--spacing-lg) 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <!-- Cabecera -->
+        <header class="feedback-header">
+            <a href="levels.html" class="close-btn"><i class="fas fa-times"></i></a>
+        </header>
+
+        <!-- Título -->
+        <h1 class="feedback-title">Ups ¡casi lo logras!</h1>
+
+        <!-- Respuesta Correcta -->
+        <div class="section-container">
+            <span class="section-label">Respuesta correcta:</span>
+            <div class="feedback-card">
+                <div class="feedback-icon">
+                    <i class="fas fa-dumbbell"></i>
+                </div>
+                <p class="feedback-text">"She <span class="highlight">goes</span> to the gym every morning."</p>
+            </div>
+        </div>
+
+        <!-- Explicación -->
+        <div class="section-container">
+            <span class="section-label">Explicación</span>
+            <div class="explanation-card">
+                <p class="explanation-text">Utilizamos el verbo en presente simple para acciones de todos los días.</p>
+            </div>
+        </div>
+
+        <!-- Botón de Acción -->
+        <div class="footer-action">
+            <a href="levels.html" class="btn btn-primary">CONTINUAR</a>
+        </div>
+    </div>
+</body>
+</html>

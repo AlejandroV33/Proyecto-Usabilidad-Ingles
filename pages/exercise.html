@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shimi - Ejercicio</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding-top: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .close-btn {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 5px;
+        }
+
+        .progress-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 12px;
+            background-color: #E0E0E0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+
+        .progress-bar-fill {
+            width: 37.5%; /* 3/8 completed */
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 6px;
+        }
+
+        .progress-step-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .instruction {
+            text-align: left;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-color);
+        }
+
+        /* Question Card */
+        .question-card {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 20px;
+            padding: var(--spacing-xl);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+            box-shadow: 0 4px 0px #E0E0E0;
+        }
+
+        .question-icon {
+            font-size: 3.5rem;
+            color: var(--secondary-color);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--text-color);
+        }
+
+        /* Options */
+        .options-label {
+            text-align: left;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-muted);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: var(--radius);
+            padding: var(--spacing-md);
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            box-shadow: 0 4px 0px #E0E0E0;
+        }
+
+        .option-btn:hover {
+            background-color: #F8F9FA;
+            border-color: var(--primary-color);
+        }
+
+        .option-btn.selected {
+            background-color: #FFF3E0;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: 0 4px 0px var(--primary-color);
+        }
+
+        .footer-action {
+            margin-top: auto;
+            padding: var(--spacing-lg) 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <!-- Cabecera -->
+        <header class="exercise-header">
+            <a href="levels.html" class="close-btn"><i class="fas fa-times"></i></a>
+            <div class="progress-wrapper">
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill"></div>
+                </div>
+                <span class="progress-step-text">3/8 completado</span>
+            </div>
+        </header>
+
+        <!-- Instrucción -->
+        <p class="instruction">Complete la frase</p>
+
+        <!-- Tarjeta de Pregunta -->
+        <div class="question-card">
+            <div class="question-icon">
+                <i class="fas fa-dumbbell"></i>
+            </div>
+            <p class="question-text">"She ......... to the gym every morning."</p>
+        </div>
+
+        <!-- Opciones -->
+        <p class="options-label">Seleccione una respuesta</p>
+        <div class="options-grid">
+            <button class="option-btn" onclick="selectOption(this)">A. go</button>
+            <button class="option-btn" onclick="selectOption(this)">B. goes</button>
+            <button class="option-btn" onclick="selectOption(this)">C. going</button>
+            <button class="option-btn" onclick="selectOption(this)">D. gone</button>
+        </div>
+
+        <!-- Botón de Acción -->
+        <div class="footer-action">
+            <button id="checkBtn" class="btn btn-primary" disabled onclick="handleCheck()">COMPROBAR</button>
+        </div>
+    </div>
+
+    <script>
+        function selectOption(el) {
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            el.classList.add('selected');
+            document.getElementById('checkBtn').disabled = false;
+        }
+
+        function handleCheck() {
+            const selected = document.querySelector('.option-btn.selected');
+            if (selected.innerText.includes('goes')) {
+                alert('¡Excelente! "She goes" es correcto.');
+                window.location.href = 'levels.html';
+            } else {
+                alert('Casi... La respuesta correcta es "goes" (tercera persona).');
+            }
+        }
+    </script>
+</body>
+</html>

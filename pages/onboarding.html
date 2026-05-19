@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shimi - Sobre ti</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .onboarding-header {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+            padding-top: var(--spacing-md);
+        }
+
+        .onboarding-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .onboarding-header p {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .divider {
+            height: 2px;
+            background-color: #E0E0E0;
+            width: 100%;
+            margin: var(--spacing-md) 0;
+            border-radius: 2px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-color);
+        }
+
+        .section-title i {
+            color: var(--primary-color);
+            width: 20px;
+            text-align: center;
+        }
+
+        .subtext {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        /* Time Grid */
+        .time-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .time-option {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: var(--radius);
+            padding: var(--spacing-md);
+            font-weight: 700;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            box-shadow: 0 4px 0px #E0E0E0;
+        }
+
+        .time-option:hover {
+            border-color: var(--primary-color);
+            background-color: #FFF9F0;
+        }
+
+        .time-option.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 0px #e6952d;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: var(--spacing-md);
+        }
+
+        form {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-content {
+            flex: 1;
+        }
+
+        .btn-continue {
+            margin-top: auto;
+            margin-bottom: var(--spacing-xs);
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <div class="onboarding-header">
+            <h1>Hola, esto es Shimi</h1>
+            <p>Cuentanos sobre ti</p>
+            <div class="divider"></div>
+        </div>
+
+        <form id="onboardingForm" onsubmit="event.preventDefault(); window.location.href='dashboard.html';">
+            <div class="form-content">
+                <!-- Nombre -->
+                <div class="input-group">
+                    <div class="section-title">
+                        <i class="fas fa-user"></i>
+                        <span>Nombre o Apodo</span>
+                    </div>
+                    <input type="text" id="nickname" placeholder="Ej. Alex" required>
+                </div>
+
+                <!-- Edad -->
+                <div class="input-group">
+                    <div class="section-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Edad</span>
+                    </div>
+                    <input type="number" id="age" placeholder="Tu edad" required min="1">
+                </div>
+
+                <!-- Tiempo Diario -->
+                <div class="input-group">
+                    <div class="section-title">
+                        <i class="fas fa-clock"></i>
+                        <span>Tiempo diario</span>
+                    </div>
+                    <p class="subtext">¿Cuánto tiempo puedes dedicar cada día?</p>
+                    
+                    <div class="time-grid">
+                        <div class="time-option" onclick="selectTime(this)">5 min</div>
+                        <div class="time-option" onclick="selectTime(this)">10 min</div>
+                        <div class="time-option" onclick="selectTime(this)">15 min</div>
+                        <div class="time-option" onclick="selectTime(this)">+20 min</div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-continue">CONTINUAR</button>
+            <p class="footer-note">Completa todos los campos antes de continuar</p>
+        </form>
+    </div>
+
+    <script>
+        function selectTime(element) {
+            // Deseleccionar otros
+            document.querySelectorAll('.time-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            // Seleccionar actual
+            element.classList.add('selected');
+        }
+    </script>
+</body>
+</html>

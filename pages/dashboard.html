@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Shimi</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md) 0;
+            margin-bottom: var(--spacing-lg);
+        }
+        .user-stats {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 700;
+        }
+        .stat-item i.fa-fire { color: #FF4500; }
+        .stat-item i.fa-gem { color: #4A90E2; }
+        
+        .lesson-path {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-xl);
+            padding-bottom: 80px; /* Space for bottom nav */
+        }
+        
+        .lesson-node {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 2rem;
+            box-shadow: 0 6px 0px #e6952d;
+            cursor: pointer;
+            transition: transform 0.2s;
+            text-decoration: none;
+        }
+        
+        .lesson-node:hover {
+            transform: scale(1.05);
+        }
+        
+        .lesson-node.locked {
+            background-color: #E0E0E0;
+            box-shadow: 0 6px 0px #BDBDBD;
+            cursor: not-allowed;
+        }
+        
+        .lesson-label {
+            margin-top: var(--spacing-xs);
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .node-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard-header">
+            <div class="user-stats">
+                <div class="stat-item"><i class="fas fa-fire"></i> 5</div>
+                <div class="stat-item"><i class="fas fa-gem"></i> 120</div>
+            </div>
+            <div class="user-profile">
+                <i class="fas fa-user-circle" style="font-size: 2rem; color: var(--text-muted);"></i>
+            </div>
+        </div>
+
+        <div class="lesson-path">
+            <div class="node-wrapper fade-in">
+                <a href="lesson.html" class="lesson-node">
+                    <i class="fas fa-star"></i>
+                </a>
+                <span class="lesson-label">Introducción</span>
+            </div>
+
+            <div class="node-wrapper fade-in" style="animation-delay: 0.1s; margin-left: 60px;">
+                <a href="lesson.html" class="lesson-node">
+                    <i class="fas fa-book"></i>
+                </a>
+                <span class="lesson-label">Saludos</span>
+            </div>
+
+            <div class="node-wrapper fade-in" style="animation-delay: 0.2s; margin-right: 40px;">
+                <a href="#" class="lesson-node locked">
+                    <i class="fas fa-utensils"></i>
+                </a>
+                <span class="lesson-label">Comida</span>
+            </div>
+
+            <div class="node-wrapper fade-in" style="animation-delay: 0.3s;">
+                <a href="#" class="lesson-node locked">
+                    <i class="fas fa-plane"></i>
+                </a>
+                <span class="lesson-label">Viajes</span>
+            </div>
+            
+            <div class="node-wrapper fade-in" style="animation-delay: 0.4s; margin-left: -50px;">
+                <a href="#" class="lesson-node locked">
+                    <i class="fas fa-briefcase"></i>
+                </a>
+                <span class="lesson-label">Trabajo</span>
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-dumbbell"></i>
+                <span>Práctica</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-trophy"></i>
+                <span>Liga</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-store"></i>
+                <span>Tienda</span>
+            </a>
+        </nav>
+    </div>
+</body>
+</html>
