@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shimi - Configuración</title>
+    <title>Shimi - Settings</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -134,14 +134,14 @@
         </header>
 
         <div class="settings-title-section">
-            <h1>Configuración</h1>
+            <h1>Settings</h1>
             <div class="divider"></div>
         </div>
 
         <!-- Advertencia -->
         <div class="warning-box">
             <i class="fas fa-exclamation-triangle"></i>
-            <p>Recuerda que cambiar tus datos puede modificar levemente tu experiencia al aprender.</p>
+            <p>Remember that changing your data may slightly modify your learning experience.</p>
         </div>
 
         <form onsubmit="event.preventDefault(); window.location.href='dashboard.html';">
@@ -150,7 +150,7 @@
                 <div class="input-group">
                     <div class="section-title">
                         <i class="fas fa-user"></i>
-                        <span>Nombre o Apodo</span>
+                        <span>Name or Nickname</span>
                     </div>
                     <input type="text" id="nickname" value="Alejo" required>
                 </div>
@@ -159,7 +159,7 @@
                 <div class="input-group">
                     <div class="section-title">
                         <i class="fas fa-calendar-alt"></i>
-                        <span>Edad</span>
+                        <span>Age</span>
                     </div>
                     <input type="number" id="age" value="22" required min="1">
                 </div>
@@ -168,9 +168,9 @@
                 <div class="input-group">
                     <div class="section-title">
                         <i class="fas fa-clock"></i>
-                        <span>Tiempo diario</span>
+                        <span>Daily time</span>
                     </div>
-                    <p class="subtext">¿Cuánto tiempo puedes dedicar cada día?</p>
+                    <p class="subtext">How much time can you dedicate each day?</p>
                     
                     <div class="time-grid">
                         <div class="time-option" onclick="selectTime(this)">5 min</div>
@@ -181,7 +181,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-save">CONTINUAR</button>
+            <button type="submit" class="btn btn-primary btn-save">CONTINUE</button>
         </form>
     </div>
 

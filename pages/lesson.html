@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lección - Shimi</title>
+    <title>Lesson - Shimi</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -109,7 +109,7 @@
         </div>
 
         <div class="question-container">
-            <h2 class="question-title">¿Cómo se dice "Manzana" en inglés?</h2>
+            <h2 class="question-title">How do you say "Apple" in English?</h2>
             
             <div class="options-grid">
                 <div class="option-card" onclick="selectOption(this)">
@@ -132,7 +132,7 @@
         </div>
 
         <div class="footer">
-            <button id="check-btn" class="btn btn-primary" disabled onclick="checkAnswer()">COMPROBAR</button>
+            <button id="check-btn" class="btn btn-primary" disabled onclick="checkAnswer()">CHECK</button>
         </div>
     </div>
 
@@ -148,10 +148,10 @@
         function checkAnswer() {
             const selected = document.querySelector('.option-card.selected');
             if (selected.innerText.includes('Apple')) {
-                alert('¡Correcto! Well done.');
+                alert('Correct! Well done.');
                 window.location.href = 'dashboard.html';
             } else {
-                alert('Incorrecto. Inténtalo de nuevo.');
+                alert('Incorrect. Try again.');
             }
         }
     </script>

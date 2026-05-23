@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shimi - Reintentar</title>
+    <title>Shimi - Retry</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -136,12 +136,12 @@
                 <div class="progress-bar-bg">
                     <div class="progress-bar-fill"></div>
                 </div>
-                <span class="error-count-text">1/2 errores</span>
+                <span class="error-count-text">1/2 errors</span>
             </div>
         </header>
 
         <!-- Título -->
-        <h1 class="main-title">Intenta de nuevo</h1>
+        <h1 class="main-title">Try again</h1>
 
         <!-- Tarjeta de Pregunta -->
         <div class="question-card">
@@ -161,7 +161,7 @@
 
         <!-- Botón de Acción -->
         <div class="footer-action">
-            <button id="checkBtn" class="btn btn-primary" disabled onclick="handleCheck()">COMPROBAR</button>
+            <button id="checkBtn" class="btn btn-primary" disabled onclick="handleCheck()">CHECK</button>
         </div>
     </div>
 
@@ -180,10 +180,10 @@
         function handleCheck() {
             const selected = document.querySelector('.option-btn.selected');
             if (selected.innerText.includes('goes')) {
-                alert('¡Excelente trabajo! Has corregido el error.');
+                alert('Great job! You have fixed the error.');
                 window.location.href = 'levels.html';
             } else {
-                alert('Sigue intentándolo, recuerda la tercera persona.');
+                alert('Keep trying, remember the third person.');
             }
         }
     </script>

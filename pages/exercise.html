@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shimi - Ejercicio</title>
+    <title>Shimi - Exercise</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -142,12 +142,12 @@
                 <div class="progress-bar-bg">
                     <div class="progress-bar-fill"></div>
                 </div>
-                <span class="progress-step-text">3/8 completado</span>
+                <span class="progress-step-text">3/8 completed</span>
             </div>
         </header>
 
         <!-- Instrucción -->
-        <p class="instruction">Complete la frase</p>
+        <p class="instruction">Complete the sentence</p>
 
         <!-- Tarjeta de Pregunta -->
         <div class="question-card">
@@ -158,7 +158,7 @@
         </div>
 
         <!-- Opciones -->
-        <p class="options-label">Seleccione una respuesta</p>
+        <p class="options-label">Select an answer</p>
         <div class="options-grid">
             <button class="option-btn" onclick="selectOption(this)">A. go</button>
             <button class="option-btn" onclick="selectOption(this)">B. goes</button>
@@ -168,7 +168,7 @@
 
         <!-- Botón de Acción -->
         <div class="footer-action">
-            <button id="checkBtn" class="btn btn-primary" disabled onclick="handleCheck()">COMPROBAR</button>
+            <button id="checkBtn" class="btn btn-primary" disabled onclick="handleCheck()">CHECK</button>
         </div>
     </div>
 
@@ -184,10 +184,10 @@
         function handleCheck() {
             const selected = document.querySelector('.option-btn.selected');
             if (selected.innerText.includes('goes')) {
-                alert('¡Excelente! "She goes" es correcto.');
+                alert('Excellent! "She goes" is correct.');
                 window.location.href = 'levels.html';
             } else {
-                alert('Casi... La respuesta correcta es "goes" (tercera persona).');
+                alert('Almost... The correct answer is "goes" (third person).');
             }
         }
     </script>
