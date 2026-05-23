@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shimi - Level Result</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .result-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-xl) 0;
+        }
+
+        .result-card {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 20px;
+            box-shadow: 0 6px 0px #E0E0E0;
+            padding: var(--spacing-xl);
+            text-align: center;
+        }
+
+        .result-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #EAF3FD;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto var(--spacing-lg);
+        }
+
+        .score-value {
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: var(--text-color);
+            line-height: 1;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .result-label {
+            color: var(--secondary-color);
+            font-weight: 900;
+            font-size: 1.6rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .recommendation {
+            background: #F8F9FA;
+            border: 2px solid #E0E0E0;
+            border-radius: var(--radius);
+            padding: var(--spacing-md);
+            text-align: left;
+            font-weight: 700;
+        }
+
+        .review-list {
+            display: grid;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+            text-align: left;
+        }
+
+        .review-item {
+            border: 2px solid #E0E0E0;
+            border-radius: var(--radius);
+            padding: var(--spacing-md);
+            background: #F8F9FA;
+        }
+
+        .review-item.correct {
+            border-color: var(--success-color);
+            background: #E8F8F3;
+        }
+
+        .review-item.incorrect {
+            border-color: var(--error-color);
+            background: #FDECEC;
+        }
+
+        .review-item p + p {
+            margin-top: var(--spacing-xs);
+        }
+
+        .actions {
+            display: grid;
+            gap: var(--spacing-sm);
+        }
+    </style>
+</head>
+<body>
+    <main class="container fade-in">
+        <section class="result-container" aria-labelledby="resultTitle">
+            <div class="result-card">
+                <div class="result-icon" aria-hidden="true"><i class="fas fa-chart-line"></i></div>
+                <p class="score-value" id="scoreValue">0/8</p>
+                <h1 id="resultTitle" data-i18n="levelResult">Your level result</h1>
+                <p class="result-label" id="resultLabel">A1 - beginner</p>
+                <div class="recommendation">
+                    <p id="resultDescription" data-i18n="pendingResult">Result pending.</p>
+                    <p id="nextStep" data-i18n="pendingNext">Next step pending.</p>
+                </div>
+                <div class="review-list" id="reviewList" aria-label="Answer review"></div>
+            </div>
+
+            <div class="actions">
+                <a id="primaryAction" href="levels.html" class="btn btn-primary" data-i18n="goAssignedModule">Go to my module</a>
+                <a href="levels.html" class="btn btn-secondary" data-i18n="levelMap">Level map</a>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/learning-data.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script>
+        const questions = window.ShimiData.diagnosticQuestions;
+        const thresholds = window.ShimiData.resultThresholds;
+        const score = Number(localStorage.getItem('shimiEvaluationScore') || '0');
+        const total = Number(localStorage.getItem('shimiEvaluationTotal') || String(questions.length));
+        const selectedAnswers = JSON.parse(localStorage.getItem('shimiEvaluationAnswers') || '[]');
+        const scoreValue = document.getElementById('scoreValue');
+        const resultLabel = document.getElementById('resultLabel');
+        const resultDescription = document.getElementById('resultDescription');
+        const nextStep = document.getElementById('nextStep');
+        const primaryAction = document.getElementById('primaryAction');
+        const reviewList = document.getElementById('reviewList');
+
+        function getAssignedLevel(scoreValue) {
+            return thresholds.find((item) => scoreValue >= item.minScore && scoreValue <= item.maxScore) || thresholds[0];
+        }
+
+        const assigned = getAssignedLevel(score);
+        localStorage.setItem('shimiAssignedLevel', assigned.level);
+        localStorage.removeItem('shimiActiveModule');
+
+        function renderResult() {
+            const lang = window.ShimiI18n.getLanguage();
+            scoreValue.textContent = window.ShimiI18n.t('scoreCorrect', { score, total });
+            resultLabel.textContent = lang === 'es' ? assigned.titleEs : assigned.title;
+            resultDescription.textContent = lang === 'es' ? assigned.summaryEs : assigned.summary;
+            nextStep.textContent = `${window.ShimiI18n.t('nextLabel')} ${lang === 'es' ? assigned.nextStepEs : assigned.nextStep}`;
+            primaryAction.textContent = window.ShimiI18n.t('goModule', { level: assigned.level });
+            primaryAction.href = `level-practice.html?level=${assigned.level}`;
+
+            reviewList.innerHTML = questions.map((question, index) => {
+            const selected = selectedAnswers[index];
+            const isCorrect = selected === question.correctIndex;
+            const answerText = selected === undefined ? window.ShimiI18n.t('noAnswer') : question.options[selected];
+            const explanation = isCorrect ? question.feedback.correct : question.feedback.incorrect;
+            const support = question.feedback.supportEs;
+            return `
+                <div class="review-item ${isCorrect ? 'correct' : 'incorrect'}">
+                    <p><strong>${window.ShimiI18n.t(isCorrect ? 'correct' : 'incorrect')} · ${question.level} · ${lang === 'es' ? question.skillEs : question.skill}</strong></p>
+                    <p>${lang === 'es' ? question.promptEs : question.prompt}</p>
+                    <p>${window.ShimiI18n.t('reviewAnswer', { answer: answerText })}</p>
+                    <p>${lang === 'es' && support ? support : explanation}</p>
+                    ${lang === 'en' && support ? `<p class="support-es">${support}</p>` : ''}
+                    ${lang === 'es' ? `<p class="support-es">${explanation}</p>` : ''}
+                </div>
+            `;
+            }).join('');
+        }
+
+        renderResult();
+        window.addEventListener('shimi-language-change', renderResult);
+    </script>
+</body>
+</html>

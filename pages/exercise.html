@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shimi - Ejercicio</title>
+    <title>Shimi - Guided Practice</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -16,17 +16,14 @@
         }
 
         .close-btn {
-            font-size: 1.5rem;
             color: var(--text-muted);
             text-decoration: none;
-            padding: 5px;
+            padding: var(--spacing-sm);
+            font-weight: 800;
         }
 
         .progress-wrapper {
             flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         .progress-bar-bg {
@@ -39,27 +36,20 @@
         }
 
         .progress-bar-fill {
-            width: 37.5%; /* 3/8 completed */
+            width: 100%;
             height: 100%;
-            background-color: var(--primary-color);
+            background-color: var(--success-color);
             border-radius: 6px;
-        }
-
-        .progress-step-text {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-weight: 700;
         }
 
         .instruction {
             text-align: left;
             font-size: 1.2rem;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: var(--spacing-md);
             color: var(--text-color);
         }
 
-        /* Question Card */
         .question-card {
             background: white;
             border: 2px solid #E0E0E0;
@@ -69,27 +59,44 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-            margin-bottom: var(--spacing-xl);
+            margin-bottom: var(--spacing-md);
             box-shadow: 0 4px 0px #E0E0E0;
         }
 
         .question-icon {
-            font-size: 3.5rem;
-            color: var(--secondary-color);
+            width: 92px;
+            height: 92px;
+            border-radius: 50%;
+            background: #EAF3FD;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.2rem;
             margin-bottom: var(--spacing-md);
         }
 
         .question-text {
             font-size: 1.3rem;
-            font-weight: 600;
+            font-weight: 700;
             line-height: 1.4;
             color: var(--text-color);
         }
 
-        /* Options */
+        .example-box {
+            background: #F8F9FA;
+            border: 2px solid #E0E0E0;
+            border-radius: var(--radius);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .example-box strong {
+            color: var(--text-color);
+        }
+
         .options-label {
             text-align: left;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: var(--spacing-sm);
             color: var(--text-muted);
         }
@@ -98,7 +105,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: var(--spacing-md);
-            margin-bottom: var(--spacing-xl);
+            margin-bottom: var(--spacing-md);
         }
 
         .option-btn {
@@ -107,7 +114,7 @@
             border-radius: var(--radius);
             padding: var(--spacing-md);
             font-size: 1rem;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--text-color);
             cursor: pointer;
             transition: all 0.2s;
@@ -120,6 +127,11 @@
             border-color: var(--primary-color);
         }
 
+        .option-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0px #E0E0E0;
+        }
+
         .option-btn.selected {
             background-color: #FFF3E0;
             border-color: var(--primary-color);
@@ -127,69 +139,125 @@
             box-shadow: 0 4px 0px var(--primary-color);
         }
 
+        .option-btn.correct {
+            background-color: #E8F8F3;
+            border-color: var(--success-color);
+            color: var(--text-color);
+            box-shadow: 0 4px 0px #00a383;
+        }
+
+        .option-btn.incorrect {
+            background-color: #FDECEC;
+            border-color: var(--error-color);
+            color: var(--text-color);
+            box-shadow: 0 4px 0px #b9292a;
+        }
+
         .footer-action {
             margin-top: auto;
             padding: var(--spacing-lg) 0;
         }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div class="container fade-in">
-        <!-- Cabecera -->
+    <main class="container fade-in">
         <header class="exercise-header">
-            <a href="levels.html" class="close-btn"><i class="fas fa-times"></i></a>
+            <a href="levels.html" class="close-btn" data-i18n="backToLevels">Back to levels</a>
             <div class="progress-wrapper">
-                <div class="progress-bar-bg">
+                <div class="progress-bar-bg" aria-hidden="true">
                     <div class="progress-bar-fill"></div>
                 </div>
-                <span class="progress-step-text">3/8 completado</span>
+                <p class="status-note" data-i18n="practiceTwoProgress">Guided practice 2 of 2 · placement test is optional</p>
             </div>
         </header>
 
-        <!-- Instrucción -->
-        <p class="instruction">Complete la frase</p>
+        <p class="instruction" data-i18n="completeSentence">Complete the sentence</p>
 
-        <!-- Tarjeta de Pregunta -->
-        <div class="question-card">
-            <div class="question-icon">
-                <i class="fas fa-dumbbell"></i>
-            </div>
-            <p class="question-text">"She ......... to the gym every morning."</p>
+        <section class="question-card" aria-labelledby="questionText">
+            <div class="question-icon" aria-label="Exercise routine">🏋️</div>
+            <p class="question-text" id="questionText">She ......... to the gym every morning.</p>
+        </section>
+
+        <div class="example-box">
+            <p><strong data-i18n="guidedExample">Guided example:</strong> He goes to class every day.</p>
+            <p class="status-note">With he, she, or it, we add -s or -es in the present simple.</p>
+            <p class="support-es" data-support-es>Apoyo: con he, she o it se agrega -s o -es.</p>
         </div>
 
-        <!-- Opciones -->
-        <p class="options-label">Seleccione una respuesta</p>
+        <p class="options-label" data-i18n="selectAnswer">Choose one answer</p>
         <div class="options-grid">
-            <button class="option-btn" onclick="selectOption(this)">A. go</button>
-            <button class="option-btn" onclick="selectOption(this)">B. goes</button>
-            <button class="option-btn" onclick="selectOption(this)">C. going</button>
-            <button class="option-btn" onclick="selectOption(this)">D. gone</button>
+            <button type="button" class="option-btn" data-explanation="Incorrect. “Go” is used with I, you, we, or they in the present simple. With he / she / it, add -s or -es. The subject is “She,” so the correct form is “goes.” Example: “She goes to the gym.”" data-explanation-es="Incorrecto. “Go” se usa con I, you, we o they. Con he / she / it agregamos -s o -es. Como el sujeto es “She”, la forma correcta es “goes”." data-support-es="Apoyo: she goes, no she go.">A. go</button>
+            <button type="button" class="option-btn" data-correct="true" data-explanation="Correct. With he / she / it, we add -s or -es in the present simple. “Go” changes to “goes” because it ends in -o. Correct sentence: “She goes to the gym every morning.”" data-explanation-es="Correcto. Con he / she / it se agrega -s o -es en presente simple. “Go” cambia a “goes” porque termina en -o." data-support-es="Apoyo: go cambia a goes con she.">B. goes</button>
+            <button type="button" class="option-btn" data-explanation="Incorrect. “Going” needs the verb “to be”: “She is going.” This sentence describes a daily routine, so use present simple: “She goes to the gym every morning.”" data-explanation-es="Incorrecto. “Going” necesita “to be”: “She is going”. Aquí hablamos de una rutina diaria, por eso usamos “goes”." data-support-es="Apoyo: rutina diaria = presente simple.">C. going</button>
+            <button type="button" class="option-btn" data-explanation="Incorrect. “Gone” is a participle used in forms like “has gone.” Here we need present simple for a daily routine, so the answer is “goes.”" data-explanation-es="Incorrecto. “Gone” es participio y se usa en estructuras como “has gone”. Aquí corresponde “goes”." data-support-es="Apoyo: gone no completa esta rutina.">D. gone</button>
         </div>
 
-        <!-- Botón de Acción -->
-        <div class="footer-action">
-            <button id="checkBtn" class="btn btn-primary" disabled onclick="handleCheck()">COMPROBAR</button>
-        </div>
-    </div>
+        <div class="feedback-panel hidden" id="feedbackPanel" role="status" aria-live="polite"></div>
 
+        <footer class="footer-action">
+            <button id="checkBtn" type="button" class="btn btn-primary" disabled data-i18n="check">Check</button>
+            <button id="retryBtn" type="button" class="btn btn-secondary hidden" data-i18n="reviewTryAgain">Review and try again</button>
+            <a id="evaluationBtn" href="evaluation.html" class="btn btn-primary hidden" data-i18n="takePlacement">Take placement test</a>
+        </footer>
+    </main>
+
+    <script src="../js/i18n.js"></script>
     <script>
-        function selectOption(el) {
-            document.querySelectorAll('.option-btn').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            el.classList.add('selected');
-            document.getElementById('checkBtn').disabled = false;
-        }
+        const options = Array.from(document.querySelectorAll('.option-btn'));
+        const checkBtn = document.getElementById('checkBtn');
+        const retryBtn = document.getElementById('retryBtn');
+        const evaluationBtn = document.getElementById('evaluationBtn');
+        const feedbackPanel = document.getElementById('feedbackPanel');
+        let selected = null;
 
-        function handleCheck() {
-            const selected = document.querySelector('.option-btn.selected');
-            if (selected.innerText.includes('goes')) {
-                alert('¡Excelente! "She goes" es correcto.');
-                window.location.href = 'levels.html';
+        options.forEach((button) => {
+            button.addEventListener('click', () => {
+                options.forEach((item) => item.classList.remove('selected'));
+                button.classList.add('selected');
+                selected = button;
+                checkBtn.disabled = false;
+                retryBtn.classList.add('hidden');
+                feedbackPanel.className = 'feedback-panel hidden';
+            });
+        });
+
+        checkBtn.addEventListener('click', () => {
+            if (!selected) return;
+
+            const isCorrect = selected.dataset.correct === 'true';
+            const isSpanish = window.ShimiI18n.getLanguage() === 'es';
+            const explanation = isSpanish ? selected.dataset.explanationEs : selected.dataset.explanation;
+            selected.classList.add(isCorrect ? 'correct' : 'incorrect');
+            feedbackPanel.className = `feedback-panel ${isCorrect ? 'success' : 'error'}`;
+            feedbackPanel.innerHTML = `
+                <h3>${window.ShimiI18n.t(isCorrect ? 'correct' : 'incorrect')}</h3>
+                <p>${explanation}</p>
+                ${!isSpanish ? `<p class="support-es">${selected.dataset.supportEs}</p>` : ''}
+                <p><strong>${window.ShimiI18n.t(isCorrect ? 'nextLabel' : 'action')}</strong> ${isSpanish ? (isCorrect ? 'terminaste la práctica guiada. Puedes hacer diagnóstico o empezar desde A1.' : 'revisa el ejemplo y elige otra vez.') : (isCorrect ? 'You finished guided practice. You can take the placement test or start from A1.' : 'Review the example and choose again.')}</p>
+            `;
+
+            if (isCorrect) {
+                localStorage.setItem('shimiGuidedPracticeCompleted', 'true');
+                options.forEach((item) => item.disabled = true);
+                checkBtn.classList.add('hidden');
+                evaluationBtn.classList.remove('hidden');
             } else {
-                alert('Casi... La respuesta correcta es "goes" (tercera persona).');
+                checkBtn.disabled = true;
+                retryBtn.classList.remove('hidden');
             }
-        }
+        });
+
+        retryBtn.addEventListener('click', () => {
+            options.forEach((item) => item.classList.remove('selected', 'correct', 'incorrect'));
+            selected = null;
+            checkBtn.disabled = true;
+            retryBtn.classList.add('hidden');
+            feedbackPanel.className = 'feedback-panel hidden';
+        });
     </script>
 </body>
 </html>

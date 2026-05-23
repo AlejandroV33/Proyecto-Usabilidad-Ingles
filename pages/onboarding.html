@@ -3,170 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shimi - Sobre ti</title>
+    <title>Shimi - Introduction</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .onboarding-header {
-            text-align: center;
-            margin-bottom: var(--spacing-lg);
-            padding-top: var(--spacing-md);
-        }
-
-        .onboarding-header h1 {
-            font-size: 1.8rem;
-            margin-bottom: var(--spacing-xs);
-        }
-
-        .onboarding-header p {
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        .divider {
-            height: 2px;
-            background-color: #E0E0E0;
-            width: 100%;
-            margin: var(--spacing-md) 0;
-            border-radius: 2px;
-        }
-
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 700;
-            margin-bottom: var(--spacing-sm);
-            color: var(--text-color);
-        }
-
-        .section-title i {
-            color: var(--primary-color);
-            width: 20px;
-            text-align: center;
-        }
-
-        .subtext {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: var(--spacing-sm);
-        }
-
-        /* Time Grid */
-        .time-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-md);
-            margin-bottom: var(--spacing-xl);
-        }
-
-        .time-option {
-            background: white;
-            border: 2px solid #E0E0E0;
-            border-radius: var(--radius);
-            padding: var(--spacing-md);
-            font-weight: 700;
-            color: var(--text-color);
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-            box-shadow: 0 4px 0px #E0E0E0;
-        }
-
-        .time-option:hover {
-            border-color: var(--primary-color);
-            background-color: #FFF9F0;
-        }
-
-        .time-option.selected {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-            box-shadow: 0 4px 0px #e6952d;
-        }
-
-        .footer-note {
-            text-align: center;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: var(--spacing-md);
-        }
-
-        form {
+        .onboarding-shell {
             flex: 1;
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            gap: var(--spacing-xl);
         }
 
-        .form-content {
-            flex: 1;
+        .step-count {
+            color: var(--text-muted);
+            font-weight: 800;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
         }
 
-        .btn-continue {
-            margin-top: auto;
-            margin-bottom: var(--spacing-xs);
+        .step-card {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 20px;
+            box-shadow: 0 6px 0px #E0E0E0;
+            padding: var(--spacing-xl);
+            text-align: center;
+            min-height: 360px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .step-card.active {
+            display: flex;
+        }
+
+        .step-icon {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            background: #FFF3E0;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.6rem;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .step-card h1 {
+            font-size: 1.8rem;
+            line-height: 1.2;
+        }
+
+        .step-card p {
+            color: var(--text-muted);
+            font-weight: 600;
+            max-width: 420px;
+        }
+
+        .step-dots {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-sm);
+        }
+
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 999px;
+            background: #D9DEE3;
+        }
+
+        .step-dot.active {
+            width: 32px;
+            background: var(--primary-color);
+        }
+
+        .actions {
+            display: grid;
+            gap: var(--spacing-sm);
+        }
+
+        .path-actions {
+            display: none;
+            gap: var(--spacing-sm);
+        }
+
+        .path-actions.active {
+            display: grid;
         }
     </style>
 </head>
 <body>
-    <div class="container fade-in">
-        <div class="onboarding-header">
-            <h1>Hola, esto es Shimi</h1>
-            <p>Cuentanos sobre ti</p>
-            <div class="divider"></div>
-        </div>
+    <main class="container fade-in">
+        <section class="onboarding-shell" aria-labelledby="onboardingTitle">
+            <p class="step-count" id="stepCount">Step 1 of 3</p>
 
-        <form id="onboardingForm" onsubmit="event.preventDefault(); window.location.href='dashboard.html';">
-            <div class="form-content">
-                <!-- Nombre -->
-                <div class="input-group">
-                    <div class="section-title">
-                        <i class="fas fa-user"></i>
-                        <span>Nombre o Apodo</span>
-                    </div>
-                    <input type="text" id="nickname" placeholder="Ej. Alex" required>
-                </div>
+            <article class="step-card active" data-step="0">
+                <div class="step-icon" aria-hidden="true"><i class="fas fa-route"></i></div>
+                <h1 id="onboardingTitle" data-i18n="onboarding1Title">First, you will practice</h1>
+                <p data-i18n="onboarding1Text">Shimi starts with short activities, pictures, examples, and low-pressure answers.</p>
+            </article>
 
-                <!-- Edad -->
-                <div class="input-group">
-                    <div class="section-title">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Edad</span>
-                    </div>
-                    <input type="number" id="age" placeholder="Tu edad" required min="1">
-                </div>
+            <article class="step-card" data-step="1">
+                <div class="step-icon" aria-hidden="true"><i class="fas fa-comment-dots"></i></div>
+                <h1 data-i18n="onboarding2Title">You get feedback right away</h1>
+                <p data-i18n="onboarding2Text">After each answer, you see what happened, why it happened, and what to do next.</p>
+            </article>
 
-                <!-- Tiempo Diario -->
-                <div class="input-group">
-                    <div class="section-title">
-                        <i class="fas fa-clock"></i>
-                        <span>Tiempo diario</span>
-                    </div>
-                    <p class="subtext">¿Cuánto tiempo puedes dedicar cada día?</p>
-                    
-                    <div class="time-grid">
-                        <div class="time-option" onclick="selectTime(this)">5 min</div>
-                        <div class="time-option" onclick="selectTime(this)">10 min</div>
-                        <div class="time-option" onclick="selectTime(this)">15 min</div>
-                        <div class="time-option" onclick="selectTime(this)">+20 min</div>
-                    </div>
-                </div>
+            <article class="step-card" data-step="2">
+                <div class="step-icon" aria-hidden="true"><i class="fas fa-clipboard-check"></i></div>
+                <h1 data-i18n="onboarding3Title">Then choose your path</h1>
+                <p data-i18n="onboarding3Text">Take a short placement test or start from A1 if you want to learn from the beginning.</p>
+            </article>
+
+            <div class="step-dots" aria-label="Onboarding progress">
+                <span class="step-dot active"></span>
+                <span class="step-dot"></span>
+                <span class="step-dot"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-continue">CONTINUAR</button>
-            <p class="footer-note">Completa todos los campos antes de continuar</p>
-        </form>
-    </div>
+            <div class="actions">
+                <button type="button" class="btn btn-primary" id="nextBtn" data-i18n="next">Next</button>
+                <button type="button" class="btn btn-secondary" id="backBtn" disabled data-i18n="back">Back</button>
+            </div>
 
+            <div class="path-actions" id="pathActions" aria-label="Choose how to start">
+                <button type="button" class="btn btn-primary" id="diagnosticBtn" data-i18n="takePlacement">Take placement test</button>
+                <button type="button" class="btn btn-secondary" id="startA1Btn" data-i18n="startA1">Start from A1</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/i18n.js"></script>
     <script>
-        function selectTime(element) {
-            // Deseleccionar otros
-            document.querySelectorAll('.time-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            // Seleccionar actual
-            element.classList.add('selected');
+        const cards = Array.from(document.querySelectorAll('.step-card'));
+        const dots = Array.from(document.querySelectorAll('.step-dot'));
+        const count = document.getElementById('stepCount');
+        const nextBtn = document.getElementById('nextBtn');
+        const backBtn = document.getElementById('backBtn');
+        const pathActions = document.getElementById('pathActions');
+        const diagnosticBtn = document.getElementById('diagnosticBtn');
+        const startA1Btn = document.getElementById('startA1Btn');
+        let currentStep = 0;
+
+        function renderStep() {
+            cards.forEach((card, index) => card.classList.toggle('active', index === currentStep));
+            dots.forEach((dot, index) => dot.classList.toggle('active', index === currentStep));
+            count.textContent = window.ShimiI18n.t('onboardingStep', { current: currentStep + 1 });
+            backBtn.disabled = currentStep === 0;
+            nextBtn.classList.toggle('hidden', currentStep === cards.length - 1);
+            pathActions.classList.toggle('active', currentStep === cards.length - 1);
         }
+
+        nextBtn.addEventListener('click', () => {
+            currentStep += 1;
+            renderStep();
+        });
+
+        backBtn.addEventListener('click', () => {
+            currentStep = Math.max(0, currentStep - 1);
+            renderStep();
+        });
+
+        diagnosticBtn.addEventListener('click', () => {
+            localStorage.setItem('shimiGuidedPracticeCompleted', 'true');
+            window.location.href = 'evaluation.html';
+        });
+
+        startA1Btn.addEventListener('click', () => {
+            localStorage.setItem('shimiAssignedLevel', 'A1');
+            localStorage.removeItem('shimiActiveModule');
+            window.location.href = 'levels.html';
+        });
+
+        window.addEventListener('shimi-language-change', renderStep);
     </script>
 </body>
 </html>

@@ -16,10 +16,10 @@
         }
 
         .close-btn {
-            font-size: 1.5rem;
             color: var(--text-muted);
             text-decoration: none;
-            padding: 5px;
+            padding: var(--spacing-sm);
+            font-weight: 800;
         }
 
         .progress-wrapper {
@@ -131,7 +131,7 @@
     <div class="container fade-in">
         <!-- Cabecera -->
         <header class="exercise-header">
-            <a href="levels.html" class="close-btn"><i class="fas fa-times"></i></a>
+            <a href="levels.html" class="close-btn">Volver a niveles</a>
             <div class="progress-wrapper">
                 <div class="progress-bar-bg">
                     <div class="progress-bar-fill"></div>
@@ -153,37 +153,51 @@
 
         <!-- Opciones -->
         <div class="options-grid">
-            <button class="option-btn" onclick="selectOption(this)">A. go</button>
-            <button class="option-btn" onclick="selectOption(this)">B. goes</button>
-            <button class="option-btn" onclick="selectOption(this)">C. going</button>
-            <button class="option-btn" onclick="selectOption(this)">D. gone</button>
+            <button type="button" class="option-btn">A. go</button>
+            <button type="button" class="option-btn">B. goes</button>
+            <button type="button" class="option-btn">C. going</button>
+            <button type="button" class="option-btn">D. gone</button>
         </div>
+
+        <div class="feedback-panel hidden" id="feedbackPanel" role="status" aria-live="polite"></div>
 
         <!-- Botón de Acción -->
         <div class="footer-action">
-            <button id="checkBtn" class="btn btn-primary" disabled onclick="handleCheck()">COMPROBAR</button>
+            <button id="checkBtn" type="button" class="btn btn-primary" disabled>COMPROBAR</button>
+            <a id="continueBtn" href="evaluation.html" class="btn btn-primary hidden">HACER DIAGNÓSTICO DE NIVEL</a>
         </div>
     </div>
 
     <script>
+        const retryOptions = Array.from(document.querySelectorAll('.option-btn'));
+        const retryCheckBtn = document.getElementById('checkBtn');
+
+        retryOptions.forEach((button) => {
+            button.addEventListener('click', () => selectOption(button));
+        });
+        retryCheckBtn.addEventListener('click', handleCheck);
+
         function selectOption(el) {
-            // Remover selección previa
-            document.querySelectorAll('.option-btn').forEach(btn => {
+            retryOptions.forEach(btn => {
                 btn.classList.remove('selected');
             });
-            // Aplicar nueva selección
             el.classList.add('selected');
-            // Habilitar botón
-            document.getElementById('checkBtn').disabled = false;
+            retryCheckBtn.disabled = false;
         }
 
         function handleCheck() {
             const selected = document.querySelector('.option-btn.selected');
+            const feedbackPanel = document.getElementById('feedbackPanel');
+            const continueBtn = document.getElementById('continueBtn');
             if (selected.innerText.includes('goes')) {
-                alert('¡Excelente trabajo! Has corregido el error.');
-                window.location.href = 'levels.html';
+                feedbackPanel.className = 'feedback-panel success';
+                feedbackPanel.innerHTML = '<h3>Correcto</h3><p>“Goes” funciona con “she” en presente simple.</p><p><strong>Siguiente:</strong> continúa con la evaluación posterior.</p>';
+                retryCheckBtn.classList.add('hidden');
+                continueBtn.classList.remove('hidden');
             } else {
-                alert('Sigue intentándolo, recuerda la tercera persona.');
+                feedbackPanel.className = 'feedback-panel error';
+                feedbackPanel.innerHTML = '<h3>Incorrecto</h3><p>Recuerda: con “she” usamos el verbo con “s” en presente simple.</p><p><strong>Acción:</strong> revisa y elige otra opción.</p>';
+                retryCheckBtn.disabled = true;
             }
         }
     </script>

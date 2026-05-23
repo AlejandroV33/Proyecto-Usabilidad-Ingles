@@ -59,6 +59,11 @@
             background-color: #E0E0E0;
             box-shadow: 0 6px 0px #BDBDBD;
             cursor: not-allowed;
+            border: none;
+        }
+
+        .lesson-node.locked:hover {
+            transform: none;
         }
         
         .lesson-label {
@@ -71,6 +76,23 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+        }
+        .flow-note {
+            background: #F8F9FA;
+            border: 2px solid #E0E0E0;
+            border-radius: var(--radius);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+        .flow-note strong {
+            color: var(--text-color);
+        }
+        .choice-panel {
+            display: grid;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
         }
     </style>
 </head>
@@ -86,61 +108,109 @@
             </div>
         </div>
 
+        <div class="flow-note">
+            <strong data-i18n="chooseStart">Choose your start:</strong> <span data-i18n="chooseStartText">Take a placement test or start from A1 without a test.</span>
+        </div>
+
+        <div class="choice-panel">
+            <a href="evaluation.html" class="btn btn-primary" id="dashboardDiagnostic" data-i18n="takePlacement">Take placement test</a>
+            <button type="button" class="btn btn-secondary" id="dashboardStartA1" data-i18n="startA1">Start from A1</button>
+        </div>
+
         <div class="lesson-path">
             <div class="node-wrapper fade-in">
                 <a href="lesson.html" class="lesson-node">
                     <i class="fas fa-star"></i>
                 </a>
-                <span class="lesson-label">Introducción</span>
+                <span class="lesson-label" data-i18n="intro">Introduction</span>
             </div>
 
             <div class="node-wrapper fade-in" style="animation-delay: 0.1s; margin-left: 60px;">
-                <a href="lesson.html" class="lesson-node">
+                <a href="exercise.html" class="lesson-node">
                     <i class="fas fa-book"></i>
                 </a>
-                <span class="lesson-label">Saludos</span>
+                <span class="lesson-label" data-i18n="guidedPhrases">Guided phrases</span>
             </div>
 
             <div class="node-wrapper fade-in" style="animation-delay: 0.2s; margin-right: 40px;">
-                <a href="#" class="lesson-node locked">
-                    <i class="fas fa-utensils"></i>
+                <a href="evaluation.html" class="lesson-node locked" id="evaluationNode" aria-label="Placement available after practice">
+                    <i class="fas fa-clipboard-check"></i>
                 </a>
-                <span class="lesson-label">Comida</span>
+                <span class="lesson-label" id="evaluationLabel" data-i18n="placementAfterPractice">Placement test</span>
             </div>
 
             <div class="node-wrapper fade-in" style="animation-delay: 0.3s;">
-                <a href="#" class="lesson-node locked">
+                <button type="button" class="lesson-node locked" disabled aria-label="Trips locked">
                     <i class="fas fa-plane"></i>
-                </a>
-                <span class="lesson-label">Viajes</span>
+                </button>
+                <span class="lesson-label" data-i18n="tripsLocked">Trips</span>
             </div>
             
             <div class="node-wrapper fade-in" style="animation-delay: 0.4s; margin-left: -50px;">
-                <a href="#" class="lesson-node locked">
+                <button type="button" class="lesson-node locked" disabled aria-label="Work locked">
                     <i class="fas fa-briefcase"></i>
-                </a>
-                <span class="lesson-label">Trabajo</span>
+                </button>
+                <span class="lesson-label" data-i18n="workLocked">Work</span>
             </div>
         </div>
 
         <nav class="bottom-nav">
             <a href="dashboard.html" class="nav-item active">
                 <i class="fas fa-home"></i>
-                <span>Inicio</span>
+                <span data-i18n="home">Home</span>
             </a>
-            <a href="#" class="nav-item">
+            <a href="lesson.html" class="nav-item">
                 <i class="fas fa-dumbbell"></i>
-                <span>Práctica</span>
+                <span data-i18n="practice">Practice</span>
             </a>
-            <a href="#" class="nav-item">
+            <button type="button" class="nav-item" disabled>
                 <i class="fas fa-trophy"></i>
-                <span>Liga</span>
-            </a>
-            <a href="#" class="nav-item">
+                <span data-i18n="league">League</span>
+            </button>
+            <button type="button" class="nav-item" disabled>
                 <i class="fas fa-store"></i>
-                <span>Tienda</span>
-            </a>
+                <span data-i18n="shop">Shop</span>
+            </button>
         </nav>
     </div>
+
+    <script src="../js/i18n.js"></script>
+    <script>
+        const evaluationNode = document.getElementById('evaluationNode');
+        const evaluationLabel = document.getElementById('evaluationLabel');
+        const startA1Btn = document.getElementById('dashboardStartA1');
+
+        startA1Btn.addEventListener('click', () => {
+            localStorage.setItem('shimiAssignedLevel', 'A1');
+            localStorage.removeItem('shimiActiveModule');
+            window.location.href = 'levels.html';
+        });
+
+        function updateDashboardState() {
+            const currentGuidedDone = localStorage.getItem('shimiGuidedPracticeCompleted') === 'true';
+            const currentLevel = localStorage.getItem('shimiAssignedLevel');
+
+            if (currentLevel) {
+                evaluationNode.href = 'levels.html';
+                evaluationNode.classList.remove('locked');
+                evaluationNode.setAttribute('aria-label', `Open assigned module ${currentLevel}`);
+                evaluationLabel.textContent = window.ShimiI18n.t('activeModule', { level: currentLevel });
+            } else if (currentGuidedDone) {
+                evaluationNode.href = 'evaluation.html';
+                evaluationNode.classList.remove('locked');
+                evaluationNode.setAttribute('aria-label', 'Start placement test');
+                evaluationLabel.textContent = window.ShimiI18n.t('placementAfterPractice');
+            } else {
+                evaluationNode.removeAttribute('href');
+                evaluationNode.classList.add('locked');
+                evaluationNode.setAttribute('aria-disabled', 'true');
+                evaluationLabel.textContent = window.ShimiI18n.t('placementAfterPractice');
+            }
+        }
+
+        updateDashboardState();
+        document.addEventListener('DOMContentLoaded', updateDashboardState);
+        window.addEventListener('shimi-language-change', updateDashboardState);
+    </script>
 </body>
 </html>

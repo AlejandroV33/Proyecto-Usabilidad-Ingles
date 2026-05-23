@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shimi - Placement Test</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .evaluation-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding-top: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .close-btn {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: var(--spacing-sm);
+            font-weight: 800;
+        }
+
+        .progress-wrapper {
+            flex: 1;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 12px;
+            background-color: #E0E0E0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+
+        .progress-bar-fill {
+            width: 0%;
+            height: 100%;
+            background-color: var(--secondary-color);
+            border-radius: 6px;
+            transition: width 0.2s ease;
+        }
+
+        .intro-panel,
+        .question-panel {
+            background: white;
+            border: 2px solid #D8E6F8;
+            border-radius: 20px;
+            box-shadow: 0 5px 0px #C4D8F3;
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .intro-panel h1,
+        .question-panel h1 {
+            font-size: 1.7rem;
+            line-height: 1.2;
+        }
+
+        .rules-list {
+            display: grid;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+
+        .rule-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            font-weight: 700;
+        }
+
+        .rule-item i {
+            color: var(--secondary-color);
+            margin-top: 5px;
+        }
+
+        .question-meta {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .prompt-visual {
+            width: 92px;
+            height: 92px;
+            border-radius: 50%;
+            background: #EAF3FD;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .options-grid {
+            display: grid;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+
+        .answer-btn {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 0px #E0E0E0;
+            color: var(--text-color);
+            cursor: pointer;
+            font: inherit;
+            font-weight: 800;
+            padding: var(--spacing-md);
+            text-align: left;
+            transition: all 0.2s;
+        }
+
+        .answer-btn:hover {
+            border-color: var(--secondary-color);
+            background: #F5FAFF;
+        }
+
+        .answer-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0px #E0E0E0;
+        }
+
+        .answer-btn.selected {
+            border-color: var(--secondary-color);
+            background: #EAF3FD;
+            box-shadow: 0 4px 0px #C4D8F3;
+        }
+
+        .answer-btn.correct {
+            border-color: var(--success-color);
+            background: #E8F8F3;
+        }
+
+        .answer-btn.incorrect {
+            border-color: var(--error-color);
+            background: #FDECEC;
+        }
+
+        .footer-action {
+            margin-top: auto;
+            padding: var(--spacing-lg) 0;
+        }
+    </style>
+</head>
+<body>
+    <main class="container fade-in">
+        <header class="evaluation-header">
+            <a href="levels.html" class="close-btn" data-i18n="cancelPlacement">Cancel placement test</a>
+            <div class="progress-wrapper">
+                <div class="progress-bar-bg" aria-hidden="true">
+                    <div class="progress-bar-fill" id="progressFill"></div>
+                </div>
+                <p class="status-note" id="progressText" data-i18n="placementNotStarted">Placement test · not started</p>
+            </div>
+        </header>
+
+        <section class="intro-panel" id="introPanel" aria-labelledby="introTitle">
+            <p class="question-meta" data-i18n="optionalPlacement">Optional placement</p>
+            <h1 id="introTitle" data-i18n="placementTitle">Placement test A1-B2</h1>
+            <p data-i18n="placementIntro">This short test checks vocabulary, grammar, reading, and common phrases. You can skip it and start from A1.</p>
+            <div class="rules-list">
+                <div class="rule-item"><i class="fas fa-check-circle"></i><span data-i18n="placementRule1">8 short questions from A1 to B2.</span></div>
+                <div class="rule-item"><i class="fas fa-check-circle"></i><span data-i18n="placementRule2">Each answer gives a short explanation.</span></div>
+                <div class="rule-item"><i class="fas fa-check-circle"></i><span data-i18n="placementRule3">At the end, Shimi unlocks the right module for you.</span></div>
+            </div>
+        </section>
+
+        <section class="question-panel hidden" id="questionPanel" aria-labelledby="questionTitle">
+            <p class="question-meta" id="questionMeta">Pregunta 1 de 8</p>
+            <div class="prompt-visual" id="promptVisual" aria-hidden="true">🍎</div>
+            <p class="status-note" id="skillLabel">Basic vocabulary</p>
+            <h1 id="questionTitle">Pregunta</h1>
+            <div class="options-grid" id="answersGroup" aria-label="Placement answer options"></div>
+            <div class="feedback-panel hidden" id="questionFeedback" role="status" aria-live="polite"></div>
+        </section>
+
+        <footer class="footer-action">
+            <button type="button" class="btn btn-primary" id="startBtn" data-i18n="startPlacement">Start placement test</button>
+            <button type="button" class="btn btn-primary hidden" id="nextBtn" disabled data-i18n="check">Check</button>
+        </footer>
+    </main>
+
+    <script src="../js/learning-data.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script>
+        const questions = window.ShimiData.diagnosticQuestions;
+        const thresholds = window.ShimiData.resultThresholds;
+        const introPanel = document.getElementById('introPanel');
+        const questionPanel = document.getElementById('questionPanel');
+        const startBtn = document.getElementById('startBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const questionMeta = document.getElementById('questionMeta');
+        const promptVisual = document.getElementById('promptVisual');
+        const skillLabel = document.getElementById('skillLabel');
+        const questionTitle = document.getElementById('questionTitle');
+        const answersGroup = document.getElementById('answersGroup');
+        const questionFeedback = document.getElementById('questionFeedback');
+
+        let currentQuestion = 0;
+        let selectedIndex = null;
+        let score = 0;
+        const selectedAnswers = [];
+        let answerChecked = false;
+
+        function getAssignedLevel(scoreValue) {
+            return thresholds.find((item) => scoreValue >= item.minScore && scoreValue <= item.maxScore) || thresholds[0];
+        }
+
+        function renderQuestion() {
+            const lang = window.ShimiI18n.getLanguage();
+            const question = questions[currentQuestion];
+            selectedIndex = null;
+            answerChecked = false;
+            questionMeta.textContent = window.ShimiI18n.t('questionCount', { current: currentQuestion + 1, total: questions.length, level: question.level });
+            questionTitle.textContent = lang === 'es' ? question.promptEs : question.prompt;
+            promptVisual.textContent = question.visual;
+            skillLabel.textContent = lang === 'es' ? question.skillEs : question.skill;
+            progressFill.style.width = `${(currentQuestion / questions.length) * 100}%`;
+            progressText.textContent = window.ShimiI18n.t('placementProgress', { done: currentQuestion, total: questions.length });
+            answersGroup.innerHTML = '';
+            questionFeedback.className = 'feedback-panel hidden';
+
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'answer-btn';
+                button.textContent = option;
+                button.addEventListener('click', () => {
+                    if (answerChecked) return;
+                    Array.from(document.querySelectorAll('.answer-btn')).forEach((item) => item.classList.remove('selected'));
+                    button.classList.add('selected');
+                    selectedIndex = index;
+                    nextBtn.disabled = false;
+                });
+                answersGroup.appendChild(button);
+            });
+
+            nextBtn.textContent = window.ShimiI18n.t('check');
+            nextBtn.disabled = true;
+        }
+
+        startBtn.addEventListener('click', () => {
+            introPanel.classList.add('hidden');
+            questionPanel.classList.remove('hidden');
+            startBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden');
+            localStorage.setItem('shimiGuidedPracticeCompleted', 'true');
+            renderQuestion();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (selectedIndex === null) return;
+            const question = questions[currentQuestion];
+
+            if (!answerChecked) {
+                const isCorrect = selectedIndex === question.correctIndex;
+                const lang = window.ShimiI18n.getLanguage();
+                if (isCorrect) score += 1;
+                selectedAnswers[currentQuestion] = selectedIndex;
+
+                Array.from(document.querySelectorAll('.answer-btn')).forEach((item, index) => {
+                    item.disabled = true;
+                    if (index === question.correctIndex) item.classList.add('correct');
+                    if (index === selectedIndex && !isCorrect) item.classList.add('incorrect');
+                });
+
+                questionFeedback.className = `feedback-panel ${isCorrect ? 'success' : 'error'}`;
+                const feedback = isCorrect ? question.feedback.correct : question.feedback.incorrect;
+                const feedbackEs = question.feedback.supportEs;
+                questionFeedback.innerHTML = `
+                    <h3>${window.ShimiI18n.t(isCorrect ? 'correct' : 'incorrect')}</h3>
+                    <p>${lang === 'es' && feedbackEs ? feedbackEs : feedback}</p>
+                    ${lang === 'en' && feedbackEs ? `<p class="support-es">${feedbackEs}</p>` : ''}
+                    ${lang === 'es' ? `<p class="support-es">${feedback}</p>` : ''}
+                    <p><strong>${window.ShimiI18n.t(isCorrect ? 'nextLabel' : 'action')}</strong> ${window.ShimiI18n.t(isCorrect ? 'goNextQuestion' : 'useRule')}</p>
+                `;
+                answerChecked = true;
+                nextBtn.textContent = currentQuestion === questions.length - 1 ? window.ShimiI18n.t('seeLevel') : window.ShimiI18n.t('next');
+                return;
+            }
+
+            currentQuestion += 1;
+
+            if (currentQuestion === questions.length) {
+                const assigned = getAssignedLevel(score);
+                localStorage.setItem('shimiEvaluationScore', String(score));
+                localStorage.setItem('shimiEvaluationTotal', String(questions.length));
+                localStorage.setItem('shimiEvaluationAnswers', JSON.stringify(selectedAnswers));
+                localStorage.setItem('shimiAssignedLevel', assigned.level);
+                localStorage.removeItem('shimiActiveModule');
+                window.location.href = 'result.html';
+                return;
+            }
+
+            renderQuestion();
+        });
+
+        window.addEventListener('shimi-language-change', () => {
+            if (!questionPanel.classList.contains('hidden')) {
+                renderQuestion();
+            }
+        });
+    </script>
+</body>
+</html>

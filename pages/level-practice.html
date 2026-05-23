@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shimi - Level Module</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .practice-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding-top: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .close-btn {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: var(--spacing-sm);
+            font-weight: 800;
+        }
+
+        .progress-wrapper {
+            flex: 1;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 12px;
+            background-color: #E0E0E0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+
+        .progress-bar-fill {
+            width: 0%;
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 6px;
+            transition: width 0.2s ease;
+        }
+
+        .module-panel {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 20px;
+            box-shadow: 0 5px 0px #E0E0E0;
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .module-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .prompt-visual {
+            width: 92px;
+            height: 92px;
+            border-radius: 50%;
+            background: #FFF3E0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .module-panel h1 {
+            font-size: 1.6rem;
+            line-height: 1.2;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+
+        .answer-btn {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 0px #E0E0E0;
+            color: var(--text-color);
+            cursor: pointer;
+            font: inherit;
+            font-weight: 800;
+            padding: var(--spacing-md);
+            text-align: left;
+            transition: all 0.2s;
+        }
+
+        .answer-btn:hover {
+            border-color: var(--primary-color);
+            background: #FFF9F0;
+        }
+
+        .answer-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0px #E0E0E0;
+        }
+
+        .answer-btn.selected {
+            border-color: var(--primary-color);
+            background: #FFF3E0;
+            box-shadow: 0 4px 0px #e6952d;
+        }
+
+        .answer-btn.correct {
+            border-color: var(--success-color);
+            background: #E8F8F3;
+        }
+
+        .answer-btn.incorrect {
+            border-color: var(--error-color);
+            background: #FDECEC;
+        }
+
+        .completion-card {
+            background: white;
+            border: 2px solid var(--success-color);
+            border-radius: 20px;
+            box-shadow: 0 5px 0px #00a383;
+            padding: var(--spacing-xl);
+            text-align: center;
+        }
+
+        .footer-action {
+            margin-top: auto;
+            padding: var(--spacing-lg) 0;
+        }
+    </style>
+</head>
+<body>
+    <main class="container fade-in">
+        <header class="practice-header">
+            <a href="levels.html" class="close-btn" data-i18n="saveExit">Save and exit</a>
+            <div class="progress-wrapper">
+                <div class="progress-bar-bg" aria-hidden="true">
+                    <div class="progress-bar-fill" id="progressFill"></div>
+                </div>
+                <p class="status-note" id="progressText" data-i18n="assignedModule">Assigned module</p>
+            </div>
+        </header>
+
+        <section class="module-panel" id="questionPanel" aria-labelledby="questionTitle">
+            <p class="module-label" id="moduleLabel">Nivel</p>
+            <div class="prompt-visual" id="promptVisual" aria-hidden="true">🍎</div>
+            <p class="status-note" id="skillLabel">Habilidad</p>
+            <h1 id="questionTitle">Pregunta</h1>
+            <div class="options-grid" id="answersGroup" aria-label="Module answer options"></div>
+            <div class="feedback-panel hidden" id="feedbackPanel" role="status" aria-live="polite"></div>
+        </section>
+
+        <section class="completion-card hidden" id="completionPanel" aria-labelledby="completionTitle">
+            <h1 id="completionTitle" data-i18n="moduleDone">Module complete</h1>
+            <p id="completionText" data-i18n="moduleDoneText">You completed the assigned block.</p>
+            <p class="status-note" id="completionNext" data-i18n="moduleNext">Next step: check the level map.</p>
+        </section>
+
+        <footer class="footer-action">
+            <button type="button" class="btn btn-primary" id="checkBtn" disabled data-i18n="check">Check</button>
+            <button type="button" class="btn btn-primary hidden" id="nextBtn" data-i18n="next">Next</button>
+            <a href="levels.html" class="btn btn-primary hidden" id="finishBtn" data-i18n="viewUpdatedMap">View updated map</a>
+        </footer>
+    </main>
+
+    <script src="../js/learning-data.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const requestedLevel = params.get('level');
+        const assignedLevel = localStorage.getItem('shimiAssignedLevel');
+        const completedModules = JSON.parse(localStorage.getItem('shimiCompletedModules') || '[]');
+        const level = requestedLevel || assignedLevel || 'A1';
+        const canOpenLevel = Boolean(assignedLevel) && (level === assignedLevel || completedModules.includes(level));
+        const modules = window.ShimiData.levelModules;
+        const moduleData = modules[level] || modules.A1;
+        const exercises = moduleData.exercises;
+        const questionPanel = document.getElementById('questionPanel');
+        const completionPanel = document.getElementById('completionPanel');
+        const moduleLabel = document.getElementById('moduleLabel');
+        const promptVisual = document.getElementById('promptVisual');
+        const skillLabel = document.getElementById('skillLabel');
+        const questionTitle = document.getElementById('questionTitle');
+        const answersGroup = document.getElementById('answersGroup');
+        const feedbackPanel = document.getElementById('feedbackPanel');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const checkBtn = document.getElementById('checkBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const finishBtn = document.getElementById('finishBtn');
+        const completionText = document.getElementById('completionText');
+        const completionNext = document.getElementById('completionNext');
+
+        let currentExercise = 0;
+        let selectedIndex = null;
+        let answerChecked = false;
+        let correctCount = 0;
+
+        if (canOpenLevel) {
+            localStorage.setItem('shimiActiveModule', level);
+        }
+
+        function renderExercise() {
+            const lang = window.ShimiI18n.getLanguage();
+            const exercise = exercises[currentExercise];
+            selectedIndex = null;
+            answerChecked = false;
+            moduleLabel.textContent = `${lang === 'es' ? moduleData.titleEs : moduleData.title} · ${window.ShimiI18n.t('questionCount', { current: currentExercise + 1, total: exercises.length, level })}`;
+            promptVisual.textContent = exercise.visual;
+            skillLabel.textContent = lang === 'es' ? exercise.skillEs : exercise.skill;
+            questionTitle.textContent = lang === 'es' ? exercise.promptEs : exercise.prompt;
+            progressFill.style.width = `${(currentExercise / exercises.length) * 100}%`;
+            progressText.textContent = `${lang === 'es' ? moduleData.titleEs : moduleData.title} · ${currentExercise}/${exercises.length}`;
+            answersGroup.innerHTML = '';
+            feedbackPanel.className = 'feedback-panel hidden';
+            checkBtn.classList.remove('hidden');
+            nextBtn.classList.add('hidden');
+            finishBtn.classList.add('hidden');
+            checkBtn.disabled = true;
+
+            exercise.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'answer-btn';
+                button.textContent = option;
+                button.addEventListener('click', () => {
+                    if (answerChecked) return;
+                    Array.from(document.querySelectorAll('.answer-btn')).forEach((item) => item.classList.remove('selected'));
+                    button.classList.add('selected');
+                    selectedIndex = index;
+                    checkBtn.disabled = false;
+                });
+                answersGroup.appendChild(button);
+            });
+        }
+
+        checkBtn.addEventListener('click', () => {
+            if (selectedIndex === null) return;
+            const exercise = exercises[currentExercise];
+            const isCorrect = selectedIndex === exercise.correctIndex;
+            if (isCorrect) correctCount += 1;
+            const lang = window.ShimiI18n.getLanguage();
+
+            Array.from(document.querySelectorAll('.answer-btn')).forEach((item, index) => {
+                item.disabled = true;
+                if (index === exercise.correctIndex) item.classList.add('correct');
+                if (index === selectedIndex && !isCorrect) item.classList.add('incorrect');
+            });
+
+            feedbackPanel.className = `feedback-panel ${isCorrect ? 'success' : 'error'}`;
+            const explanation = isCorrect ? exercise.feedback.correct : exercise.feedback.incorrect;
+            feedbackPanel.innerHTML = `
+                <h3>${window.ShimiI18n.t(isCorrect ? 'correct' : 'incorrect')}</h3>
+                <p>${lang === 'es' && exercise.feedback.supportEs ? exercise.feedback.supportEs : explanation}</p>
+                ${lang === 'en' && exercise.feedback.supportEs ? `<p class="support-es">${exercise.feedback.supportEs}</p>` : ''}
+                ${lang === 'es' ? `<p class="support-es">${explanation}</p>` : ''}
+                <p><strong>${window.ShimiI18n.t('nextLabel')}</strong> ${lang === 'es' ? (currentExercise === exercises.length - 1 ? 'finaliza el módulo y actualiza el mapa.' : 'continúa con el siguiente ejercicio.') : (currentExercise === exercises.length - 1 ? 'Finish this module and update your map.' : 'Continue with the next exercise.')}</p>
+            `;
+
+            answerChecked = true;
+            checkBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden');
+            nextBtn.textContent = currentExercise === exercises.length - 1 ? window.ShimiI18n.t('finishModule') : window.ShimiI18n.t('next');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentExercise += 1;
+
+            if (currentExercise === exercises.length) {
+                const completed = JSON.parse(localStorage.getItem('shimiCompletedModules') || '[]');
+                if (!completed.includes(level)) completed.push(level);
+                localStorage.setItem('shimiCompletedModules', JSON.stringify(completed));
+                localStorage.removeItem('shimiActiveModule');
+                progressFill.style.width = '100%';
+                progressText.textContent = `${window.ShimiI18n.getLanguage() === 'es' ? moduleData.titleEs : moduleData.title} · ${window.ShimiI18n.t('completed')}`;
+                questionPanel.classList.add('hidden');
+                completionPanel.classList.remove('hidden');
+                checkBtn.classList.add('hidden');
+                nextBtn.classList.add('hidden');
+                finishBtn.classList.remove('hidden');
+                completionText.textContent = window.ShimiI18n.t('moduleScore', { level, score: correctCount, total: exercises.length });
+                completionNext.textContent = correctCount === exercises.length
+                    ? window.ShimiI18n.t('modulePerfectNext')
+                    : window.ShimiI18n.t('moduleReviewNext');
+                return;
+            }
+
+            renderExercise();
+        });
+
+        if (!canOpenLevel) {
+            questionPanel.classList.add('hidden');
+            completionPanel.classList.remove('hidden');
+            checkBtn.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            finishBtn.classList.remove('hidden');
+            finishBtn.href = assignedLevel ? 'levels.html' : 'evaluation.html';
+            finishBtn.textContent = assignedLevel ? window.ShimiI18n.t('levelMap') : window.ShimiI18n.t('takePlacement');
+            progressText.textContent = assignedLevel ? window.ShimiI18n.t('moduleUnavailable') : window.ShimiI18n.t('placementRequired');
+            completionText.textContent = assignedLevel
+                ? window.ShimiI18n.t('unavailableWithLevel', { level: assignedLevel })
+                : window.ShimiI18n.t('unavailableWithoutLevel');
+            completionNext.textContent = assignedLevel
+                ? window.ShimiI18n.t('nextMapAssigned')
+                : window.ShimiI18n.t('nextPlacement');
+        } else {
+            renderExercise();
+        }
+
+        window.addEventListener('shimi-language-change', () => {
+            if (!questionPanel.classList.contains('hidden')) renderExercise();
+        });
+    </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lección - Shimi</title>
+    <title>Lesson - Shimi</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -11,46 +11,95 @@
             display: flex;
             align-items: center;
             gap: var(--spacing-md);
-            margin-bottom: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
             padding-top: var(--spacing-md);
         }
-        .progress-bar {
+
+        .progress-area {
             flex: 1;
+        }
+
+        .progress-bar {
             height: 12px;
             background-color: #E0E0E0;
             border-radius: 6px;
             overflow: hidden;
+            margin-bottom: 4px;
         }
+
         .progress-fill {
-            width: 30%;
+            width: 50%;
             height: 100%;
             background-color: var(--success-color);
             border-radius: 6px;
-            transition: width 0.3s ease;
         }
+
         .close-btn {
-            font-size: 1.5rem;
             color: var(--text-muted);
             text-decoration: none;
+            padding: var(--spacing-sm);
+            font-weight: 800;
         }
-        
+
         .question-container {
             flex: 1;
         }
-        
+
+        .stage-label {
+            color: var(--text-muted);
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            margin-bottom: var(--spacing-xs);
+        }
+
         .question-title {
             font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: var(--spacing-xl);
+            font-weight: 800;
+            margin-bottom: var(--spacing-md);
         }
-        
+
+        .example-card {
+            background: #FFF9F0;
+            border: 2px solid #FFE0B2;
+            border-radius: 18px;
+            padding: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .example-visual {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            flex: 0 0 auto;
+        }
+
+        .example-card p {
+            font-weight: 700;
+        }
+
+        .example-card span {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
         .options-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: var(--spacing-md);
-            margin-top: var(--spacing-xl);
+            margin-top: var(--spacing-md);
         }
-        
+
         .option-card {
             background: white;
             border: 2px solid #E0E0E0;
@@ -62,19 +111,38 @@
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: 0 4px 0px #E0E0E0;
+            font: inherit;
+            color: var(--text-color);
         }
-        
+
         .option-card:hover {
             background-color: #F8F9FA;
             border-color: var(--primary-color);
         }
-        
+
+        .option-card:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0px #E0E0E0;
+        }
+
         .option-card.selected {
             background-color: #FFF3E0;
             border-color: var(--primary-color);
             box-shadow: 0 4px 0px var(--primary-color);
         }
-        
+
+        .option-card.correct {
+            background-color: #E8F8F3;
+            border-color: var(--success-color);
+            box-shadow: 0 4px 0px #00a383;
+        }
+
+        .option-card.incorrect {
+            background-color: #FDECEC;
+            border-color: var(--error-color);
+            box-shadow: 0 4px 0px #b9292a;
+        }
+
         .option-image {
             width: 80px;
             height: 80px;
@@ -86,74 +154,129 @@
             margin-bottom: var(--spacing-sm);
             font-size: 2rem;
         }
-        
+
         .option-text {
-            font-weight: 600;
+            font-weight: 700;
         }
-        
+
         .footer {
             margin-top: auto;
             padding: var(--spacing-lg) 0;
             border-top: 2px solid #F0F0F0;
         }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div class="container fade-in">
-        <div class="lesson-header">
-            <a href="dashboard.html" class="close-btn"><i class="fas fa-times"></i></a>
-            <div class="progress-bar">
-                <div class="progress-fill"></div>
+    <main class="container fade-in">
+        <header class="lesson-header">
+            <a href="dashboard.html" class="close-btn" data-i18n="exitPractice">Exit practice</a>
+            <div class="progress-area">
+                <div class="progress-bar" aria-hidden="true">
+                    <div class="progress-fill"></div>
+                </div>
+                <p class="status-note" data-i18n="practiceOneProgress">Guided practice 1 of 2 · placement test is optional</p>
             </div>
             <div style="color: var(--text-muted); font-weight: 700;"><i class="fas fa-heart" style="color: var(--error-color);"></i> 5</div>
-        </div>
+        </header>
 
-        <div class="question-container">
-            <h2 class="question-title">¿Cómo se dice "Manzana" en inglés?</h2>
-            
-            <div class="options-grid">
-                <div class="option-card" onclick="selectOption(this)">
-                    <div class="option-image">🍎</div>
-                    <span class="option-text">Apple</span>
-                </div>
-                <div class="option-card" onclick="selectOption(this)">
-                    <div class="option-image">🍌</div>
-                    <span class="option-text">Banana</span>
-                </div>
-                <div class="option-card" onclick="selectOption(this)">
-                    <div class="option-image">🍊</div>
-                    <span class="option-text">Orange</span>
-                </div>
-                <div class="option-card" onclick="selectOption(this)">
-                    <div class="option-image">🍇</div>
-                    <span class="option-text">Grape</span>
-                </div>
+        <section class="question-container" aria-labelledby="questionTitle">
+            <p class="stage-label" data-i18n="vocabVisual">Vocabulary with picture support</p>
+            <h1 class="question-title" id="questionTitle" data-i18n="appleQuestion">How do you say “manzana” in English?</h1>
+
+            <div class="example-card">
+                <div class="example-visual" aria-label="Red apple">🍎</div>
+                <p><span data-i18n="appleExample">Example: I eat an apple.</span><span data-i18n="appleExampleSupport">Support: “apple” names the fruit in the picture.</span></p>
             </div>
-        </div>
 
-        <div class="footer">
-            <button id="check-btn" class="btn btn-primary" disabled onclick="checkAnswer()">COMPROBAR</button>
-        </div>
-    </div>
+            <div class="options-grid" id="optionsGroup" aria-label="Answer options">
+                <button type="button" class="option-card" data-correct="true" data-explanation="Correct. “Apple” is a noun for the fruit in the picture. At A1, connect object + word + short sentence: apple = manzana. Example: “I eat an apple.”" data-explanation-es="Correcto. “Apple” es un sustantivo para nombrar la fruta de la imagen. En A1 conviene asociar objeto + palabra + frase corta: apple = manzana. Ejemplo: “I eat an apple.”" data-support-es="Apoyo: apple = manzana. Mira la imagen y la frase.">
+                    <span class="option-image" aria-hidden="true">🍎</span>
+                    <span class="option-text">Apple</span>
+                </button>
+                <button type="button" class="option-card" data-explanation="Incorrect. “Banana” names another fruit. The picture and example are about an apple, so the correct word is “apple.” Compare: “I eat a banana” does not match the picture." data-explanation-es="Incorrecto. “Banana” nombra otra fruta: plátano. La imagen y el ejemplo hablan de una manzana, por eso la palabra correcta es “apple”." data-support-es="Apoyo: banana = plátano, apple = manzana.">
+                    <span class="option-image" aria-hidden="true">🍌</span>
+                    <span class="option-text">Banana</span>
+                </button>
+                <button type="button" class="option-card" data-explanation="Incorrect. “Orange” can be a color or a fruit, but the picture shows an apple. To name an apple, use “apple.” Correct example: “This is an apple.”" data-explanation-es="Incorrecto. “Orange” puede ser color o fruta, pero aquí la imagen muestra una manzana. Para nombrarla usamos “apple”." data-support-es="Apoyo: orange = naranja, apple = manzana.">
+                    <span class="option-image" aria-hidden="true">🍊</span>
+                    <span class="option-text">Orange</span>
+                </button>
+                <button type="button" class="option-card" data-explanation="Incorrect. “Grape” means uva. When the object changes, the word changes. The picture shows an apple, so the correct answer is “apple.”" data-explanation-es="Incorrecto. “Grape” significa uva. La imagen muestra una manzana, entonces la respuesta correcta es “apple”." data-support-es="Apoyo: grape = uva, apple = manzana.">
+                    <span class="option-image" aria-hidden="true">🍇</span>
+                    <span class="option-text">Grape</span>
+                </button>
+            </div>
 
+            <div class="feedback-panel hidden" id="feedbackPanel" role="status" aria-live="polite"></div>
+        </section>
+
+        <footer class="footer">
+            <button id="checkBtn" type="button" class="btn btn-primary" disabled data-i18n="check">Check</button>
+            <button id="retryBtn" type="button" class="btn btn-secondary hidden" data-i18n="tryAgain">Try again</button>
+            <a id="continueBtn" href="exercise.html" class="btn btn-primary hidden" data-i18n="continuePractice2">Continue practice 2</a>
+        </footer>
+    </main>
+
+    <script src="../js/i18n.js"></script>
     <script>
-        function selectOption(el) {
-            document.querySelectorAll('.option-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            el.classList.add('selected');
-            document.getElementById('check-btn').disabled = false;
-        }
+        const optionButtons = Array.from(document.querySelectorAll('.option-card'));
+        const checkBtn = document.getElementById('checkBtn');
+        const retryBtn = document.getElementById('retryBtn');
+        const continueBtn = document.getElementById('continueBtn');
+        const feedbackPanel = document.getElementById('feedbackPanel');
+        let selectedOption = null;
 
-        function checkAnswer() {
-            const selected = document.querySelector('.option-card.selected');
-            if (selected.innerText.includes('Apple')) {
-                alert('¡Correcto! Well done.');
-                window.location.href = 'dashboard.html';
+        optionButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                optionButtons.forEach((item) => item.classList.remove('selected'));
+                button.classList.add('selected');
+                selectedOption = button;
+                checkBtn.disabled = false;
+                feedbackPanel.className = 'feedback-panel hidden';
+                retryBtn.classList.add('hidden');
+            });
+        });
+
+        checkBtn.addEventListener('click', () => {
+            if (!selectedOption) return;
+
+            const isCorrect = selectedOption.dataset.correct === 'true';
+            const isSpanish = window.ShimiI18n.getLanguage() === 'es';
+            const explanation = isSpanish ? selectedOption.dataset.explanationEs : selectedOption.dataset.explanation;
+            const support = selectedOption.dataset.supportEs;
+            selectedOption.classList.add(isCorrect ? 'correct' : 'incorrect');
+            feedbackPanel.className = `feedback-panel ${isCorrect ? 'success' : 'error'}`;
+            feedbackPanel.innerHTML = `
+                <h3>${window.ShimiI18n.t(isCorrect ? 'correct' : 'incorrect')}</h3>
+                <p>${explanation}</p>
+                ${!isSpanish && support ? `<p class="support-es">${support}</p>` : ''}
+                <p><strong>${window.ShimiI18n.t(isCorrect ? 'nextLabel' : 'action')}</strong> ${isSpanish ? (isCorrect ? 'continúa con una frase corta.' : 'mira la imagen e intenta otra vez.') : (isCorrect ? 'Continue with a short sentence.' : 'Look at the picture and try again.')}</p>
+            `;
+
+            if (isCorrect) {
+                optionButtons.forEach((item) => item.disabled = true);
+                checkBtn.classList.add('hidden');
+                continueBtn.classList.remove('hidden');
             } else {
-                alert('Incorrecto. Inténtalo de nuevo.');
+                checkBtn.disabled = true;
+                retryBtn.classList.remove('hidden');
             }
-        }
+        });
+
+        retryBtn.addEventListener('click', () => {
+            optionButtons.forEach((item) => {
+                item.disabled = false;
+                item.classList.remove('selected', 'correct', 'incorrect');
+            });
+            selectedOption = null;
+            checkBtn.disabled = true;
+            retryBtn.classList.add('hidden');
+            feedbackPanel.className = 'feedback-panel hidden';
+        });
     </script>
 </body>
 </html>

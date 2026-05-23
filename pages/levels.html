@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shimi - Niveles</title>
+    <title>Shimi - Levels</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -16,15 +16,12 @@
         }
 
         .header-section-name {
-            font-weight: 700;
+            font-weight: 800;
             font-size: 1.1rem;
         }
 
         .progress-container {
             flex: 0.8;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         .progress-bar-bg {
@@ -37,235 +34,217 @@
         }
 
         .progress-bar-fill {
-            width: 90%;
+            width: 0%;
             height: 100%;
             background-color: var(--success-color);
-        }
-
-        .progress-text {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-
-        .settings-btn {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            cursor: pointer;
+            transition: width 0.2s ease;
         }
 
         .main-title {
             text-align: center;
             font-size: 1.5rem;
-            margin-bottom: var(--spacing-xl);
+            margin-bottom: var(--spacing-md);
         }
 
-        /* Level Grid */
+        .diagnostic-note {
+            background: #F8F9FA;
+            border: 2px solid #E0E0E0;
+            border-radius: var(--radius);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .diagnostic-note strong {
+            color: var(--text-color);
+        }
+
         .levels-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
             gap: var(--spacing-md);
             margin-bottom: var(--spacing-xl);
         }
 
-        .level-item {
-            aspect-ratio: 1/1;
+        .level-card {
             background: white;
             border: 2px solid #E0E0E0;
             border-radius: var(--radius);
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             box-shadow: 0 4px 0px #E0E0E0;
-            cursor: pointer;
-        }
-
-        .level-circle {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            border: 2px solid #E0E0E0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 700;
-            font-size: 1.2rem;
-        }
-
-        /* Completed Status */
-        .level-item.completed {
-            border-color: var(--success-color);
-            box-shadow: 0 4px 0px #00a383;
-        }
-        .level-item.completed .level-circle {
-            border-color: var(--success-color);
-            color: var(--success-color);
-        }
-        .check-badge {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            color: var(--success-color);
-            font-size: 0.9rem;
-        }
-
-        /* Active/Large Level */
-        .level-item.active-level {
-            grid-column: span 3;
-            aspect-ratio: auto;
             padding: var(--spacing-md);
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            box-shadow: 0 6px 0px #e6952d;
-            color: white;
-            flex-direction: row;
+            display: grid;
+            grid-template-columns: auto 1fr;
             gap: var(--spacing-md);
+            align-items: center;
+            color: inherit;
+            text-decoration: none;
         }
 
-        .active-level .level-circle {
-            border-color: white;
-            background-color: white;
-            color: var(--primary-color);
+        .level-card.available {
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 0px #e6952d;
         }
 
-        .active-level span {
-            font-weight: 700;
-            font-size: 1.1rem;
+        .level-card.in-progress {
+            border-color: var(--secondary-color);
+            box-shadow: 0 5px 0px #C4D8F3;
         }
 
-        /* Locked Status */
-        .level-item.locked {
-            background-color: #F0F0F0;
-            border-color: #E0E0E0;
-            color: #BDBDBD;
-            box-shadow: 0 4px 0px #D0D0D0;
+        .level-card.completed {
+            border-color: var(--success-color);
+            box-shadow: 0 5px 0px #00a383;
+        }
+
+        .level-card.locked {
+            background: #F0F0F0;
+            color: #8A9197;
             cursor: not-allowed;
         }
-        .level-item.locked .level-circle {
-            border-color: #D0D0D0;
-        }
 
-        /* Section 6 Area */
-        .section-separator {
-            background-color: #F8F9FA;
-            border: 2px solid #E0E0E0;
-            border-radius: var(--radius);
-            padding: var(--spacing-md);
-            margin-top: var(--spacing-xl);
-        }
-
-        .section-separator-title {
-            font-weight: 800;
-            margin-bottom: var(--spacing-md);
-            color: var(--text-muted);
-        }
-
-        /* Navigation Footer */
-        .nav-footer {
-            display: flex;
-            justify-content: center;
-            gap: var(--spacing-lg);
-            padding: var(--spacing-xl) 0;
-            margin-top: auto;
-        }
-
-        .nav-circle-btn {
-            width: 50px;
-            height: 50px;
+        .level-badge {
+            width: 58px;
+            height: 58px;
             border-radius: 50%;
-            border: 2px solid #E0E0E0;
-            background: white;
             display: flex;
-            justify-content: center;
             align-items: center;
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            box-shadow: 0 4px 0px #E0E0E0;
-            cursor: pointer;
-            transition: all 0.2s;
+            justify-content: center;
+            font-weight: 900;
+            color: white;
+            background: #BDBDBD;
         }
 
-        .nav-circle-btn:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
+        .available .level-badge {
+            background: var(--primary-color);
+        }
+
+        .in-progress .level-badge {
+            background: var(--secondary-color);
+        }
+
+        .completed .level-badge {
+            background: var(--success-color);
+        }
+
+        .level-content h3 {
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .level-status {
+            font-size: 0.85rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-top: var(--spacing-xs);
+        }
+
+        .actions {
+            margin-top: auto;
+            padding-bottom: var(--spacing-xl);
+        }
+
+        .header-link {
+            color: var(--text-muted);
+            font-weight: 800;
+            text-decoration: none;
+            padding: var(--spacing-sm);
         }
     </style>
 </head>
 <body>
-    <div class="container fade-in">
-        <!-- Cabecera -->
+    <main class="container fade-in">
         <header class="levels-header">
-            <span class="header-section-name">Sección 5</span>
+            <span class="header-section-name" data-i18n="levelMap">Level map</span>
             <div class="progress-container">
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill"></div>
+                <div class="progress-bar-bg" aria-hidden="true">
+                    <div class="progress-bar-fill" id="progressFill"></div>
                 </div>
-                <span class="progress-text">90 % completado</span>
+                <span class="progress-text" id="progressText" data-i18n="progressPending">Placement pending</span>
             </div>
-            <i class="fas fa-cog settings-btn"></i>
+            <a href="dashboard.html" class="header-link" data-i18n="backHome">Back home</a>
         </header>
 
-        <h2 class="main-title">Selecciona un nivel</h2>
-
-        <!-- Niveles Sección 5 -->
-        <div class="levels-grid">
-            <!-- Niveles 1-6 (Completados) -->
-            <div class="level-item completed">
-                <i class="fas fa-check-circle check-badge"></i>
-                <div class="level-circle">1</div>
-            </div>
-            <div class="level-item completed">
-                <i class="fas fa-check-circle check-badge"></i>
-                <div class="level-circle">2</div>
-            </div>
-            <div class="level-item completed">
-                <i class="fas fa-check-circle check-badge"></i>
-                <div class="level-circle">3</div>
-            </div>
-            <div class="level-item completed">
-                <i class="fas fa-check-circle check-badge"></i>
-                <div class="level-circle">4</div>
-            </div>
-            <div class="level-item completed">
-                <i class="fas fa-check-circle check-badge"></i>
-                <div class="level-circle">5</div>
-            </div>
-            <div class="level-item completed">
-                <i class="fas fa-check-circle check-badge"></i>
-                <div class="level-circle">6</div>
-            </div>
-
-            <!-- Nivel 7 (Activo) -->
-            <div class="level-item active-level" onclick="window.location.href='lesson.html'">
-                <div class="level-circle">7</div>
-                <span>Comienza la lección</span>
-            </div>
-
-            <!-- Nivel 8 (Bloqueado) -->
-            <div class="level-item locked">
-                <i class="fas fa-lock"></i>
-            </div>
+        <h1 class="main-title" data-i18n="levelsTitle">Your learning path</h1>
+        <div class="diagnostic-note" id="diagnosticNote">
+            <span data-i18n-html="levelsNote"><strong>Start:</strong> you can start from A1 or take a placement test to find your level.</span>
         </div>
 
-        <!-- Sección 6 -->
-        <div class="section-separator">
-            <h3 class="section-separator-title">Sección 6</h3>
-            <div class="levels-grid" style="margin-bottom: 0;">
-                <div class="level-item locked"><i class="fas fa-lock"></i></div>
-                <div class="level-item locked"><i class="fas fa-lock"></i></div>
-                <div class="level-item locked"><i class="fas fa-lock"></i></div>
-                <div class="level-item locked"><i class="fas fa-lock"></i></div>
-                <div class="level-item locked"><i class="fas fa-lock"></i></div>
-                <div class="level-item locked"><i class="fas fa-lock"></i></div>
-            </div>
-        </div>
+        <section class="levels-grid" id="levelsGrid" aria-label="Level modules"></section>
 
-        <!-- Footer Navegación -->
-        <footer class="nav-footer">
-            <div class="nav-circle-btn"><i class="fas fa-chevron-left"></i></div>
-            <div class="nav-circle-btn"><i class="fas fa-chevron-right"></i></div>
-        </footer>
-    </div>
+        <div class="actions">
+            <a href="lesson.html" class="btn btn-secondary" id="practiceLink" data-i18n="guidedPracticeBack">Back to guided practice</a>
+            <a href="evaluation.html" class="btn btn-primary" id="diagnosticLink" data-i18n="takePlacement">Take placement test</a>
+        </div>
+    </main>
+
+    <script src="../js/learning-data.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script>
+        const levelModules = window.ShimiData.levelModules;
+        const levels = ['A1', 'A2', 'B1', 'B2'];
+        const assignedLevel = localStorage.getItem('shimiAssignedLevel') || 'A1';
+        const activeModule = localStorage.getItem('shimiActiveModule');
+        const completedModules = JSON.parse(localStorage.getItem('shimiCompletedModules') || '[]');
+        const levelsGrid = document.getElementById('levelsGrid');
+        const diagnosticNote = document.getElementById('diagnosticNote');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const diagnosticLink = document.getElementById('diagnosticLink');
+
+        function getStatus(level) {
+            if (completedModules.includes(level)) return 'completed';
+            if (activeModule === level) return 'in-progress';
+            if (assignedLevel === level) return 'available';
+            return 'locked';
+        }
+
+        function getStatusText(status) {
+            const labels = {
+                completed: window.ShimiI18n.t('completed'),
+                'in-progress': window.ShimiI18n.t('inProgress'),
+                available: window.ShimiI18n.t('available'),
+                locked: window.ShimiI18n.t('locked')
+            };
+            return labels[status];
+        }
+
+        if (!localStorage.getItem('shimiAssignedLevel')) {
+            localStorage.setItem('shimiAssignedLevel', 'A1');
+        }
+
+        const completedCount = completedModules.length;
+        const progress = Math.round((completedCount / levels.length) * 100);
+        progressFill.style.width = `${progress}%`;
+        function renderLevels() {
+            const lang = window.ShimiI18n.getLanguage();
+            progressText.textContent = window.ShimiI18n.t('progressModules', { progress });
+            diagnosticNote.innerHTML = window.ShimiI18n.t('availableModule', {
+                title: lang === 'es' ? levelModules[assignedLevel].titleEs : levelModules[assignedLevel].title
+            });
+            diagnosticLink.textContent = localStorage.getItem('shimiEvaluationScore')
+                ? window.ShimiI18n.t('recalcLevel')
+                : window.ShimiI18n.t('takePlacement');
+
+            levelsGrid.innerHTML = levels.map((level) => {
+                const module = levelModules[level];
+                const status = getStatus(level);
+                const tag = status === 'locked' ? 'div' : 'a';
+                const href = status === 'locked' ? '' : ` href="level-practice.html?level=${level}"`;
+                const title = lang === 'es' ? module.titleEs : module.title;
+                const description = lang === 'es' ? module.descriptionEs : module.description;
+                return `
+                    <${tag} class="level-card ${status}"${href} aria-label="${title}: ${getStatusText(status)}">
+                        <div class="level-badge">${level}</div>
+                        <div class="level-content">
+                            <h3>${title}</h3>
+                            <p>${description}</p>
+                            <p class="level-status">${getStatusText(status)}</p>
+                        </div>
+                    </${tag}>
+                `;
+            }).join('');
+        }
+
+        renderLevels();
+        window.addEventListener('shimi-language-change', renderLevels);
+    </script>
 </body>
 </html>
