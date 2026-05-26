@@ -19,6 +19,13 @@
             margin-right: var(--spacing-md);
             text-decoration: none;
         }
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.9rem;
+            margin-top: var(--spacing-sm);
+            text-align: center;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -28,7 +35,7 @@
             <h2>Login</h2>
         </div>
 
-        <form onsubmit="event.preventDefault(); window.location.href='dashboard.html';">
+        <form id="loginForm">
             <div class="input-group">
                 <label for="email">Email Address</label>
                 <input type="email" id="email" placeholder="you@email.com" required>
@@ -38,20 +45,43 @@
                 <input type="password" id="password" placeholder="••••••••" required>
             </div>
             
-            <button type="submit" class="btn btn-primary" style="margin-top: var(--spacing-lg);">LOGIN</button>
+            <div id="errorMessage" class="error-message"></div>
+            <button type="submit" id="submitBtn" class="btn btn-primary" style="margin-top: var(--spacing-lg);">LOGIN</button>
         </form>
 
         <div style="text-align: center; margin-top: var(--spacing-xl);">
             <p style="color: var(--text-muted);">Don't have an account? <a href="register.html" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Sign up</a></p>
         </div>
-        
-        <!--<div style="margin-top: auto; padding-bottom: var(&#45;&#45;spacing-xl);">
-            <p style="text-align: center; color: var(&#45;&#45;text-muted); margin-bottom: var(&#45;&#45;spacing-md);">Or continue with</p>
-            <div style="display: flex; gap: var(&#45;&#45;spacing-md);">
-                <button class="btn btn-secondary"><i class="fab fa-google" style="margin-right: 10px;"></i> Google</button>
-                <button class="btn btn-secondary"><i class="fab fa-facebook" style="margin-right: 10px;"></i> Facebook</button>
-            </div>
-        </div>-->
     </div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/auth.js"></script>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            const errorDiv = document.getElementById('errorMessage');
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'LOGGING IN...';
+            errorDiv.style.display = 'none';
+
+            try {
+                await signIn(email, password);
+                window.location.href = 'levels.html';
+            } catch (error) {
+                errorDiv.innerText = error.message;
+                errorDiv.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'LOGIN';
+            }
+        });
+    </script>
 </body>
 </html>

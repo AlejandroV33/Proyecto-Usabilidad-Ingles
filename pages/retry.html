@@ -143,49 +143,110 @@
         <!-- Título -->
         <h1 class="main-title">Try again</h1>
 
-        <!-- Tarjeta de Pregunta -->
-        <div class="question-card">
-            <div class="question-icon">
-                <i class="fas fa-dumbbell"></i>
+        <div id="exercise-vocab" class="exercise-type hidden">
+            <!-- Tarjeta de Pregunta -->
+            <div class="question-card">
+                <div class="question-icon"><i class="fas fa-book-open"></i></div>
+                <p class="question-text" id="vocabQuestion">"Loading..."</p>
             </div>
-            <p class="question-text">"She ......... to the gym every morning."</p>
+            <!-- Opciones -->
+            <div class="options-grid" id="vocabOptions"></div>
         </div>
 
-        <!-- Opciones -->
-        <div class="options-grid">
-            <button class="option-btn" onclick="selectOption(this)">A. go</button>
-            <button class="option-btn" onclick="selectOption(this)">B. goes</button>
-            <button class="option-btn" onclick="selectOption(this)">C. going</button>
-            <button class="option-btn" onclick="selectOption(this)">D. gone</button>
+        <div id="exercise-grammar" class="exercise-type hidden">
+            <div class="answer-area" id="answerArea" style="min-height: 80px; border-bottom: 2px solid #E0E0E0; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px;"></div>
+            <div class="word-pool" id="wordPool" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;"></div>
         </div>
 
         <!-- Botón de Acción -->
         <div class="footer-action">
-            <button id="checkBtn" class="btn btn-primary" disabled onclick="handleCheck()">CHECK</button>
+            <button id="checkBtn" class="btn btn-primary" disabled onclick="handleCheck()">RETRY NOW</button>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/exercises.js"></script>
+
     <script>
-        function selectOption(el) {
-            // Remover selección previa
-            document.querySelectorAll('.option-btn').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            // Aplicar nueva selección
-            el.classList.add('selected');
-            // Habilitar botón
+        const urlParams = new URLSearchParams(window.location.search);
+        const levelId = parseInt(urlParams.get('level')) || 1;
+        const step = parseInt(urlParams.get('step')) || 0;
+        const statsStr = urlParams.get('stats') || '0,0';
+        
+        let currentExercise = null;
+        let selectedOptionIndex = -1;
+
+        async function initRetry() {
+            const levelData = await getExercisesForLevel(levelId);
+            if (levelData && levelData.exercises[step]) {
+                currentExercise = levelData.exercises[step];
+                renderExercise(currentExercise);
+            }
+        }
+
+        function renderExercise(ex) {
+            if (ex.type === 'vocabulary') {
+                document.getElementById('exercise-vocab').classList.remove('hidden');
+                document.getElementById('vocabQuestion').innerText = `"${ex.question}"`;
+                const grid = document.getElementById('vocabOptions');
+                grid.innerHTML = '';
+                ex.options.forEach((opt, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = opt;
+                    btn.onclick = () => {
+                        document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                        btn.classList.add('selected');
+                        selectedOptionIndex = i;
+                        document.getElementById('checkBtn').disabled = false;
+                    };
+                    grid.appendChild(btn);
+                });
+            } else if (ex.type === 'grammar') {
+                document.getElementById('exercise-grammar').classList.remove('hidden');
+                const pool = document.getElementById('wordPool');
+                ex.words.forEach(word => {
+                    const chip = document.createElement('div');
+                    chip.className = 'word-chip';
+                    chip.innerText = word;
+                    chip.style = "background: white; border: 2px solid #E0E0E0; border-radius: 10px; padding: 8px 16px; cursor: pointer;";
+                    chip.onclick = () => addWord(chip);
+                    pool.appendChild(chip);
+                });
+            }
+        }
+
+        function addWord(el) {
+            if (el.classList.contains('used')) return;
+            const area = document.getElementById('answerArea');
+            const newChip = el.cloneNode(true);
+            newChip.onclick = () => { area.removeChild(newChip); el.classList.remove('used'); };
+            area.appendChild(newChip);
+            el.classList.add('used');
             document.getElementById('checkBtn').disabled = false;
         }
 
         function handleCheck() {
-            const selected = document.querySelector('.option-btn.selected');
-            if (selected.innerText.includes('goes')) {
-                alert('Great job! You have fixed the error.');
-                window.location.href = 'levels.html';
+            let isCorrect = false;
+            if (currentExercise.type === 'vocabulary') {
+                isCorrect = (selectedOptionIndex === currentExercise.correct);
+            } else if (currentExercise.type === 'grammar') {
+                const userSentence = Array.from(document.getElementById('answerArea').children)
+                    .map(c => c.innerText).join(' ').toLowerCase();
+                isCorrect = (userSentence === currentExercise.correct.toLowerCase());
+            }
+
+            if (isCorrect) {
+                alert('Success! Now let\'s continue with the next exercise.');
+                // Return to exercise.html at the NEXT step
+                window.location.href = `exercise.html?level=${levelId}&step=${step + 1}&stats=${statsStr}`;
             } else {
-                alert('Keep trying, remember the third person.');
+                alert('Still not quite right. Look at the options carefully.');
             }
         }
+
+        initRetry();
     </script>
 </body>
 </html>

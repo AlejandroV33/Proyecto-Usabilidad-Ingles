@@ -95,16 +95,16 @@
         </header>
 
         <!-- Título -->
-        <h1 class="feedback-title">Oops, almost there!</h1>
+        <h1 class="feedback-title" id="feedbackTitle">Oops, almost there!</h1>
 
         <!-- Respuesta Correcta -->
         <div class="section-container">
-            <span class="section-label">Correct answer:</span>
+            <span class="section-label">The correct way is:</span>
             <div class="feedback-card">
-                <div class="feedback-icon">
-                    <i class="fas fa-dumbbell"></i>
+                <div class="feedback-icon" id="feedbackIcon">
+                    <i class="fas fa-lightbulb"></i>
                 </div>
-                <p class="feedback-text">"She <span class="highlight">goes</span> to the gym every morning."</p>
+                <p class="feedback-text" id="correctAnswerText">"Loading correct answer..."</p>
             </div>
         </div>
 
@@ -112,14 +112,29 @@
         <div class="section-container">
             <span class="section-label">Explanation</span>
             <div class="explanation-card">
-                <p class="explanation-text">We use the verb in simple present for everyday actions.</p>
+                <p class="explanation-text" id="explanationText">This structure is common in intermediate English to express hypothetical situations.</p>
             </div>
         </div>
 
         <!-- Botón de Acción -->
         <div class="footer-action">
-            <a href="completion.html" class="btn btn-primary">CONTINUE</a>
+            <button id="continueBtn" class="btn btn-primary">CONTINUE</button>
         </div>
     </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const correct = urlParams.get('correct') || '';
+        const level = urlParams.get('level') || '1';
+        const step = urlParams.get('step') || '0';
+        const stats = urlParams.get('stats') || '0,0'; // correct,incorrect
+
+        document.getElementById('correctAnswerText').innerHTML = `"${correct}"`;
+        
+        // Dynamic "Continue" logic: Go to retry.html first to practice what was failed
+        document.getElementById('continueBtn').onclick = () => {
+            window.location.href = `retry.html?level=${level}&step=${step}&stats=${stats}`;
+        };
+    </script>
 </body>
 </html>

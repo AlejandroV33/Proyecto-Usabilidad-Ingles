@@ -7,17 +7,12 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .header {
-            display: flex;
-            align-items: center;
-            margin-bottom: var(--spacing-xl);
-            padding-top: var(--spacing-md);
-        }
-        .back-btn {
-            font-size: 1.5rem;
-            color: var(--text-muted);
-            margin-right: var(--spacing-md);
-            text-decoration: none;
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.9rem;
+            margin-top: var(--spacing-sm);
+            text-align: center;
+            display: none;
         }
     </style>
 </head>
@@ -28,10 +23,10 @@
             <h2>Create your account</h2>
         </div>
 
-        <form onsubmit="event.preventDefault(); window.location.href='onboarding.html';">
+        <form id="registerForm">
             <div class="input-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" placeholder="Your name" required>
+                <label for="nickname">Name</label>
+                <input type="text" id="nickname" placeholder="Your name" required>
             </div>
             <div class="input-group">
                 <label for="email">Email Address</label>
@@ -39,15 +34,48 @@
             </div>
             <div class="input-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Minimum 8 characters" required>
+                <input type="password" id="password" placeholder="Minimum 8 characters" required minlength="8">
             </div>
             
-            <button type="submit" class="btn btn-primary" style="margin-top: var(--spacing-lg);">REGISTER</button>
+            <div id="errorMessage" class="error-message"></div>
+            <button type="submit" id="submitBtn" class="btn btn-primary" style="margin-top: var(--spacing-lg);">REGISTER</button>
         </form>
 
         <div style="text-align: center; margin-top: var(--spacing-xl);">
             <p style="color: var(--text-muted);">Already have an account? <a href="login.html" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Log In</a></p>
         </div>
     </div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/auth.js"></script>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            const errorDiv = document.getElementById('errorMessage');
+            
+            const nickname = document.getElementById('nickname').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'CREATING ACCOUNT...';
+            errorDiv.style.display = 'none';
+
+            try {
+                await signUp(email, password, nickname);
+                alert('Account created! Please check your email for verification.');
+                window.location.href = 'onboarding.html';
+            } catch (error) {
+                errorDiv.innerText = error.message;
+                errorDiv.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'REGISTER';
+            }
+        });
+    </script>
 </body>
 </html>

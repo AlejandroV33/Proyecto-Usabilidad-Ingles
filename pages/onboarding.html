@@ -121,7 +121,6 @@
                 <!-- Nombre -->
                 <div class="input-group">
                     <div class="section-title">
-                    <div class="section-title">
                         <i class="fas fa-user"></i>
                         <span>Name or Nickname</span>
                     </div>
@@ -146,24 +145,74 @@
                     <p class="subtext">How much time can you dedicate each day?</p>
                     
                     <div class="time-grid">
-                        <div class="time-option" onclick="selectTime(this)">5 min</div>
                         <div class="time-option" onclick="selectTime(this)">10 min</div>
                         <div class="time-option" onclick="selectTime(this)">15 min</div>
-                        <div class="time-option" onclick="selectTime(this)">+20 min</div>
+                        <div class="time-option" onclick="selectTime(this)">30 min</div>
+                        <div class="time-option" onclick="selectTime(this)">25 min</div>
                     </div>
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-continue">CONTINUE</button>
+            <button type="submit" id="submitBtn" class="btn btn-primary btn-continue">CONTINUE</button>
             <p class="footer-note">Complete all fields before continuing</p>
         </form>
     </div>
 
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/profile.js"></script>
+
     <script>
+        let selectedDailyTime = '';
+
         function selectTime(element) {
-            // Deseleccionar otros
             document.querySelectorAll('.time-option').forEach(opt => {
                 opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedDailyTime = element.innerText;
+        }
+
+        document.getElementById('onboardingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (!selectedDailyTime) {
+                alert('Please select a daily time goal.');
+                return;
+            }
+
+            const nickname = document.getElementById('nickname').value;
+            const age = parseInt(document.getElementById('age').value);
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'SAVING...';
+
+            try {
+                await updateProfile({
+                    nickname: nickname,
+                    age: age,
+                    daily_time: selectedDailyTime
+                });
+                window.location.href = 'levels.html';
+            } catch (error) {
+                alert('Error saving profile: ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'CONTINUE';
+            }
+        });
+    </script>
+</body>
+</html>
+           });
+            // Seleccionar actual
+            element.classList.add('selected');
+        }
+    </script>
+</body>
+</html>
+       opt.classList.remove('selected');
             });
             // Seleccionar actual
             element.classList.add('selected');

@@ -98,13 +98,14 @@
                 <i class="fas fa-trophy"></i>
             </div>
             
-            <h1 class="completion-title">Well done Alex!</h1>
+            <h1 class="completion-title" id="completionTitle">Well done!</h1>
             <h2 class="completion-subtitle">Level completed</h2>
 
             <div class="summary-card">
-                <p class="summary-stat"><b>Correct:</b> 6</p>
-                <p class="summary-stat"><b>Incorrect:</b> 2</p>
-                <p class="motivational-msg">"Keep it up, you're on the right track"</p>
+                <p class="summary-stat"><b>Correct:</b> <span id="statCorrect">0</span></p>
+                <p class="summary-stat"><b>Incorrect:</b> <span id="statIncorrect">0</span></p>
+                <p class="summary-stat" style="color: var(--primary-color); margin-top: 10px; font-size: 1.4rem;"><b>+ <span id="statXP">0</span> XP</b></p>
+                <p class="motivational-msg" id="motivationalMsg">"Keep it up, you're on the right track"</p>
             </div>
 
             <div class="actions-section">
@@ -113,5 +114,41 @@
             </div>
         </div>
     </div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/profile.js"></script>
+
+    <script>
+        async function initCompletion() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const correct = urlParams.get('correct') || 0;
+            const incorrect = urlParams.get('incorrect') || 0;
+            const xp = urlParams.get('xp') || 0;
+
+            document.getElementById('statCorrect').innerText = correct;
+            document.getElementById('statIncorrect').innerText = incorrect;
+            document.getElementById('statXP').innerText = xp;
+
+            const profile = await getProfile();
+            if (profile) {
+                const name = profile.nickname || '';
+                document.getElementById('completionTitle').innerText = `Well done ${name}!`;
+            }
+
+            // Simple motivational logic
+            const msg = document.getElementById('motivationalMsg');
+            if (incorrect == 0) {
+                msg.innerText = '"Perfect score! You are a natural!"';
+            } else if (correct > incorrect) {
+                msg.innerText = '"Great job! Keep practicing to get even better."';
+            } else {
+                msg.innerText = '"Practice makes perfect. Don\'t give up!"';
+            }
+        }
+
+        initCompletion();
+    </script>
 </body>
 </html>

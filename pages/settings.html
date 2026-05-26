@@ -173,25 +173,82 @@
                     <p class="subtext">How much time can you dedicate each day?</p>
                     
                     <div class="time-grid">
-                        <div class="time-option" onclick="selectTime(this)">5 min</div>
                         <div class="time-option selected" onclick="selectTime(this)">10 min</div>
                         <div class="time-option" onclick="selectTime(this)">15 min</div>
-                        <div class="time-option" onclick="selectTime(this)">+20 min</div>
+                        <div class="time-option" onclick="selectTime(this)">30 min</div>
+                        <div class="time-option" onclick="selectTime(this)">25 min</div>
                     </div>
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-save">CONTINUE</button>
+            <button type="submit" id="saveBtn" class="btn btn-primary btn-save">SAVE CHANGES</button>
         </form>
     </div>
 
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/profile.js"></script>
+    <script src="../js/auth.js"></script>
+
     <script>
+        let selectedDailyTime = '';
+
         function selectTime(element) {
             document.querySelectorAll('.time-option').forEach(opt => {
                 opt.classList.remove('selected');
             });
             element.classList.add('selected');
+            selectedDailyTime = element.innerText;
         }
+
+        // Load profile data on init
+        async function initSettings() {
+            const profile = await getProfile();
+            if (profile) {
+                document.getElementById('nickname').value = profile.nickname || '';
+                document.getElementById('age').value = profile.age || '';
+                selectedDailyTime = profile.daily_time || '';
+                
+                // Select the correct time option button
+                if (selectedDailyTime) {
+                    document.querySelectorAll('.time-option').forEach(opt => {
+                        if (opt.innerText === selectedDailyTime) {
+                            opt.classList.add('selected');
+                        } else {
+                            opt.classList.remove('selected');
+                        }
+                    });
+                }
+            }
+        }
+
+        document.querySelector('form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const saveBtn = document.getElementById('saveBtn');
+            
+            const nickname = document.getElementById('nickname').value;
+            const age = parseInt(document.getElementById('age').value);
+
+            saveBtn.disabled = true;
+            saveBtn.innerText = 'SAVING...';
+
+            try {
+                await updateProfile({
+                    nickname: nickname,
+                    age: age,
+                    daily_time: selectedDailyTime
+                });
+                alert('Settings updated successfully!');
+                window.location.href = 'levels.html';
+            } catch (error) {
+                alert('Error updating settings: ' + error.message);
+                saveBtn.disabled = false;
+                saveBtn.innerText = 'SAVE CHANGES';
+            }
+        });
+
+        initSettings();
     </script>
 </body>
 </html>
