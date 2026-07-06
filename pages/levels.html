@@ -242,53 +242,108 @@
     <script src="../js/exercises.js"></script>
 
     <script>
+        let allLevelsData = [];
+        let completedLevelsGlobal = [];
+        let currentSectionIndex = 0;
+        let allSections = [];
+
         async function initLevels() {
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
+            if (!session) { window.location.href = 'login.html'; return; }
+
             const profile = await getProfile();
             const levelsData = await getAllLevels();
-            
-            if (profile) {
-                const name = profile.nickname || 'User';
-                document.getElementById('userNameDisplay').innerText = name;
-                document.getElementById('userXP').innerText = (profile.xp || 0) + ' XP';
-                
-                renderLevels(profile.completed_levels || [], levelsData);
-            } else {
-                window.location.href = 'login.html';
+
+            if (!profile) { window.location.href = 'login.html'; return; }
+
+            const name = profile.nickname || 'User';
+            document.getElementById('userNameDisplay').innerText = name;
+            document.getElementById('userXP').innerText = (profile.xp || 0) + ' XP';
+
+            allLevelsData = levelsData;
+            completedLevelsGlobal = profile.completed_levels || [];
+
+            // Get unique section numbers, sorted
+            const sectionNums = [...new Set(levelsData.map(l => l.section_number))].sort((a, b) => a - b);
+            allSections = sectionNums;
+
+            // Start at the section that has the next uncompleted level
+            const completedIds = new Set(completedLevelsGlobal);
+            const nextLevel = levelsData.find(l => !completedIds.has(l.id));
+            if (nextLevel) {
+                currentSectionIndex = allSections.indexOf(nextLevel.section_number);
+                if (currentSectionIndex < 0) currentSectionIndex = 0;
+            }
+
+            // Wire up nav buttons
+            document.querySelectorAll('.nav-circle-btn')[0].onclick = () => navigateSection(-1);
+            document.querySelectorAll('.nav-circle-btn')[1].onclick = () => navigateSection(1);
+
+            renderCurrentSection();
+        }
+
+        function navigateSection(direction) {
+            const newIndex = currentSectionIndex + direction;
+            if (newIndex >= 0 && newIndex < allSections.length) {
+                currentSectionIndex = newIndex;
+                renderCurrentSection();
             }
         }
 
-        function renderLevels(completedLevels, levelsData) {
+        function renderCurrentSection() {
+            const sectionNum = allSections[currentSectionIndex];
+            const sectionLevels = allLevelsData.filter(l => l.section_number === sectionNum);
+            const completedInSection = sectionLevels.filter(l => completedLevelsGlobal.includes(l.id)).length;
+            const progressPct = sectionLevels.length > 0
+                ? Math.round((completedInSection / sectionLevels.length) * 100)
+                : 0;
+
+            // Update header
+            document.querySelector('.progress-bar-fill').style.width = progressPct + '%';
+            document.querySelectorAll('.progress-text')[0].innerText = 'Section ' + sectionNum;
+            document.querySelectorAll('.progress-text')[1].innerText = progressPct + '%';
+
+            // Update nav button states
+            const btns = document.querySelectorAll('.nav-circle-btn');
+            btns[0].style.opacity = currentSectionIndex === 0 ? '0.3' : '1';
+            btns[0].style.cursor = currentSectionIndex === 0 ? 'not-allowed' : 'pointer';
+            btns[1].style.opacity = currentSectionIndex === allSections.length - 1 ? '0.3' : '1';
+            btns[1].style.cursor = currentSectionIndex === allSections.length - 1 ? 'not-allowed' : 'pointer';
+
+            renderLevels(completedLevelsGlobal, sectionLevels);
+        }
+
+        function renderLevels(completedLevels, sectionLevels) {
             const container = document.getElementById('dynamicLevelsContainer');
             container.innerHTML = '';
-            
-            // Render levels from Supabase
+
             const grid = document.createElement('div');
             grid.className = 'levels-grid';
-            
-            let foundNext = false;
-            
-            // Use Supabase data if available, else default to 6 placeholders
-            const totalLevels = Math.max(levelsData.length, 6);
 
-            for (let i = 1; i <= totalLevels; i++) {
+            let foundNext = false;
+
+            sectionLevels.forEach(levelFromDb => {
+                const i = levelFromDb.id;
                 const levelItem = document.createElement('div');
-                const levelFromDb = levelsData.find(l => l.id === i);
-                
+
                 if (completedLevels.includes(i)) {
                     levelItem.className = 'level-item completed';
-                    levelItem.innerHTML = `<i class="fas fa-check-circle check-badge"></i><div class="level-circle">${i}</div>`;
+                    levelItem.innerHTML = `<i class="fas fa-check-circle check-badge"></i><div class="level-circle">${levelFromDb.level_number}</div>`;
+                    levelItem.title = levelFromDb.title || '';
                     levelItem.onclick = () => window.location.href = `exercise.html?level=${i}`;
-                } else if (!foundNext && levelFromDb) {
+                } else if (!foundNext) {
                     levelItem.className = 'level-item active-level';
-                    levelItem.innerHTML = `<div class="level-circle">${i}</div><span>Start</span>`;
+                    levelItem.innerHTML = `<div class="level-circle">${levelFromDb.level_number}</div><span>${levelFromDb.title || 'Start'}</span>`;
                     levelItem.onclick = () => window.location.href = `exercise.html?level=${i}`;
                     foundNext = true;
                 } else {
                     levelItem.className = 'level-item locked';
                     levelItem.innerHTML = `<i class="fas fa-lock"></i>`;
+                    levelItem.title = 'Complete previous levels first';
                 }
                 grid.appendChild(levelItem);
-            }
+            });
+
             container.appendChild(grid);
         }
 

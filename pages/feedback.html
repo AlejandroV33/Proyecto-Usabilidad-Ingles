@@ -23,7 +23,7 @@
             text-align: center;
             font-size: 2rem;
             font-weight: 800;
-            color: var(--text-color);
+            color: var(--error-color);
             margin-bottom: var(--spacing-xl);
             line-height: 1.2;
         }
@@ -33,6 +33,9 @@
             color: var(--text-muted);
             margin-bottom: var(--spacing-sm);
             display: block;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
         }
 
         /* Feedback Card */
@@ -51,7 +54,7 @@
 
         .feedback-icon {
             font-size: 3rem;
-            color: var(--secondary-color);
+            color: var(--success-color);
             margin-bottom: var(--spacing-sm);
         }
 
@@ -78,7 +81,7 @@
         .explanation-text {
             font-size: 1rem;
             color: var(--text-color);
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         .footer-action {
@@ -89,49 +92,72 @@
 </head>
 <body>
     <div class="container fade-in">
-        <!-- Cabecera -->
         <header class="feedback-header">
             <a href="levels.html" class="close-btn"><i class="fas fa-times"></i></a>
         </header>
 
-        <!-- Título -->
-        <h1 class="feedback-title" id="feedbackTitle">Oops, almost there!</h1>
+        <h1 class="feedback-title">Oops, almost there!</h1>
 
-        <!-- Respuesta Correcta -->
         <div class="section-container">
-            <span class="section-label">The correct way is:</span>
+            <span class="section-label">The correct answer is:</span>
             <div class="feedback-card">
-                <div class="feedback-icon" id="feedbackIcon">
+                <div class="feedback-icon">
                     <i class="fas fa-lightbulb"></i>
                 </div>
-                <p class="feedback-text" id="correctAnswerText">"Loading correct answer..."</p>
+                <p class="feedback-text" id="correctAnswerText">"Loading..."</p>
             </div>
         </div>
 
-        <!-- Explicación -->
         <div class="section-container">
-            <span class="section-label">Explanation</span>
+            <span class="section-label">Why?</span>
             <div class="explanation-card">
-                <p class="explanation-text" id="explanationText">This structure is common in intermediate English to express hypothetical situations.</p>
+                <p class="explanation-text" id="explanationText">Loading explanation...</p>
             </div>
         </div>
 
-        <!-- Botón de Acción -->
         <div class="footer-action">
             <button id="continueBtn" class="btn btn-primary">CONTINUE</button>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/exercises.js"></script>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const correct = urlParams.get('correct') || '';
         const level = urlParams.get('level') || '1';
         const step = urlParams.get('step') || '0';
-        const stats = urlParams.get('stats') || '0,0'; // correct,incorrect
+        const stats = urlParams.get('stats') || '0,0';
+        const explanationFromUrl = urlParams.get('explanation') || '';
 
-        document.getElementById('correctAnswerText').innerHTML = `"${correct}"`;
-        
-        // Dynamic "Continue" logic: Go to retry.html first to practice what was failed
+        document.getElementById('correctAnswerText').innerHTML = '"<span class="highlight">' + correct + '</span>"';
+
+        // Show explanation: use the one passed via URL (from exercise.html) or load from DB
+        async function loadExplanation() {
+            if (explanationFromUrl && explanationFromUrl.trim() !== '') {
+                document.getElementById('explanationText').innerText = explanationFromUrl;
+            } else {
+                // Fallback: load from Supabase
+                try {
+                    const levelData = await getExercisesForLevel(parseInt(level));
+                    const stepIndex = parseInt(step);
+                    if (levelData && levelData.exercises && levelData.exercises[stepIndex]) {
+                        const ex = levelData.exercises[stepIndex];
+                        document.getElementById('explanationText').innerText =
+                            ex.explanation || 'Review this concept and try again in the next exercise.';
+                    } else {
+                        document.getElementById('explanationText').innerText = 'Review this concept and try again in the next exercise.';
+                    }
+                } catch (e) {
+                    document.getElementById('explanationText').innerText = 'Review this concept and try again in the next exercise.';
+                }
+            }
+        }
+
+        loadExplanation();
+
         document.getElementById('continueBtn').onclick = () => {
             window.location.href = `retry.html?level=${level}&step=${step}&stats=${stats}`;
         };

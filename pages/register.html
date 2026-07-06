@@ -66,9 +66,23 @@
             errorDiv.style.display = 'none';
 
             try {
-                await signUp(email, password, nickname);
-                alert('Account created! Please check your email for verification.');
-                window.location.href = 'onboarding.html';
+                const result = await signUp(email, password, nickname);
+
+                if (result.session) {
+                    // Email confirmation not required — session is active, go to onboarding
+                    window.location.href = 'onboarding.html';
+                } else {
+                    // Email confirmation required — show inline message, don't redirect
+                    errorDiv.style.color = 'var(--success-color)';
+                    errorDiv.style.border = '1px solid var(--success-color)';
+                    errorDiv.style.background = '#F0FFF8';
+                    errorDiv.style.borderRadius = 'var(--radius)';
+                    errorDiv.style.padding = 'var(--spacing-md)';
+                    errorDiv.innerHTML = '<i class="fas fa-check-circle"></i> Account created! Please check your email to verify your account, then <a href="login.html" style="color: var(--success-color); font-weight: 700;">log in here</a>.';
+                    errorDiv.style.display = 'block';
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'REGISTER';
+                }
             } catch (error) {
                 errorDiv.innerText = error.message;
                 errorDiv.style.display = 'block';
