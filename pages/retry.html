@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shimi - Try Again</title>
+    <!-- WCAG 2.4.2 — Descriptive page title -->
+    <title>Shimi – Try Again</title>
+    <meta name="description" content="Retry the exercise you got wrong and reinforce your English B1 knowledge.">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -15,13 +17,6 @@
             margin-bottom: var(--spacing-lg);
         }
 
-        .close-btn {
-            font-size: 1.5rem;
-            color: var(--text-muted);
-            text-decoration: none;
-            padding: 5px;
-        }
-
         .progress-wrapper {
             flex: 1;
             display: flex;
@@ -30,15 +25,14 @@
         }
 
         .progress-bar-bg {
-            width: 100%;
             height: 12px;
-            background-color: #E0E0E0;
             border-radius: 6px;
-            overflow: hidden;
             margin-bottom: 4px;
+            overflow: hidden;
         }
 
-        .progress-bar-fill {
+        /* Error progress uses red fill — icon + text also conveys the meaning */
+        .progress-bar-fill-error {
             height: 100%;
             background-color: var(--error-color);
             border-radius: 6px;
@@ -69,7 +63,7 @@
         /* Question Card */
         .question-card {
             background: white;
-            border: 2px solid #E0E0E0;
+            border: 2px solid var(--border-color);
             border-radius: 20px;
             padding: var(--spacing-xl);
             display: flex;
@@ -77,7 +71,7 @@
             align-items: center;
             text-align: center;
             margin-bottom: var(--spacing-xl);
-            box-shadow: 0 4px 0px #E0E0E0;
+            box-shadow: 0 4px 0px #CACFD2;
         }
 
         .question-icon {
@@ -93,7 +87,7 @@
             color: var(--text-color);
         }
 
-        /* Options */
+        /* Options — WCAG 2.1.1: <button> elements */
         .options-grid {
             display: flex;
             flex-direction: column;
@@ -103,27 +97,32 @@
 
         .option-btn {
             background: white;
-            border: 2px solid #E0E0E0;
+            border: 2px solid var(--border-color);
             border-radius: var(--radius);
             padding: var(--spacing-md);
             font-size: 1rem;
             font-weight: 700;
+            font-family: inherit;
             color: var(--text-color);
             cursor: pointer;
             transition: all 0.2s;
             text-align: left;
-            box-shadow: 0 4px 0px #E0E0E0;
+            box-shadow: 0 4px 0px #CACFD2;
+            min-height: 44px;               /* WCAG 2.5.8 */
+            width: 100%;
         }
 
-        .option-btn:hover {
+        .option-btn:hover:not(:disabled) {
             background-color: #F8F9FA;
             border-color: var(--primary-color);
         }
 
+        /* WCAG 1.4.1 — state uses icon + border + bg, not only color */
+        .option-btn[aria-pressed="true"],
         .option-btn.selected {
             background-color: #FFF3E0;
             border-color: var(--primary-color);
-            color: var(--primary-color);
+            color: #995C00;
             box-shadow: 0 4px 0px var(--primary-color);
             transform: translateY(2px);
         }
@@ -131,50 +130,66 @@
         .option-btn.correct-answer {
             background-color: #EDFFF6;
             border-color: var(--success-color);
-            color: var(--success-color);
-            box-shadow: 0 4px 0px #00a383;
+            color: #005C3D;
         }
 
         .option-btn.wrong-answer {
             background-color: #FFF0F0;
             border-color: var(--error-color);
-            color: var(--error-color);
+            color: #7B1D1D;
             box-shadow: none;
         }
 
-        /* Word chips */
+        /* Word chips — WCAG 2.1.1: <button> elements */
+        .word-pool-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-sm);
+            display: block;
+        }
+
         .word-pool {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             justify-content: center;
-            margin-top: var(--spacing-lg);
+            margin-top: var(--spacing-md);
         }
 
         .word-chip {
             background: white;
-            border: 2px solid #E0E0E0;
+            border: 2px solid var(--border-color);
             border-radius: 10px;
             padding: 8px 16px;
             font-weight: 600;
+            font-family: inherit;
+            font-size: 0.95rem;
             cursor: pointer;
-            box-shadow: 0 3px 0px #E0E0E0;
+            box-shadow: 0 3px 0px #CACFD2;
             transition: all 0.15s;
+            min-height: 44px;
         }
 
-        .word-chip:hover {
+        .word-chip:hover:not(:disabled) {
             border-color: var(--primary-color);
         }
 
+        .word-chip:disabled,
         .word-chip.used {
-            opacity: 0.3;
-            pointer-events: none;
+            opacity: 0.35;
+            cursor: default;
+        }
+
+        .answer-area .word-chip {
+            background: #FFF3E0;
+            border-color: var(--primary-color);
+            color: #995C00;
         }
 
         .answer-area {
             min-height: 56px;
             width: 100%;
-            border-bottom: 2px solid #E0E0E0;
+            border-bottom: 2px solid var(--border-color);
             margin-bottom: var(--spacing-lg);
             display: flex;
             flex-wrap: wrap;
@@ -182,12 +197,7 @@
             padding-bottom: 10px;
         }
 
-        .answer-area .word-chip {
-            background: #FFF3E0;
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-        }
-
+        /* WCAG 4.1.3 — feedback bar with role="alert" */
         .feedback-bar {
             display: none;
             padding: var(--spacing-md);
@@ -199,17 +209,17 @@
         }
 
         .feedback-bar.correct {
-            background: #EDFFF6;
-            color: var(--success-color);
-            border: 2px solid var(--success-color);
             display: block;
+            background: #EDFFF6;
+            color: #005C3D;
+            border: 2px solid var(--success-color);
         }
 
         .feedback-bar.wrong {
-            background: #FFF0F0;
-            color: var(--error-color);
-            border: 2px solid var(--error-color);
             display: block;
+            background: #FFF0F0;
+            color: #7B1D1D;
+            border: 2px solid var(--error-color);
         }
 
         .footer-action {
@@ -223,37 +233,97 @@
     </style>
 </head>
 <body>
+    <!-- WCAG 2.4.1 — Skip link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <div class="container fade-in">
-        <header class="exercise-header">
-            <a href="levels.html" class="close-btn"><i class="fas fa-times"></i></a>
+        <header class="exercise-header" role="banner">
+            <!-- WCAG 2.4.4 — descriptive aria-label on icon-only link -->
+            <a href="levels.html"
+               class="icon-btn"
+               aria-label="Exit retry and return to lessons">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </a>
+
+            <!-- WCAG 1.3.1, 4.1.2 — progressbar with ARIA semantics -->
             <div class="progress-wrapper">
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" id="errorProgressBar" style="width: 0%"></div>
+                <div class="progress-bar-bg"
+                     role="progressbar"
+                     aria-valuenow="50"
+                     aria-valuemin="0"
+                     aria-valuemax="100"
+                     aria-label="Retry progress">
+                    <div class="progress-bar-fill-error"
+                         id="errorProgressBar"
+                         style="width: 50%"></div>
                 </div>
-                <span class="error-count-text" id="errorCountText">Retry exercise</span>
+                <!-- WCAG 1.4.1 — text communicates the error count, not just color -->
+                <span class="error-count-text"
+                      id="errorCountText"
+                      aria-live="polite">Retry exercise</span>
             </div>
         </header>
 
-        <h1 class="main-title">Try again</h1>
-        <p class="main-subtitle">You got this! Review and answer correctly.</p>
+        <main id="main-content">
+            <!-- WCAG 1.3.1 — h1 heading -->
+            <h1 class="main-title">Try again</h1>
+            <p class="main-subtitle">You got this! Review and answer correctly.</p>
 
-        <div id="exercise-vocab" class="exercise-type hidden">
-            <div class="question-card">
-                <div class="question-icon"><i class="fas fa-book-open"></i></div>
-                <p class="question-text" id="vocabQuestion">"Loading..."</p>
-            </div>
-            <div class="options-grid" id="vocabOptions"></div>
-        </div>
+            <!-- ── VOCABULARY retry ── -->
+            <section id="exercise-vocab"
+                     class="exercise-type hidden"
+                     aria-labelledby="retry-vocab-question">
+                <div class="question-card">
+                    <!-- WCAG 1.1.1 — decorative icon -->
+                    <div class="question-icon" aria-hidden="true">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <p class="question-text" id="retry-vocab-question">"Loading…"</p>
+                </div>
 
-        <div id="exercise-grammar" class="exercise-type hidden">
-            <div class="answer-area" id="answerArea"></div>
-            <div class="word-pool" id="wordPool"></div>
-        </div>
+                <p id="vocab-options-label" class="sr-only">Select the correct answer:</p>
+                <div class="options-grid"
+                     id="vocabOptions"
+                     role="group"
+                     aria-labelledby="vocab-options-label"></div>
+            </section>
 
-        <div id="feedbackBar" class="feedback-bar"></div>
+            <!-- ── GRAMMAR retry ── -->
+            <section id="exercise-grammar"
+                     class="exercise-type hidden"
+                     aria-labelledby="retry-grammar-label">
+                <h2 id="retry-grammar-label" class="sr-only">Rearrange words to form the correct sentence</h2>
+
+                <div class="answer-area"
+                     id="answerArea"
+                     role="group"
+                     aria-label="Your answer (click a word to remove it)"></div>
+
+                <span class="word-pool-label" id="wordpool-label">
+                    Available words (click to add):
+                </span>
+                <div class="word-pool"
+                     id="wordPool"
+                     role="group"
+                     aria-labelledby="wordpool-label"></div>
+            </section>
+
+            <!-- WCAG 4.1.3 — inline feedback replaces visual-only colour changes -->
+            <div id="feedbackBar"
+                 class="feedback-bar"
+                 role="alert"
+                 aria-live="assertive"
+                 aria-atomic="true"></div>
+        </main>
 
         <div class="footer-action">
-            <button id="checkBtn" class="btn btn-primary" disabled onclick="handleCheck()">RETRY NOW</button>
+            <button id="checkBtn"
+                    class="btn btn-primary"
+                    type="button"
+                    disabled
+                    aria-disabled="true">
+                RETRY NOW
+            </button>
         </div>
     </div>
 
@@ -262,20 +332,26 @@
     <script src="../js/exercises.js"></script>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const levelId = parseInt(urlParams.get('level')) || 1;
-        const step = parseInt(urlParams.get('step')) || 0;
-        const statsStr = urlParams.get('stats') || '0,0';
+        const urlParams    = new URLSearchParams(window.location.search);
+        const levelId      = parseInt(urlParams.get('level')) || 1;
+        const step         = parseInt(urlParams.get('step'))  || 0;
+        const statsStr     = urlParams.get('stats') || '0,0';
 
-        let currentExercise = null;
+        let currentExercise    = null;
         let selectedOptionIndex = -1;
-        let checkPhase = false; // true after first submit (showing result)
+        let checkPhase         = false; // true after first submit
 
-        // Parse stats to show real error count
-        const statParts = statsStr.split(',');
+        // Show error count — WCAG 1.4.1: text, not only the red bar
+        const statParts      = statsStr.split(',');
         const incorrectSoFar = parseInt(statParts[1]) || 1;
-        document.getElementById('errorProgressBar').style.width = '50%';
-        document.getElementById('errorCountText').innerText = incorrectSoFar + ' mistake' + (incorrectSoFar > 1 ? 's' : '') + ' to fix';
+        document.getElementById('errorCountText').textContent =
+            incorrectSoFar + ' mistake' + (incorrectSoFar > 1 ? 's' : '') + ' to fix';
+
+        function setCheckBtn(disabled) {
+            const btn = document.getElementById('checkBtn');
+            btn.disabled = disabled;
+            btn.setAttribute('aria-disabled', disabled ? 'true' : 'false');
+        }
 
         async function initRetry() {
             const levelData = await getExercisesForLevel(levelId);
@@ -290,89 +366,136 @@
         function renderExercise(ex) {
             if (ex.type === 'vocabulary') {
                 document.getElementById('exercise-vocab').classList.remove('hidden');
-                document.getElementById('vocabQuestion').innerText = '"' + ex.question + '"';
+                document.getElementById('retry-vocab-question').textContent = '"' + ex.question + '"';
+
                 const grid = document.getElementById('vocabOptions');
                 grid.innerHTML = '';
+
                 ex.options.forEach((opt, i) => {
+                    // WCAG 2.1.1 — <button> for keyboard access
                     const btn = document.createElement('button');
+                    btn.type = 'button';
                     btn.className = 'option-btn';
                     btn.id = 'opt-' + i;
-                    btn.innerText = opt;
-                    btn.onclick = () => {
+                    btn.textContent = opt;
+                    btn.setAttribute('aria-pressed', 'false');
+                    btn.addEventListener('click', () => {
                         if (checkPhase) return;
-                        document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                        document.querySelectorAll('.option-btn').forEach(b => {
+                            b.classList.remove('selected');
+                            b.setAttribute('aria-pressed', 'false');
+                        });
                         btn.classList.add('selected');
+                        btn.setAttribute('aria-pressed', 'true');
                         selectedOptionIndex = i;
-                        document.getElementById('checkBtn').disabled = false;
-                    };
+                        setCheckBtn(false);
+                    });
                     grid.appendChild(btn);
                 });
+
             } else if (ex.type === 'grammar') {
                 document.getElementById('exercise-grammar').classList.remove('hidden');
                 const pool = document.getElementById('wordPool');
+
                 ex.words.forEach(word => {
-                    const chip = document.createElement('div');
+                    // WCAG 2.1.1 — <button> for keyboard access
+                    const chip = document.createElement('button');
+                    chip.type = 'button';
                     chip.className = 'word-chip';
-                    chip.innerText = word;
-                    chip.onclick = () => addWord(chip);
+                    chip.textContent = word;
+                    chip.setAttribute('aria-label', `Add word: ${word}`);
+                    chip.addEventListener('click', () => addWord(chip));
                     pool.appendChild(chip);
                 });
             }
         }
 
         function addWord(el) {
-            if (el.classList.contains('used') || checkPhase) return;
-            const area = document.getElementById('answerArea');
-            const newChip = document.createElement('div');
+            if (el.disabled || checkPhase) return;
+
+            const area    = document.getElementById('answerArea');
+            const newChip = document.createElement('button');
+            newChip.type      = 'button';
             newChip.className = 'word-chip';
-            newChip.innerText = el.innerText;
-            newChip.onclick = () => {
+            newChip.textContent = el.textContent;
+            newChip.setAttribute('aria-label', `Remove word: ${el.textContent}`);
+            newChip.addEventListener('click', () => {
                 if (checkPhase) return;
                 area.removeChild(newChip);
+                el.disabled = false;
                 el.classList.remove('used');
-                if (area.children.length === 0) document.getElementById('checkBtn').disabled = true;
-            };
+                el.setAttribute('aria-label', `Add word: ${el.textContent}`);
+                if (area.children.length === 0) setCheckBtn(true);
+            });
+
             area.appendChild(newChip);
+            el.disabled = true;
             el.classList.add('used');
-            document.getElementById('checkBtn').disabled = false;
+            el.setAttribute('aria-label', `${el.textContent} (used)`);
+            setCheckBtn(false);
         }
 
         function handleCheck() {
             if (checkPhase) {
                 // Second press: continue to next exercise
-                window.location.href = `exercise.html?level=${levelId}&step=${step + 1}&stats=${statsStr}`;
+                window.location.href =
+                    `exercise.html?level=${levelId}&step=${step + 1}&stats=${statsStr}`;
                 return;
             }
 
             let isCorrect = false;
+            const bar = document.getElementById('feedbackBar');
+
             if (currentExercise.type === 'vocabulary') {
                 isCorrect = (selectedOptionIndex === currentExercise.correct);
 
-                // Highlight correct/wrong
+                // WCAG 1.4.1 — highlight uses class (icon + border + bg), not only color
                 document.querySelectorAll('.option-btn').forEach((btn, i) => {
-                    if (i === currentExercise.correct) btn.classList.add('correct-answer');
-                    else if (i === selectedOptionIndex && !isCorrect) btn.classList.add('wrong-answer');
+                    btn.disabled = true; // lock after check
+                    if (i === currentExercise.correct) {
+                        btn.classList.add('correct-answer');
+                        btn.setAttribute('aria-label', btn.textContent + ' — correct answer');
+                    } else if (i === selectedOptionIndex && !isCorrect) {
+                        btn.classList.add('wrong-answer');
+                        btn.setAttribute('aria-label', btn.textContent + ' — wrong answer');
+                    }
                 });
 
             } else if (currentExercise.type === 'grammar') {
                 const userSentence = Array.from(document.getElementById('answerArea').children)
-                    .map(c => c.innerText).join(' ').toLowerCase();
+                    .map(c => c.textContent).join(' ').toLowerCase();
                 isCorrect = (userSentence === currentExercise.correct.toLowerCase());
             }
 
-            const bar = document.getElementById('feedbackBar');
+            // WCAG 4.1.3 — role="alert" on feedbackBar will announce this to SR
             if (isCorrect) {
                 bar.className = 'feedback-bar correct';
-                bar.innerHTML = '<i class="fas fa-check-circle"></i> Correct! Great job!';
-                document.getElementById('checkBtn').innerText = 'CONTINUE →';
+                bar.innerHTML = '<i class="fas fa-check-circle" aria-hidden="true"></i> Correct! Great job!';
+                document.getElementById('checkBtn').textContent = 'CONTINUE →';
             } else {
+                const correctAnswer = currentExercise.type === 'vocabulary'
+                    ? currentExercise.options[currentExercise.correct]
+                    : currentExercise.correct;
                 bar.className = 'feedback-bar wrong';
-                bar.innerHTML = '<i class="fas fa-times-circle"></i> Not quite. The correct answer is: <br><b>' + (currentExercise.type === 'vocabulary' ? currentExercise.options[currentExercise.correct] : currentExercise.correct) + '</b>';
-                document.getElementById('checkBtn').innerText = 'CONTINUE ANYWAY →';
+                bar.innerHTML =
+                    '<i class="fas fa-times-circle" aria-hidden="true"></i> Not quite. ' +
+                    'The correct answer is: <br><strong>' + escapeHtml(correctAnswer) + '</strong>';
+                document.getElementById('checkBtn').textContent = 'CONTINUE ANYWAY →';
             }
-            document.getElementById('checkBtn').disabled = false;
+
+            setCheckBtn(false);
             checkPhase = true;
         }
+
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        document.getElementById('checkBtn').addEventListener('click', handleCheck);
 
         initRetry();
     </script>

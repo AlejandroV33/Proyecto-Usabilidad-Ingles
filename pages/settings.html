@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shimi - Settings</title>
+    <!-- WCAG 2.4.2 — Descriptive page title -->
+    <title>Shimi – Settings</title>
+    <meta name="description" content="Update your Shimi profile: name, age and daily study time.">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -12,13 +14,6 @@
             align-items: center;
             padding-top: var(--spacing-md);
             margin-bottom: var(--spacing-md);
-        }
-
-        .close-btn {
-            font-size: 1.5rem;
-            color: var(--text-muted);
-            text-decoration: none;
-            padding: 5px;
         }
 
         .settings-title-section {
@@ -39,10 +34,11 @@
             border-radius: 2px;
         }
 
+        /* WCAG 1.4.3 — warning box contrast on #FFF3CD background */
         .warning-box {
             background-color: #FFF3CD;
             border: 1px solid #FFEEBA;
-            color: #856404;
+            color: #5C4200;  /* Darkened from #856404 for better contrast */
             padding: var(--spacing-md);
             border-radius: var(--radius);
             font-size: 0.9rem;
@@ -52,11 +48,7 @@
             gap: 10px;
         }
 
-        .warning-box i {
-            margin-top: 3px;
-        }
-
-        .section-title {
+        .section-label {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -65,7 +57,7 @@
             color: var(--text-color);
         }
 
-        .section-title i {
+        .section-label i {
             color: var(--primary-color);
             width: 20px;
             text-align: center;
@@ -77,7 +69,7 @@
             margin-bottom: var(--spacing-sm);
         }
 
-        /* Time Grid */
+        /* Time Grid — WCAG 2.1.1: <button> elements */
         .time-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -85,17 +77,25 @@
             margin-bottom: var(--spacing-xl);
         }
 
+        @media (max-width: 340px) {
+            .time-grid { grid-template-columns: 1fr; }
+        }
+
+        /* WCAG 1.4.1 — selected uses border + background, not color alone */
         .time-option {
             background: white;
-            border: 2px solid #E0E0E0;
+            border: 2px solid var(--border-color);
             border-radius: var(--radius);
             padding: var(--spacing-md);
             font-weight: 700;
+            font-size: 1rem;
+            font-family: inherit;
             color: var(--text-color);
             cursor: pointer;
             transition: all 0.2s;
             text-align: center;
-            box-shadow: 0 4px 0px #E0E0E0;
+            box-shadow: 0 4px 0px #CACFD2;
+            min-height: 44px;
         }
 
         .time-option:hover {
@@ -103,6 +103,7 @@
             background-color: #FFF9F0;
         }
 
+        .time-option[aria-pressed="true"],
         .time-option.selected {
             background-color: var(--primary-color);
             color: white;
@@ -127,62 +128,123 @@
     </style>
 </head>
 <body>
+    <!-- WCAG 2.4.1 — Skip link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <div class="container fade-in">
-        <!-- Cabecera -->
-        <header class="settings-header">
-            <a href="levels.html" class="close-btn"><i class="fas fa-times"></i></a>
+        <header class="settings-header" role="banner">
+            <!-- WCAG 2.4.4, 1.1.1 — icon-only close button with aria-label -->
+            <a href="levels.html"
+               class="icon-btn"
+               aria-label="Close settings and return to lessons">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </a>
         </header>
 
         <div class="settings-title-section">
+            <!-- WCAG 1.3.1 — h1 as primary heading -->
             <h1>Settings</h1>
-            <div class="divider"></div>
+            <div class="divider" role="presentation"></div>
         </div>
 
-        <!-- Advertencia -->
-        <div class="warning-box">
-            <i class="fas fa-exclamation-triangle"></i>
+        <!-- WCAG 1.3.1 — warning uses icon + text, not color alone -->
+        <div class="warning-box" role="note" aria-label="Settings warning">
+            <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
             <p>Remember that changing your data may slightly modify your learning experience.</p>
         </div>
 
-        <form onsubmit="event.preventDefault(); window.location.href='levels.html';">
-            <div class="form-content">
-                <!-- Nombre -->
-                <div class="input-group">
-                    <div class="section-title">
-                        <i class="fas fa-user"></i>
-                        <span>Name or Nickname</span>
+        <main id="main-content">
+            <form id="settingsForm" novalidate>
+                <div class="form-content">
+
+                    <!-- WCAG 1.3.1, 1.3.5 — label bound to input -->
+                    <div class="input-group">
+                        <label for="nickname">
+                            <span class="section-label">
+                                <i class="fas fa-user" aria-hidden="true"></i>
+                                Name or nickname
+                            </span>
+                        </label>
+                        <input type="text"
+                               id="nickname"
+                               name="name"
+                               autocomplete="name"
+                               placeholder="Your name"
+                               required
+                               aria-required="true">
                     </div>
-                    <input type="text" id="nickname" value="" placeholder="Your name" required>
+
+                    <div class="input-group">
+                        <label for="age">
+                            <span class="section-label">
+                                <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                                Age
+                            </span>
+                        </label>
+                        <input type="number"
+                               id="age"
+                               name="age"
+                               placeholder="Your age"
+                               required
+                               aria-required="true"
+                               min="1"
+                               max="120">
+                    </div>
+
+                    <!-- WCAG 1.3.1 — fieldset/legend groups the toggle buttons -->
+                    <fieldset style="border: none; padding: 0; margin: 0 0 var(--spacing-md) 0;">
+                        <legend>
+                            <span class="section-label">
+                                <i class="fas fa-clock" aria-hidden="true"></i>
+                                Daily study time
+                            </span>
+                        </legend>
+                        <p class="subtext" id="time-hint">How much time can you dedicate each day?</p>
+
+                        <!-- WCAG 2.1.1 — buttons keyboard operable; aria-pressed for state -->
+                        <div class="time-grid" role="group" aria-describedby="time-hint">
+                            <button type="button"
+                                    class="time-option"
+                                    data-value="10 min"
+                                    aria-pressed="false">
+                                10 min
+                            </button>
+                            <button type="button"
+                                    class="time-option"
+                                    data-value="15 min"
+                                    aria-pressed="false">
+                                15 min
+                            </button>
+                            <button type="button"
+                                    class="time-option"
+                                    data-value="25 min"
+                                    aria-pressed="false">
+                                25 min
+                            </button>
+                            <button type="button"
+                                    class="time-option"
+                                    data-value="30 min"
+                                    aria-pressed="false">
+                                30 min
+                            </button>
+                        </div>
+                    </fieldset>
                 </div>
 
-                <!-- Edad -->
-                <div class="input-group">
-                    <div class="section-title">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Age</span>
-                    </div>
-                    <input type="number" id="age" value="" placeholder="Your age" required min="1">
-                </div>
+                <!-- WCAG 4.1.3 — Live status for save feedback (replaces native alert()) -->
+                <div id="statusMessage"
+                     class="alert-message"
+                     role="alert"
+                     aria-live="assertive"
+                     aria-atomic="true"></div>
 
-                <!-- Tiempo Diario -->
-                <div class="input-group">
-                    <div class="section-title">
-                        <i class="fas fa-clock"></i>
-                        <span>Daily time</span>
-                    </div>
-                    <p class="subtext">How much time can you dedicate each day?</p>
-                    
-                    <div class="time-grid">
-                        <div class="time-option selected" onclick="selectTime(this)">10 min</div>
-                        <div class="time-option" onclick="selectTime(this)">15 min</div>
-                        <div class="time-option" onclick="selectTime(this)">25 min</div>
-                        <div class="time-option" onclick="selectTime(this)">30 min</div>
-                    </div>
-                </div>
-            </div>
-
-            <button type="submit" id="saveBtn" class="btn btn-primary btn-save">SAVE CHANGES</button>
-        </form>
+                <button type="submit"
+                        id="saveBtn"
+                        class="btn btn-primary btn-save">
+                    SAVE CHANGES
+                </button>
+            </form>
+        </main>
     </div>
 
     <!-- Supabase SDK -->
@@ -194,59 +256,92 @@
     <script>
         let selectedDailyTime = '';
 
+        /* WCAG 2.1.1 — keyboard-operable time buttons with aria-pressed */
+        document.querySelectorAll('.time-option').forEach(btn => {
+            btn.addEventListener('click', () => selectTime(btn));
+        });
+
         function selectTime(element) {
             document.querySelectorAll('.time-option').forEach(opt => {
                 opt.classList.remove('selected');
+                opt.setAttribute('aria-pressed', 'false');
             });
             element.classList.add('selected');
-            selectedDailyTime = element.innerText;
+            element.setAttribute('aria-pressed', 'true');
+            selectedDailyTime = element.dataset.value;
         }
 
-        // Load profile data on init
+        /* Pre-fill form with current profile data */
         async function initSettings() {
             const profile = await getProfile();
             if (profile) {
                 document.getElementById('nickname').value = profile.nickname || '';
-                document.getElementById('age').value = profile.age || '';
+                document.getElementById('age').value      = profile.age      || '';
                 selectedDailyTime = profile.daily_time || '';
-                
-                // Select the correct time option button
+
                 if (selectedDailyTime) {
                     document.querySelectorAll('.time-option').forEach(opt => {
-                        if (opt.innerText === selectedDailyTime) {
-                            opt.classList.add('selected');
-                        } else {
-                            opt.classList.remove('selected');
-                        }
+                        const isSelected = opt.dataset.value === selectedDailyTime;
+                        opt.classList.toggle('selected', isSelected);
+                        opt.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
                     });
                 }
             }
         }
 
-        document.querySelector('form').addEventListener('submit', async (e) => {
+        /* Form submit — replaces native alert() with inline feedback */
+        document.getElementById('settingsForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const saveBtn = document.getElementById('saveBtn');
-            
-            const nickname = document.getElementById('nickname').value;
-            const age = parseInt(document.getElementById('age').value);
+
+            const saveBtn    = document.getElementById('saveBtn');
+            const statusDiv  = document.getElementById('statusMessage');
+            const nicknameVal = document.getElementById('nickname').value.trim();
+            const ageVal      = parseInt(document.getElementById('age').value);
+
+            statusDiv.className = 'alert-message';
+            statusDiv.textContent = '';
+
+            if (!nicknameVal) {
+                showStatus('Please enter your name or nickname.', 'error');
+                document.getElementById('nickname').focus();
+                return;
+            }
+            if (!ageVal || ageVal < 1 || ageVal > 120) {
+                showStatus('Please enter a valid age.', 'error');
+                document.getElementById('age').focus();
+                return;
+            }
+            if (!selectedDailyTime) {
+                showStatus('Please select a daily study time goal.', 'error');
+                document.querySelector('.time-option').focus();
+                return;
+            }
 
             saveBtn.disabled = true;
-            saveBtn.innerText = 'SAVING...';
+            saveBtn.setAttribute('aria-busy', 'true');
+            saveBtn.textContent = 'Saving…';
 
             try {
                 await updateProfile({
-                    nickname: nickname,
-                    age: age,
+                    nickname: nicknameVal,
+                    age: ageVal,
                     daily_time: selectedDailyTime
                 });
-                alert('Settings updated successfully!');
-                window.location.href = 'levels.html';
+                showStatus('Settings saved successfully! Redirecting…', 'success');
+                setTimeout(() => window.location.href = 'levels.html', 1500);
             } catch (error) {
-                alert('Error updating settings: ' + error.message);
+                showStatus('Error updating settings: ' + (error.message || 'Please try again.'), 'error');
                 saveBtn.disabled = false;
-                saveBtn.innerText = 'SAVE CHANGES';
+                saveBtn.removeAttribute('aria-busy');
+                saveBtn.textContent = 'SAVE CHANGES';
             }
         });
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.textContent = message;
+            statusDiv.className = `alert-message alert-${type}`;
+        }
 
         initSettings();
     </script>

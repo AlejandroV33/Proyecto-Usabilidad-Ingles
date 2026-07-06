@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shimi - About you</title>
+    <!-- WCAG 2.4.2 — Descriptive page title -->
+    <title>Shimi – Tell Us About You</title>
+    <meta name="description" content="Set up your learning profile: name, age and daily study time.">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -31,7 +33,7 @@
             border-radius: 2px;
         }
 
-        .section-title {
+        .section-label {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -40,7 +42,7 @@
             color: var(--text-color);
         }
 
-        .section-title i {
+        .section-label i {
             color: var(--primary-color);
             width: 20px;
             text-align: center;
@@ -52,7 +54,7 @@
             margin-bottom: var(--spacing-sm);
         }
 
-        /* Time Grid */
+        /* Time selection grid — WCAG 1.3.1 uses <button> for interactivity */
         .time-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -60,17 +62,25 @@
             margin-bottom: var(--spacing-xl);
         }
 
+        @media (max-width: 340px) {
+            .time-grid { grid-template-columns: 1fr; }
+        }
+
+        /* WCAG 1.4.1 — selected state uses border + color (not color alone) */
         .time-option {
             background: white;
-            border: 2px solid #E0E0E0;
+            border: 2px solid var(--border-color);
             border-radius: var(--radius);
             padding: var(--spacing-md);
             font-weight: 700;
+            font-size: 1rem;
+            font-family: inherit;
             color: var(--text-color);
             cursor: pointer;
             transition: all 0.2s;
             text-align: center;
-            box-shadow: 0 4px 0px #E0E0E0;
+            box-shadow: 0 4px 0px #CACFD2;
+            min-height: 44px;           /* WCAG 2.5.8 */
         }
 
         .time-option:hover {
@@ -78,7 +88,15 @@
             background-color: #FFF9F0;
         }
 
+        /* Selected: bold border + background change + check icon in SR text */
         .time-option.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 0px #e6952d;
+        }
+
+        .time-option[aria-pressed="true"] {
             background-color: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
@@ -109,53 +127,111 @@
     </style>
 </head>
 <body>
+    <!-- WCAG 2.4.1 — Skip link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <div class="container fade-in">
-        <div class="onboarding-header">
-            <h1>Hi, this is Shimi</h1>
-            <p>Tell us about yourself</p>
-            <div class="divider"></div>
-        </div>
+        <header class="onboarding-header" role="banner">
+            <h1>Hi, this is Shimi!</h1>
+            <p>Tell us about yourself so we can personalise your learning</p>
+            <div class="divider" role="presentation"></div>
+        </header>
 
-        <form id="onboardingForm">
-            <div class="form-content">
-                <!-- Nombre -->
-                <div class="input-group">
-                    <div class="section-title">
-                        <i class="fas fa-user"></i>
-                        <span>Name or Nickname</span>
+        <main id="main-content">
+            <form id="onboardingForm" novalidate>
+                <div class="form-content">
+
+                    <!-- WCAG 1.3.1 — label bound to input via for/id -->
+                    <div class="input-group">
+                        <label for="nickname">
+                            <span class="section-label">
+                                <i class="fas fa-user" aria-hidden="true"></i>
+                                Name or nickname
+                            </span>
+                        </label>
+                        <input type="text"
+                               id="nickname"
+                               name="name"
+                               autocomplete="name"
+                               placeholder="e.g. Alex"
+                               required
+                               aria-required="true">
                     </div>
-                    <input type="text" id="nickname" placeholder="e.g. Alex" required>
+
+                    <!-- WCAG 1.3.1 — label bound to input -->
+                    <div class="input-group">
+                        <label for="age">
+                            <span class="section-label">
+                                <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                                Age
+                            </span>
+                        </label>
+                        <input type="number"
+                               id="age"
+                               name="age"
+                               autocomplete="bday-year"
+                               placeholder="Your age"
+                               required
+                               aria-required="true"
+                               min="1"
+                               max="120">
+                    </div>
+
+                    <!-- WCAG 1.3.1 — fieldset/legend groups the radio-like buttons -->
+                    <fieldset style="border: none; padding: 0; margin: 0 0 var(--spacing-md) 0;">
+                        <legend>
+                            <span class="section-label">
+                                <i class="fas fa-clock" aria-hidden="true"></i>
+                                Daily study time
+                            </span>
+                        </legend>
+                        <p class="subtext" id="time-hint">How much time can you dedicate each day?</p>
+
+                        <!-- WCAG 2.1.1 — buttons are keyboard operable; aria-pressed reflects state -->
+                        <div class="time-grid" role="group" aria-describedby="time-hint">
+                            <button type="button"
+                                    class="time-option"
+                                    data-value="10 min"
+                                    aria-pressed="false">
+                                10 min
+                            </button>
+                            <button type="button"
+                                    class="time-option"
+                                    data-value="15 min"
+                                    aria-pressed="false">
+                                15 min
+                            </button>
+                            <button type="button"
+                                    class="time-option"
+                                    data-value="25 min"
+                                    aria-pressed="false">
+                                25 min
+                            </button>
+                            <button type="button"
+                                    class="time-option"
+                                    data-value="30 min"
+                                    aria-pressed="false">
+                                30 min
+                            </button>
+                        </div>
+                    </fieldset>
                 </div>
 
-                <!-- Edad -->
-                <div class="input-group">
-                    <div class="section-title">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Age</span>
-                    </div>
-                    <input type="number" id="age" placeholder="Your age" required min="1">
-                </div>
+                <!-- WCAG 4.1.3 — Inline live status region -->
+                <div id="statusMessage"
+                     class="alert-message"
+                     role="alert"
+                     aria-live="assertive"
+                     aria-atomic="true"></div>
 
-                <!-- Tiempo Diario -->
-                <div class="input-group">
-                    <div class="section-title">
-                        <i class="fas fa-clock"></i>
-                        <span>Daily time</span>
-                    </div>
-                    <p class="subtext">How much time can you dedicate each day?</p>
-                    
-                    <div class="time-grid">
-                        <div class="time-option" onclick="selectTime(this)">10 min</div>
-                        <div class="time-option" onclick="selectTime(this)">15 min</div>
-                        <div class="time-option" onclick="selectTime(this)">25 min</div>
-                        <div class="time-option" onclick="selectTime(this)">30 min</div>
-                    </div>
-                </div>
-            </div>
-
-            <button type="submit" id="submitBtn" class="btn btn-primary btn-continue">CONTINUE</button>
-            <p class="footer-note">Complete all fields before continuing</p>
-        </form>
+                <button type="submit"
+                        id="submitBtn"
+                        class="btn btn-primary btn-continue">
+                    CONTINUE
+                </button>
+                <p class="footer-note" aria-live="polite">Complete all fields before continuing</p>
+            </form>
+        </main>
     </div>
 
     <!-- Supabase SDK -->
@@ -166,42 +242,74 @@
     <script>
         let selectedDailyTime = '';
 
+        // WCAG 2.1.1 — keyboard-accessible toggle buttons with aria-pressed
+        document.querySelectorAll('.time-option').forEach(btn => {
+            btn.addEventListener('click', () => selectTime(btn));
+        });
+
         function selectTime(element) {
+            // Deselect all
             document.querySelectorAll('.time-option').forEach(opt => {
                 opt.classList.remove('selected');
+                opt.setAttribute('aria-pressed', 'false');
             });
+            // Select clicked
             element.classList.add('selected');
-            selectedDailyTime = element.innerText;
+            element.setAttribute('aria-pressed', 'true');
+            selectedDailyTime = element.dataset.value;
         }
 
         document.getElementById('onboardingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const submitBtn = document.getElementById('submitBtn');
-            
+
+            const submitBtn   = document.getElementById('submitBtn');
+            const statusDiv   = document.getElementById('statusMessage');
+            const nicknameVal = document.getElementById('nickname').value.trim();
+            const ageVal      = parseInt(document.getElementById('age').value);
+
+            statusDiv.className = 'alert-message';
+            statusDiv.textContent = '';
+
+            if (!nicknameVal) {
+                showStatus('Please enter your name or nickname.', 'error');
+                document.getElementById('nickname').focus();
+                return;
+            }
+            if (!ageVal || ageVal < 1 || ageVal > 120) {
+                showStatus('Please enter a valid age.', 'error');
+                document.getElementById('age').focus();
+                return;
+            }
             if (!selectedDailyTime) {
-                alert('Please select a daily time goal.');
+                showStatus('Please select a daily study time goal.', 'error');
+                document.querySelector('.time-option').focus();
                 return;
             }
 
-            const nickname = document.getElementById('nickname').value;
-            const age = parseInt(document.getElementById('age').value);
-
             submitBtn.disabled = true;
-            submitBtn.innerText = 'SAVING...';
+            submitBtn.setAttribute('aria-busy', 'true');
+            submitBtn.textContent = 'Saving…';
 
             try {
                 await updateProfile({
-                    nickname: nickname,
-                    age: age,
+                    nickname: nicknameVal,
+                    age: ageVal,
                     daily_time: selectedDailyTime
                 });
                 window.location.href = 'levels.html';
             } catch (error) {
-                alert('Error saving profile: ' + error.message);
+                showStatus('Error saving profile: ' + (error.message || 'Please try again.'), 'error');
                 submitBtn.disabled = false;
-                submitBtn.innerText = 'CONTINUE';
+                submitBtn.removeAttribute('aria-busy');
+                submitBtn.textContent = 'CONTINUE';
             }
         });
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.textContent = message;
+            statusDiv.className = `alert-message alert-${type}`;
+        }
     </script>
 </body>
 </html>

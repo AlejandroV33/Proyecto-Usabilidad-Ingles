@@ -3,47 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Shimi</title>
+    <!-- WCAG 2.4.2 — Descriptive page title -->
+    <title>Shimi – Create Your Account</title>
+    <meta name="description" content="Register for Shimi and start learning English B1 today.">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .error-message {
-            color: var(--error-color);
-            font-size: 0.9rem;
-            margin-top: var(--spacing-sm);
-            text-align: center;
-            display: none;
+        .page-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            padding-top: var(--spacing-md);
+            gap: var(--spacing-sm);
+        }
+
+        .password-hint {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: var(--spacing-xs);
+            display: block;
         }
     </style>
 </head>
 <body>
+    <!-- WCAG 2.4.1 — Skip link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <div class="container fade-in">
-        <div class="header">
-            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
-            <h2>Create your account</h2>
-        </div>
+        <header class="page-header" role="banner">
+            <!-- WCAG 2.4.4 — Descriptive aria-label for icon-only link -->
+            <a href="../index.html"
+               class="icon-btn"
+               aria-label="Back to home">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i>
+            </a>
+            <!-- WCAG 1.3.1 — Single h1 per page -->
+            <h1 style="font-size: 1.5rem; margin-bottom: 0;">Create your account</h1>
+        </header>
 
-        <form id="registerForm">
-            <div class="input-group">
-                <label for="nickname">Name</label>
-                <input type="text" id="nickname" placeholder="Your name" required>
-            </div>
-            <div class="input-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" placeholder="you@email.com" required>
-            </div>
-            <div class="input-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Minimum 8 characters" required minlength="8">
-            </div>
-            
-            <div id="errorMessage" class="error-message"></div>
-            <button type="submit" id="submitBtn" class="btn btn-primary" style="margin-top: var(--spacing-lg);">REGISTER</button>
-        </form>
+        <main id="main-content">
+            <!-- WCAG 1.3.1, 1.3.5 — labels bound via for/id, autocomplete tokens -->
+            <form id="registerForm" novalidate>
+                <div class="input-group">
+                    <label for="nickname">Name or nickname</label>
+                    <input type="text"
+                           id="nickname"
+                           name="name"
+                           autocomplete="name"
+                           placeholder="Your name"
+                           required
+                           aria-required="true">
+                </div>
 
-        <div style="text-align: center; margin-top: var(--spacing-xl);">
-            <p style="color: var(--text-muted);">Already have an account? <a href="login.html" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Log In</a></p>
-        </div>
+                <div class="input-group">
+                    <label for="email">Email address</label>
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           autocomplete="email"
+                           placeholder="you@email.com"
+                           required
+                           aria-required="true">
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password"
+                           id="password"
+                           name="new-password"
+                           autocomplete="new-password"
+                           placeholder="Minimum 8 characters"
+                           required
+                           aria-required="true"
+                           minlength="8"
+                           aria-describedby="password-hint">
+                    <span id="password-hint" class="password-hint">
+                        Must be at least 8 characters long.
+                    </span>
+                </div>
+
+                <!-- WCAG 4.1.3 — Live error region -->
+                <div id="statusMessage"
+                     class="alert-message"
+                     role="alert"
+                     aria-live="assertive"
+                     aria-atomic="true"></div>
+
+                <button type="submit"
+                        id="submitBtn"
+                        class="btn btn-primary"
+                        style="margin-top: var(--spacing-lg);">
+                    REGISTER
+                </button>
+            </form>
+
+            <p style="text-align: center; margin-top: var(--spacing-xl); color: var(--text-muted);">
+                Already have an account?
+                <a href="login.html"
+                   style="color: var(--primary-color); font-weight: 600; text-decoration: underline;">
+                    Log in here
+                </a>
+            </p>
+        </main>
     </div>
 
     <!-- Supabase SDK -->
@@ -52,44 +113,78 @@
     <script src="../js/auth.js"></script>
 
     <script>
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        const registerForm  = document.getElementById('registerForm');
+        const submitBtn     = document.getElementById('submitBtn');
+        const statusDiv     = document.getElementById('statusMessage');
+        const nicknameInput = document.getElementById('nickname');
+        const emailInput    = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+
+        registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const submitBtn = document.getElementById('submitBtn');
-            const errorDiv = document.getElementById('errorMessage');
-            
-            const nickname = document.getElementById('nickname').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+
+            // Clear previous state
+            statusDiv.className = 'alert-message';
+            statusDiv.textContent = '';
+            [nicknameInput, emailInput, passwordInput].forEach(el =>
+                el.removeAttribute('aria-invalid'));
+
+            const nickname = nicknameInput.value.trim();
+            const email    = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            // Client-side validation
+            if (!nickname) {
+                showStatus('Please enter your name or nickname.', 'error');
+                nicknameInput.setAttribute('aria-invalid', 'true');
+                nicknameInput.focus();
+                return;
+            }
+            if (!email) {
+                showStatus('Please enter a valid email address.', 'error');
+                emailInput.setAttribute('aria-invalid', 'true');
+                emailInput.focus();
+                return;
+            }
+            if (password.length < 8) {
+                showStatus('Password must be at least 8 characters long.', 'error');
+                passwordInput.setAttribute('aria-invalid', 'true');
+                passwordInput.focus();
+                return;
+            }
 
             submitBtn.disabled = true;
-            submitBtn.innerText = 'CREATING ACCOUNT...';
-            errorDiv.style.display = 'none';
+            submitBtn.setAttribute('aria-busy', 'true');
+            submitBtn.textContent = 'Creating account…';
 
             try {
                 const result = await signUp(email, password, nickname);
 
                 if (result.session) {
-                    // Email confirmation not required — session is active, go to onboarding
+                    // Session active — go to onboarding
                     window.location.href = 'onboarding.html';
                 } else {
-                    // Email confirmation required — show inline message, don't redirect
-                    errorDiv.style.color = 'var(--success-color)';
-                    errorDiv.style.border = '1px solid var(--success-color)';
-                    errorDiv.style.background = '#F0FFF8';
-                    errorDiv.style.borderRadius = 'var(--radius)';
-                    errorDiv.style.padding = 'var(--spacing-md)';
-                    errorDiv.innerHTML = '<i class="fas fa-check-circle"></i> Account created! Please check your email to verify your account, then <a href="login.html" style="color: var(--success-color); font-weight: 700;">log in here</a>.';
-                    errorDiv.style.display = 'block';
+                    // Email confirmation required
+                    showStatus(
+                        '✓ Account created! Please check your email to verify your account, then log in.',
+                        'success'
+                    );
                     submitBtn.disabled = false;
-                    submitBtn.innerText = 'REGISTER';
+                    submitBtn.removeAttribute('aria-busy');
+                    submitBtn.textContent = 'REGISTER';
                 }
             } catch (error) {
-                errorDiv.innerText = error.message;
-                errorDiv.style.display = 'block';
+                showStatus(error.message || 'Registration failed. Please try again.', 'error');
                 submitBtn.disabled = false;
-                submitBtn.innerText = 'REGISTER';
+                submitBtn.removeAttribute('aria-busy');
+                submitBtn.textContent = 'REGISTER';
             }
         });
+
+        function showStatus(message, type) {
+            statusDiv.textContent = message;
+            statusDiv.className = `alert-message alert-${type}`;
+        }
     </script>
 </body>
 </html>

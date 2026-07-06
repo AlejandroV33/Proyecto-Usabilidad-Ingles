@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shimi - Feedback</title>
+    <!-- WCAG 2.4.2 — Descriptive page title -->
+    <title>Shimi – Answer Review</title>
+    <meta name="description" content="Review the correct answer and explanation for your English B1 exercise.">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -12,18 +14,12 @@
             margin-bottom: var(--spacing-md);
         }
 
-        .close-btn {
-            font-size: 1.5rem;
-            color: var(--text-muted);
-            text-decoration: none;
-            padding: 5px;
-        }
-
+        /* WCAG 1.4.3 — error title with enough contrast */
         .feedback-title {
             text-align: center;
             font-size: 2rem;
             font-weight: 800;
-            color: var(--error-color);
+            color: #B71C1C;   /* Darker red for AA contrast on white bg */
             margin-bottom: var(--spacing-xl);
             line-height: 1.2;
         }
@@ -38,10 +34,9 @@
             letter-spacing: 1px;
         }
 
-        /* Feedback Card */
         .feedback-card {
             background: white;
-            border: 2px solid #E0E0E0;
+            border: 2px solid var(--border-color);
             border-radius: 20px;
             padding: var(--spacing-lg);
             display: flex;
@@ -49,7 +44,7 @@
             align-items: center;
             text-align: center;
             margin-bottom: var(--spacing-lg);
-            box-shadow: 0 4px 0px #E0E0E0;
+            box-shadow: 0 4px 0px #CACFD2;
         }
 
         .feedback-icon {
@@ -65,14 +60,13 @@
         }
 
         .highlight {
-            color: var(--primary-color);
+            color: #995C00;   /* Darker orange for AA contrast on white */
             font-weight: 800;
         }
 
-        /* Explanation Card */
         .explanation-card {
             background: #F8F9FA;
-            border: 2px solid #E0E0E0;
+            border: 2px solid var(--border-color);
             border-radius: 20px;
             padding: var(--spacing-lg);
             margin-bottom: var(--spacing-xl);
@@ -91,32 +85,50 @@
     </style>
 </head>
 <body>
+    <!-- WCAG 2.4.1 — Skip link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <div class="container fade-in">
-        <header class="feedback-header">
-            <a href="levels.html" class="close-btn"><i class="fas fa-times"></i></a>
+        <header class="feedback-header" role="banner">
+            <!-- WCAG 2.4.4 — descriptive aria-label on icon-only link -->
+            <a href="levels.html"
+               class="icon-btn"
+               aria-label="Exit feedback and return to lessons">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </a>
         </header>
 
-        <h1 class="feedback-title">Oops, almost there!</h1>
+        <main id="main-content">
+            <!-- WCAG 1.3.1 — h1 for the page -->
+            <h1 class="feedback-title">Oops, almost there!</h1>
 
-        <div class="section-container">
-            <span class="section-label">The correct answer is:</span>
-            <div class="feedback-card">
-                <div class="feedback-icon">
-                    <i class="fas fa-lightbulb"></i>
+            <!-- WCAG 1.3.1 — sections with labelled headings -->
+            <section aria-labelledby="correct-answer-heading">
+                <h2 id="correct-answer-heading" class="section-label">The correct answer is:</h2>
+                <div class="feedback-card">
+                    <!-- WCAG 1.1.1 — decorative icon -->
+                    <div class="feedback-icon" aria-hidden="true">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <p class="feedback-text" id="correctAnswerText">"Loading…"</p>
                 </div>
-                <p class="feedback-text" id="correctAnswerText">"Loading..."</p>
-            </div>
-        </div>
+            </section>
 
-        <div class="section-container">
-            <span class="section-label">Why?</span>
-            <div class="explanation-card">
-                <p class="explanation-text" id="explanationText">Loading explanation...</p>
-            </div>
-        </div>
+            <section aria-labelledby="explanation-heading">
+                <h2 id="explanation-heading" class="section-label">Why?</h2>
+                <div class="explanation-card">
+                    <!-- aria-live so dynamic content is announced -->
+                    <p class="explanation-text"
+                       id="explanationText"
+                       aria-live="polite">Loading explanation…</p>
+                </div>
+            </section>
+        </main>
 
         <div class="footer-action">
-            <button id="continueBtn" class="btn btn-primary">CONTINUE</button>
+            <button id="continueBtn" class="btn btn-primary" type="button">
+                CONTINUE
+            </button>
         </div>
     </div>
 
@@ -125,42 +137,55 @@
     <script src="../js/exercises.js"></script>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const correct = urlParams.get('correct') || '';
-        const level = urlParams.get('level') || '1';
-        const step = urlParams.get('step') || '0';
-        const stats = urlParams.get('stats') || '0,0';
+        const urlParams        = new URLSearchParams(window.location.search);
+        const correct          = urlParams.get('correct')     || '';
+        const level            = urlParams.get('level')       || '1';
+        const step             = urlParams.get('step')        || '0';
+        const stats            = urlParams.get('stats')       || '0,0';
         const explanationFromUrl = urlParams.get('explanation') || '';
 
-        document.getElementById('correctAnswerText').innerHTML = '"<span class="highlight">' + correct + '</span>"';
+        // Inject the correct answer safely (textContent, not innerHTML)
+        const correctText = document.getElementById('correctAnswerText');
+        // Use a structure that avoids innerHTML injection risk:
+        correctText.innerHTML = '"<span class="highlight">' +
+            escapeHtml(correct) + '</span>"';
 
-        // Show explanation: use the one passed via URL (from exercise.html) or load from DB
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        /* Load explanation — WCAG 4.1.3 aria-live on explanationText */
         async function loadExplanation() {
             if (explanationFromUrl && explanationFromUrl.trim() !== '') {
-                document.getElementById('explanationText').innerText = explanationFromUrl;
+                document.getElementById('explanationText').textContent = explanationFromUrl;
             } else {
-                // Fallback: load from Supabase
                 try {
                     const levelData = await getExercisesForLevel(parseInt(level));
                     const stepIndex = parseInt(step);
                     if (levelData && levelData.exercises && levelData.exercises[stepIndex]) {
-                        const ex = levelData.exercises[stepIndex];
-                        document.getElementById('explanationText').innerText =
-                            ex.explanation || 'Review this concept and try again in the next exercise.';
+                        document.getElementById('explanationText').textContent =
+                            levelData.exercises[stepIndex].explanation ||
+                            'Review this concept and try again.';
                     } else {
-                        document.getElementById('explanationText').innerText = 'Review this concept and try again in the next exercise.';
+                        document.getElementById('explanationText').textContent =
+                            'Review this concept and try again.';
                     }
                 } catch (e) {
-                    document.getElementById('explanationText').innerText = 'Review this concept and try again in the next exercise.';
+                    document.getElementById('explanationText').textContent =
+                        'Review this concept and try again.';
                 }
             }
         }
 
         loadExplanation();
 
-        document.getElementById('continueBtn').onclick = () => {
+        document.getElementById('continueBtn').addEventListener('click', () => {
             window.location.href = `retry.html?level=${level}&step=${step}&stats=${stats}`;
-        };
+        });
     </script>
 </body>
 </html>

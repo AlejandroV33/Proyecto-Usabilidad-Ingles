@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shimi - Exercise</title>
+    <!-- WCAG 2.4.2 — Descriptive page title -->
+    <title>Shimi – Exercise in Progress</title>
+    <meta name="description" content="Complete your English B1 exercise – vocabulary, grammar or speaking.">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -15,13 +17,6 @@
             margin-bottom: var(--spacing-lg);
         }
 
-        .close-btn {
-            font-size: 1.5rem;
-            color: var(--text-muted);
-            text-decoration: none;
-            padding: 5px;
-        }
-
         .progress-wrapper {
             flex: 1;
             display: flex;
@@ -30,17 +25,13 @@
         }
 
         .progress-bar-bg {
-            width: 100%;
             height: 12px;
-            background-color: #E0E0E0;
             border-radius: 6px;
-            overflow: hidden;
             margin-bottom: 4px;
         }
 
         .progress-bar-fill {
             width: 0%;
-            height: 100%;
             background-color: var(--primary-color);
             border-radius: 6px;
             transition: width 0.3s ease;
@@ -63,7 +54,7 @@
         /* Question Card */
         .question-card {
             background: white;
-            border: 2px solid #E0E0E0;
+            border: 2px solid var(--border-color);
             border-radius: 20px;
             padding: var(--spacing-xl);
             display: flex;
@@ -71,7 +62,7 @@
             align-items: center;
             text-align: center;
             margin-bottom: var(--spacing-xl);
-            box-shadow: 0 4px 0px #E0E0E0;
+            box-shadow: 0 4px 0px #CACFD2;
         }
 
         .question-icon {
@@ -87,7 +78,7 @@
             color: var(--text-color);
         }
 
-        /* Vocabulary Options */
+        /* Vocabulary Options — converted to <button> */
         .options-label {
             text-align: left;
             font-weight: 600;
@@ -102,18 +93,22 @@
             margin-bottom: var(--spacing-xl);
         }
 
+        /* WCAG 2.1.1 — option buttons are keyboard accessible */
         .option-btn {
             background: white;
-            border: 2px solid #E0E0E0;
+            border: 2px solid var(--border-color);
             border-radius: var(--radius);
             padding: var(--spacing-md);
             font-size: 1rem;
             font-weight: 600;
+            font-family: inherit;
             color: var(--text-color);
             cursor: pointer;
             transition: all 0.2s;
             text-align: left;
-            box-shadow: 0 4px 0px #E0E0E0;
+            box-shadow: 0 4px 0px #CACFD2;
+            min-height: 44px;           /* WCAG 2.5.8 */
+            width: 100%;
         }
 
         .option-btn:hover {
@@ -121,10 +116,12 @@
             border-color: var(--primary-color);
         }
 
-        .option-btn.selected {
+        /* WCAG 1.4.1 — selected uses border + bg change, not color alone */
+        .option-btn.selected,
+        .option-btn[aria-pressed="true"] {
             background-color: #FFF3E0;
             border-color: var(--primary-color);
-            color: var(--primary-color);
+            color: #995C00; /* darker for contrast on light bg */
             box-shadow: 0 4px 0px var(--primary-color);
         }
 
@@ -143,6 +140,7 @@
             gap: var(--spacing-lg);
         }
 
+        /* WCAG 2.5.8 — 52px listen button */
         .listen-btn {
             width: 52px;
             height: 52px;
@@ -155,9 +153,9 @@
             font-size: 1.2rem;
             border: none;
             cursor: pointer;
+            font-family: inherit;
             box-shadow: 0 4px 0px #2a6db5;
             transition: all 0.1s;
-            flex-shrink: 0;
         }
 
         .listen-btn:active {
@@ -165,6 +163,7 @@
             box-shadow: none;
         }
 
+        /* WCAG 2.5.8 — 80px mic button */
         .mic-button {
             width: 80px;
             height: 80px;
@@ -177,6 +176,7 @@
             font-size: 2rem;
             border: none;
             cursor: pointer;
+            font-family: inherit;
             box-shadow: 0 6px 0px #e6952d;
             transition: all 0.1s;
         }
@@ -193,20 +193,21 @@
         }
 
         .mic-button:disabled {
-            opacity: 0.5;
+            opacity: 0.45;
             cursor: not-allowed;
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            0%   { transform: scale(1); }
+            50%  { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
 
+        /* Live region for speaking status — WCAG 4.1.3 */
         .spoken-text-box {
             width: 100%;
             background: #F8F9FA;
-            border: 2px dashed #E0E0E0;
+            border: 2px dashed var(--border-color);
             border-radius: var(--radius);
             padding: var(--spacing-md);
             text-align: center;
@@ -236,40 +237,58 @@
             text-align: center;
         }
 
-        /* Grammar / Word Reorder */
+        /* Grammar — Word Reorder */
+        .word-pool-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-sm);
+            display: block;
+        }
+
         .word-pool {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             justify-content: center;
-            margin-top: var(--spacing-lg);
+            margin-top: var(--spacing-md);
         }
 
+        /* WCAG 2.1.1 — word chips converted to <button> */
         .word-chip {
             background: white;
-            border: 2px solid #E0E0E0;
+            border: 2px solid var(--border-color);
             border-radius: 10px;
             padding: 8px 16px;
             font-weight: 600;
+            font-family: inherit;
+            font-size: 0.95rem;
             cursor: pointer;
-            box-shadow: 0 3px 0px #E0E0E0;
+            box-shadow: 0 3px 0px #CACFD2;
             transition: all 0.15s;
+            min-height: 44px;           /* WCAG 2.5.8 */
         }
 
-        .word-chip:hover {
+        .word-chip:hover:not(:disabled) {
             border-color: var(--primary-color);
         }
 
+        .word-chip:disabled,
         .word-chip.used {
-            opacity: 0.3;
+            opacity: 0.35;
             cursor: default;
-            pointer-events: none;
+        }
+
+        /* Word chips placed in the answer area */
+        .answer-area .word-chip {
+            background: #FFF3E0;
+            border-color: var(--primary-color);
+            color: #995C00;
         }
 
         .answer-area {
             min-height: 56px;
             width: 100%;
-            border-bottom: 2px solid #E0E0E0;
+            border-bottom: 2px solid var(--border-color);
             margin-bottom: var(--spacing-lg);
             display: flex;
             flex-wrap: wrap;
@@ -277,10 +296,12 @@
             padding-bottom: 10px;
         }
 
-        .answer-area .word-chip {
-            background: #FFF3E0;
-            border-color: var(--primary-color);
-            color: var(--primary-color);
+        /* WCAG 1.3.1 — aria-label on answer area */
+        .answer-area:empty::before {
+            content: attr(aria-label);
+            color: var(--text-muted);
+            font-style: italic;
+            font-size: 0.9rem;
         }
 
         .footer-action {
@@ -294,62 +315,150 @@
     </style>
 </head>
 <body>
+    <!-- WCAG 2.4.1 — Skip link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <div class="container fade-in">
-        <header class="exercise-header">
-            <a href="levels.html" class="close-btn"><i class="fas fa-times"></i></a>
+        <header class="exercise-header" role="banner">
+            <!-- WCAG 2.4.4, 1.1.1 — descriptive aria-label on icon-only link -->
+            <a href="levels.html"
+               class="icon-btn"
+               aria-label="Exit exercise and return to lessons">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </a>
+
+            <!-- WCAG 1.3.1, 4.1.2 — progressbar role with ARIA state -->
             <div class="progress-wrapper">
-                <div class="progress-bar-bg">
+                <div class="progress-bar-bg"
+                     role="progressbar"
+                     aria-valuenow="0"
+                     aria-valuemin="0"
+                     aria-valuemax="100"
+                     aria-label="Exercise progress"
+                     id="progressBarWrapper">
                     <div id="progressBar" class="progress-bar-fill"></div>
                 </div>
-                <span id="progressText" class="progress-step-text">0/0 completed</span>
+                <!-- aria-live so SR announces step changes -->
+                <span id="progressText"
+                      class="progress-step-text"
+                      aria-live="polite"
+                      aria-atomic="true">0/0 completed</span>
             </div>
         </header>
 
-        <!-- TYPE 1: VOCABULARY -->
-        <div id="exercise-vocab" class="exercise-type hidden">
-            <p class="instruction" id="vocab-instruction">Choose the best phrase to complete the context</p>
-            <div class="question-card">
-                <div class="question-icon"><i class="fas fa-book-open"></i></div>
-                <p class="question-text" id="vocab-question">"Loading..."</p>
-            </div>
-            <p class="options-label">Select an option</p>
-            <div class="options-grid" id="vocab-options"></div>
-        </div>
-
-        <!-- TYPE 2: SPEAKING -->
-        <div id="exercise-speaking" class="exercise-type hidden">
-            <p class="instruction" id="speaking-instruction">Read the following sentence aloud</p>
-            <div class="question-card">
-                <div class="question-icon" style="color: var(--primary-color)"><i class="fas fa-volume-up"></i></div>
-                <p class="question-text" id="speaking-question">"Loading..."</p>
-            </div>
-            <div class="speaking-container">
-                <div class="speaking-actions">
-                    <button class="listen-btn" id="listenBtn" onclick="playTTS()" title="Listen to pronunciation">
-                        <i class="fas fa-headphones"></i>
-                    </button>
-                    <button class="mic-button" id="micBtn" onclick="toggleRecording()">
-                        <i class="fas fa-microphone"></i>
-                    </button>
+        <main id="main-content">
+            <!-- ── TYPE 1: VOCABULARY ── -->
+            <section id="exercise-vocab" class="exercise-type hidden" aria-labelledby="vocab-instruction">
+                <p class="instruction" id="vocab-instruction">Choose the best phrase to complete the context</p>
+                <div class="question-card">
+                    <!-- WCAG 1.1.1 — decorative icon hidden from SR -->
+                    <div class="question-icon" aria-hidden="true">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <p class="question-text" id="vocab-question">"Loading…"</p>
                 </div>
-                <p id="speakingStatus" style="font-weight: 600; color: var(--text-muted);">Tap 🎧 to listen, then 🎤 to speak</p>
-                <div class="spoken-text-box" id="spokenTextBox">Your response will appear here...</div>
-                <div id="micNotSupported" class="mic-not-supported hidden">
-                    <i class="fas fa-exclamation-triangle"></i> Speech recognition not supported in this browser.
-                    <br><a href="#" onclick="skipSpeaking()" style="color: #856404; font-weight: 700;">Skip this exercise →</a>
-                </div>
-            </div>
-        </div>
 
-        <!-- TYPE 3: GRAMMAR -->
-        <div id="exercise-grammar" class="exercise-type hidden">
-            <p class="instruction" id="grammar-instruction">Arrange the words to form a grammatically correct sentence</p>
-            <div class="answer-area" id="answerArea"></div>
-            <div class="word-pool" id="wordPool"></div>
-        </div>
+                <!-- WCAG 1.3.1 — "Select an option" label for the group -->
+                <p class="options-label" id="vocab-options-label">Select an option:</p>
+                <div class="options-grid"
+                     id="vocab-options"
+                     role="group"
+                     aria-labelledby="vocab-options-label">
+                </div>
+            </section>
+
+            <!-- ── TYPE 2: SPEAKING ── -->
+            <section id="exercise-speaking" class="exercise-type hidden" aria-labelledby="speaking-instruction">
+                <p class="instruction" id="speaking-instruction">Read the following sentence aloud</p>
+                <div class="question-card">
+                    <div class="question-icon" style="color: var(--primary-color)" aria-hidden="true">
+                        <i class="fas fa-volume-up"></i>
+                    </div>
+                    <p class="question-text" id="speaking-question">"Loading…"</p>
+                </div>
+
+                <div class="speaking-container">
+                    <div class="speaking-actions">
+                        <!-- WCAG 2.4.6 — descriptive button label -->
+                        <button class="listen-btn"
+                                id="listenBtn"
+                                type="button"
+                                aria-label="Listen to pronunciation">
+                            <i class="fas fa-headphones" aria-hidden="true"></i>
+                        </button>
+
+                        <!-- WCAG 1.1.1, 2.4.6 — mic button with descriptive label -->
+                        <button class="mic-button"
+                                id="micBtn"
+                                type="button"
+                                aria-label="Start voice recording"
+                                aria-pressed="false">
+                            <i class="fas fa-microphone" aria-hidden="true"></i>
+                        </button>
+                    </div>
+
+                    <!-- WCAG 4.1.3 — status live region announced by SR -->
+                    <p id="speakingStatus"
+                       style="font-weight: 600; color: var(--text-muted);"
+                       aria-live="polite"
+                       aria-atomic="true">
+                        Tap 🎧 to listen, then 🎤 to speak
+                    </p>
+
+                    <!-- Spoken text feedback -->
+                    <div class="spoken-text-box"
+                         id="spokenTextBox"
+                         aria-live="polite"
+                         aria-atomic="true"
+                         aria-label="Your spoken response">
+                        Your response will appear here…
+                    </div>
+
+                    <!-- Fallback when speech recognition unavailable -->
+                    <div id="micNotSupported" class="mic-not-supported hidden" role="alert">
+                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                        Speech recognition is not supported in this browser.
+                        <br>
+                        <button type="button"
+                                id="skipSpeakingBtn"
+                                style="color: #856404; font-weight: 700; background: none; border: none; cursor: pointer; text-decoration: underline; font-size: inherit; padding: 4px 0; font-family: inherit; min-height: 44px;">
+                            Skip this exercise →
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── TYPE 3: GRAMMAR ── -->
+            <section id="exercise-grammar" class="exercise-type hidden" aria-labelledby="grammar-instruction">
+                <p class="instruction" id="grammar-instruction">Arrange the words to form a correct sentence</p>
+
+                <!-- WCAG 1.3.1 — labelled answer area -->
+                <div class="answer-area"
+                     id="answerArea"
+                     role="group"
+                     aria-label="Your answer (click a word to remove it)">
+                </div>
+
+                <!-- Word pool -->
+                <span class="word-pool-label" id="wordpool-label">
+                    Available words (click to add):
+                </span>
+                <div class="word-pool"
+                     id="wordPool"
+                     role="group"
+                     aria-labelledby="wordpool-label">
+                </div>
+            </section>
+        </main>
 
         <div class="footer-action">
-            <button id="checkBtn" class="btn btn-primary" disabled onclick="handleNext()">CHECK</button>
+            <button id="checkBtn"
+                    class="btn btn-primary"
+                    type="button"
+                    disabled
+                    aria-disabled="true">
+                CHECK
+            </button>
         </div>
     </div>
 
@@ -359,37 +468,34 @@
     <script src="../js/exercises.js"></script>
 
     <script>
-        let currentStep = 0;
-        let exercises = [];
-        let xpReward = 10;
-        let correctCount = 0;
-        let incorrectCount = 0;
+        let currentStep        = 0;
+        let exercises          = [];
+        let xpReward           = 10;
+        let correctCount       = 0;
+        let incorrectCount     = 0;
         let selectedOptionIndex = -1;
-        let lastTranscript = '';
-        let recognition = null;
-        let isRecording = false;
+        let lastTranscript     = '';
+        let recognition        = null;
+        let isRecording        = false;
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const levelId = parseInt(urlParams.get('level')) || 1;
-        const startStep = parseInt(urlParams.get('step')) || 0;
+        const urlParams   = new URLSearchParams(window.location.search);
+        const levelId     = parseInt(urlParams.get('level')) || 1;
+        const startStep   = parseInt(urlParams.get('step'))  || 0;
         const initialStats = urlParams.get('stats') ? urlParams.get('stats').split(',') : null;
 
-        // ── Session guard ──
+        /* ── Session guard ── */
         async function initExercise() {
             try {
                 const { data: { session } } = await window.supabaseClient.auth.getSession();
-                if (!session) {
-                    window.location.href = 'login.html';
-                    return;
-                }
+                if (!session) { window.location.href = 'login.html'; return; }
 
                 const levelData = await getExercisesForLevel(levelId);
                 if (levelData && levelData.exercises) {
-                    exercises = levelData.exercises;
-                    xpReward = levelData.xp_reward || 10;
+                    exercises  = levelData.exercises;
+                    xpReward   = levelData.xp_reward || 10;
                     currentStep = startStep;
                     if (initialStats) {
-                        correctCount = parseInt(initialStats[0]) || 0;
+                        correctCount   = parseInt(initialStats[0]) || 0;
                         incorrectCount = parseInt(initialStats[1]) || 0;
                     }
 
@@ -400,16 +506,25 @@
                         updateProgress();
                     }
                 } else {
-                    alert('Level content not found.');
-                    window.location.href = 'levels.html';
+                    showGlobalError('Level content not found.');
+                    setTimeout(() => window.location.href = 'levels.html', 2000);
                 }
             } catch (err) {
                 console.error('Error initializing exercise:', err);
-                alert('Connection error. Please try again.');
+                showGlobalError('Connection error. Please try again.');
             }
         }
 
-        // ── Speech Recognition setup ──
+        function showGlobalError(msg) {
+            const el = document.createElement('div');
+            el.setAttribute('role', 'alert');
+            el.className = 'alert-message alert-error';
+            el.style.margin = 'var(--spacing-md) 0';
+            el.textContent = msg;
+            document.getElementById('main-content').prepend(el);
+        }
+
+        /* ── Speech Recognition ── */
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
         function initSpeechRecognition() {
@@ -422,24 +537,27 @@
 
             recognition.onresult = (event) => {
                 lastTranscript = event.results[0][0].transcript;
-                const box = document.getElementById('spokenTextBox');
-                box.innerText = '"' + lastTranscript + '"';
+                const box    = document.getElementById('spokenTextBox');
+                const status = document.getElementById('speakingStatus');
+                const micBtn = document.getElementById('micBtn');
+
+                box.textContent = '"' + lastTranscript + '"';
                 box.classList.add('has-text');
-                document.getElementById('speakingStatus').innerText = 'Recording complete ✓';
-                document.getElementById('speakingStatus').style.color = 'var(--success-color)';
-                document.getElementById('checkBtn').disabled = false;
+                status.textContent = 'Recording complete ✓';
+                status.style.color = 'var(--success-color)';
+                setCheckBtn(false);
                 stopRecording();
             };
 
             recognition.onerror = (event) => {
                 stopRecording();
+                const status = document.getElementById('speakingStatus');
                 if (event.error === 'not-allowed' || event.error === 'permission-denied') {
-                    document.getElementById('speakingStatus').innerText = 'Microphone access denied.';
-                    document.getElementById('speakingStatus').style.color = 'var(--error-color)';
+                    status.textContent = 'Microphone access denied.';
                 } else {
-                    document.getElementById('speakingStatus').innerText = 'Could not hear you. Try again.';
-                    document.getElementById('speakingStatus').style.color = 'var(--error-color)';
+                    status.textContent = 'Could not hear you. Try again.';
                 }
+                status.style.color = 'var(--error-color)';
             };
 
             recognition.onend = () => { stopRecording(); };
@@ -448,7 +566,11 @@
         function stopRecording() {
             isRecording = false;
             const btn = document.getElementById('micBtn');
-            if (btn) btn.classList.remove('recording');
+            if (btn) {
+                btn.classList.remove('recording');
+                btn.setAttribute('aria-pressed', 'false');
+                btn.setAttribute('aria-label', 'Start voice recording');
+            }
         }
 
         function toggleRecording() {
@@ -458,25 +580,29 @@
                 stopRecording();
                 return;
             }
-            // Request mic and start
+
             navigator.mediaDevices.getUserMedia({ audio: true })
                 .then(() => {
                     lastTranscript = '';
-                    isRecording = true;
-                    const btn = document.getElementById('micBtn');
-                    btn.classList.add('recording');
+                    isRecording    = true;
+
+                    const btn    = document.getElementById('micBtn');
                     const status = document.getElementById('speakingStatus');
-                    status.innerText = 'Listening... speak now';
+                    const box    = document.getElementById('spokenTextBox');
+
+                    btn.classList.add('recording');
+                    btn.setAttribute('aria-pressed', 'true');
+                    btn.setAttribute('aria-label', 'Stop recording');
+                    status.textContent = 'Listening… speak now';
                     status.style.color = 'var(--error-color)';
-                    const box = document.getElementById('spokenTextBox');
-                    box.innerText = 'Your response will appear here...';
+                    box.textContent = 'Your response will appear here…';
                     box.classList.remove('has-text');
-                    document.getElementById('checkBtn').disabled = true;
+                    setCheckBtn(true);
                     recognition.start();
                 })
-                .catch((err) => {
+                .catch(() => {
                     const status = document.getElementById('speakingStatus');
-                    status.innerText = 'Microphone permission denied. Please allow access.';
+                    status.textContent = 'Microphone permission denied. Please allow access.';
                     status.style.color = 'var(--error-color)';
                 });
         }
@@ -492,105 +618,154 @@
         }
 
         function skipSpeaking() {
-            lastTranscript = exercises[currentStep].question; // auto-pass if not supported
-            document.getElementById('checkBtn').disabled = false;
-            document.getElementById('speakingStatus').innerText = 'Skipped.';
+            lastTranscript = exercises[currentStep].question; // auto-pass
+            setCheckBtn(false);
+            document.getElementById('speakingStatus').textContent = 'Skipped.';
         }
 
-        // ── Speaking evaluation ──
+        /* ── Speaking evaluation ── */
         function isSpeakingCorrect(transcript, expected) {
-            const normalize = str => str.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
-            const transcriptWords = normalize(transcript).split(/\s+/);
-            const expectedWords = normalize(expected).split(/\s+/);
-            const matches = expectedWords.filter(w => transcriptWords.includes(w));
-            return (matches.length / expectedWords.length) >= 0.7;
+            const normalize   = str => str.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
+            const tWords      = normalize(transcript).split(/\s+/);
+            const eWords      = normalize(expected).split(/\s+/);
+            const matches     = eWords.filter(w => tWords.includes(w));
+            return (matches.length / eWords.length) >= 0.7;
         }
 
-        // ── Render exercise ──
+        /* ── Helpers ── */
+        function setCheckBtn(disabled) {
+            const btn = document.getElementById('checkBtn');
+            btn.disabled = disabled;
+            btn.setAttribute('aria-disabled', disabled ? 'true' : 'false');
+        }
+
+        /* ── Render exercise ── */
         function showExercise(index) {
             if (!exercises[index]) return;
             const ex = exercises[index];
+
             document.querySelectorAll('.exercise-type').forEach(c => c.classList.add('hidden'));
 
             const checkBtn = document.getElementById('checkBtn');
-            checkBtn.disabled = true;
-            checkBtn.innerText = index === exercises.length - 1 ? 'FINISH' : 'CHECK';
+            setCheckBtn(true);
+            checkBtn.textContent = index === exercises.length - 1 ? 'FINISH' : 'CHECK';
             selectedOptionIndex = -1;
             lastTranscript = '';
 
             if (ex.type === 'vocabulary') {
                 const vocab = document.getElementById('exercise-vocab');
                 vocab.classList.remove('hidden');
-                if (ex.instruction) document.getElementById('vocab-instruction').innerText = ex.instruction;
-                document.getElementById('vocab-question').innerText = '"' + ex.question + '"';
+                if (ex.instruction) document.getElementById('vocab-instruction').textContent = ex.instruction;
+                document.getElementById('vocab-question').textContent = '"' + ex.question + '"';
+
                 const optionsGrid = document.getElementById('vocab-options');
                 optionsGrid.innerHTML = '';
+
                 ex.options.forEach((opt, i) => {
+                    // WCAG 2.1.1 — <button> with aria-pressed for keyboard
                     const btn = document.createElement('button');
+                    btn.type = 'button';
                     btn.className = 'option-btn';
-                    btn.innerText = opt;
-                    btn.onclick = () => selectOption(btn, i);
+                    btn.textContent = opt;
+                    btn.setAttribute('aria-pressed', 'false');
+                    btn.addEventListener('click', () => selectOption(btn, i));
                     optionsGrid.appendChild(btn);
                 });
 
             } else if (ex.type === 'speaking') {
                 const speaking = document.getElementById('exercise-speaking');
                 speaking.classList.remove('hidden');
-                if (ex.instruction) document.getElementById('speaking-instruction').innerText = ex.instruction;
-                document.getElementById('speaking-question').innerText = '"' + ex.question + '"';
-                document.getElementById('speakingStatus').innerText = 'Tap 🎧 to listen, then 🎤 to speak';
-                document.getElementById('speakingStatus').style.color = 'var(--text-muted)';
-                document.getElementById('spokenTextBox').innerText = 'Your response will appear here...';
-                document.getElementById('spokenTextBox').classList.remove('has-text');
-                document.getElementById('micBtn').classList.remove('recording');
+                if (ex.instruction) document.getElementById('speaking-instruction').textContent = ex.instruction;
+                document.getElementById('speaking-question').textContent = '"' + ex.question + '"';
+
+                const status = document.getElementById('speakingStatus');
+                status.textContent = 'Tap 🎧 to listen, then 🎤 to speak';
+                status.style.color = 'var(--text-muted)';
+
+                const box = document.getElementById('spokenTextBox');
+                box.textContent = 'Your response will appear here…';
+                box.classList.remove('has-text');
+
+                const micBtn = document.getElementById('micBtn');
+                micBtn.classList.remove('recording');
+                micBtn.setAttribute('aria-pressed', 'false');
+                micBtn.setAttribute('aria-label', 'Start voice recording');
+
+                // Wire up buttons
+                document.getElementById('listenBtn').onclick = playTTS;
+                micBtn.onclick = toggleRecording;
 
                 if (!SpeechRecognition) {
                     document.getElementById('micNotSupported').classList.remove('hidden');
-                    document.getElementById('micBtn').disabled = true;
+                    micBtn.disabled = true;
+                    setCheckBtn(false); // Allow skip
                 } else {
                     document.getElementById('micNotSupported').classList.add('hidden');
-                    document.getElementById('micBtn').disabled = false;
+                    micBtn.disabled = false;
                     initSpeechRecognition();
                 }
 
             } else if (ex.type === 'grammar') {
                 const grammar = document.getElementById('exercise-grammar');
                 grammar.classList.remove('hidden');
-                if (ex.instruction) document.getElementById('grammar-instruction').innerText = ex.instruction;
-                document.getElementById('answerArea').innerHTML = '';
+                if (ex.instruction) document.getElementById('grammar-instruction').textContent = ex.instruction;
+
+                const answerArea = document.getElementById('answerArea');
+                answerArea.innerHTML = '';
+
                 const pool = document.getElementById('wordPool');
                 pool.innerHTML = '';
+
                 ex.words.forEach(word => {
-                    const chip = document.createElement('div');
+                    // WCAG 2.1.1 — <button> for keyboard accessible word chips
+                    const chip = document.createElement('button');
+                    chip.type = 'button';
                     chip.className = 'word-chip';
-                    chip.innerText = word;
-                    chip.onclick = () => addWord(chip);
+                    chip.textContent = word;
+                    chip.setAttribute('aria-label', `Add word: ${word}`);
+                    chip.addEventListener('click', () => addWord(chip));
                     pool.appendChild(chip);
                 });
             }
+
+            // Announce which exercise type to SR
+            const announcer = document.getElementById('progressText');
+            announcer.textContent = `${index + 1}/${exercises.length} – ${ex.type} exercise`;
         }
 
         function selectOption(el, index) {
-            document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+                btn.setAttribute('aria-pressed', 'false');
+            });
             el.classList.add('selected');
+            el.setAttribute('aria-pressed', 'true');
             selectedOptionIndex = index;
-            document.getElementById('checkBtn').disabled = false;
+            setCheckBtn(false);
         }
 
         function addWord(el) {
-            if (el.classList.contains('used')) return;
-            const area = document.getElementById('answerArea');
-            const newChip = document.createElement('div');
+            if (el.disabled || el.classList.contains('used')) return;
+
+            const area    = document.getElementById('answerArea');
+            const newChip = document.createElement('button');
+            newChip.type      = 'button';
             newChip.className = 'word-chip';
-            newChip.innerText = el.innerText;
-            newChip.onclick = function () {
+            newChip.textContent = el.textContent;
+            newChip.setAttribute('aria-label', `Remove word: ${el.textContent}`);
+            newChip.addEventListener('click', function () {
                 area.removeChild(newChip);
+                el.disabled = false;
                 el.classList.remove('used');
-                if (area.children.length === 0) document.getElementById('checkBtn').disabled = true;
-            };
+                el.setAttribute('aria-label', `Add word: ${el.textContent}`);
+                if (area.children.length === 0) setCheckBtn(true);
+            });
+
             area.appendChild(newChip);
+            el.disabled = true;
             el.classList.add('used');
-            document.getElementById('checkBtn').disabled = false;
+            el.setAttribute('aria-label', `${el.textContent} (used)`);
+            setCheckBtn(false);
         }
 
         async function handleNext() {
@@ -601,14 +776,12 @@
                 isCorrect = (selectedOptionIndex === ex.correct);
             } else if (ex.type === 'grammar') {
                 const userSentence = Array.from(document.getElementById('answerArea').children)
-                    .map(c => c.innerText).join(' ').toLowerCase();
+                    .map(c => c.textContent).join(' ').toLowerCase();
                 isCorrect = (userSentence === ex.correct.toLowerCase());
             } else if (ex.type === 'speaking') {
-                if (lastTranscript) {
-                    isCorrect = isSpeakingCorrect(lastTranscript, ex.question);
-                } else {
-                    isCorrect = false;
-                }
+                isCorrect = lastTranscript
+                    ? isSpeakingCorrect(lastTranscript, ex.question)
+                    : false;
             }
 
             if (isCorrect) {
@@ -624,34 +797,54 @@
                 incorrectCount++;
                 let correctText = '';
                 if (ex.type === 'vocabulary') correctText = ex.options[ex.correct];
-                else if (ex.type === 'grammar') correctText = ex.correct;
-                else if (ex.type === 'speaking') correctText = ex.question;
+                else if (ex.type === 'grammar')   correctText = ex.correct;
+                else if (ex.type === 'speaking')  correctText = ex.question;
 
                 const explanation = ex.explanation || '';
-                window.location.href = `feedback.html?level=${levelId}&step=${currentStep}&correct=${encodeURIComponent(correctText)}&explanation=${encodeURIComponent(explanation)}&stats=${correctCount},${incorrectCount}`;
+                window.location.href =
+                    `feedback.html?level=${levelId}&step=${currentStep}` +
+                    `&correct=${encodeURIComponent(correctText)}` +
+                    `&explanation=${encodeURIComponent(explanation)}` +
+                    `&stats=${correctCount},${incorrectCount}`;
             }
         }
 
         async function finishLesson() {
             const btn = document.getElementById('checkBtn');
             btn.disabled = true;
-            btn.innerText = 'SAVING PROGRESS...';
+            btn.setAttribute('aria-busy', 'true');
+            btn.textContent = 'Saving progress…';
             try {
                 await addXP(xpReward);
                 await completeLevel(levelId);
             } catch (error) {
                 console.warn('Could not save progress:', error);
             }
-            window.location.href = `completion.html?correct=${correctCount}&incorrect=${incorrectCount}&xp=${xpReward}`;
+            window.location.href =
+                `completion.html?correct=${correctCount}&incorrect=${incorrectCount}&xp=${xpReward}`;
         }
 
         function updateProgress() {
             if (exercises.length === 0) return;
-            // Show COMPLETED steps (not current), so it starts at 0%
-            const percent = (currentStep / exercises.length) * 100;
+            const percent = Math.round((currentStep / exercises.length) * 100);
+
+            // Update visual bar
             document.getElementById('progressBar').style.width = percent + '%';
-            document.getElementById('progressText').innerText = currentStep + '/' + exercises.length + ' completed';
+
+            // Update ARIA progressbar
+            document.getElementById('progressBarWrapper').setAttribute('aria-valuenow', percent);
+
+            // Update text (also announced by aria-live on progressText)
+            document.getElementById('progressText').textContent =
+                currentStep + '/' + exercises.length + ' completed';
         }
+
+        // Wire up the CHECK / FINISH button
+        document.getElementById('checkBtn').addEventListener('click', handleNext);
+
+        // Wire up skip-speaking button (speech recognition not supported)
+        const skipBtn = document.getElementById('skipSpeakingBtn');
+        if (skipBtn) skipBtn.addEventListener('click', skipSpeaking);
 
         initExercise();
     </script>

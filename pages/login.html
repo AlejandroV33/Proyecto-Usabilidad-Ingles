@@ -3,55 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Shimi</title>
+    <!-- WCAG 2.4.2 — Descriptive page title -->
+    <title>Shimi – Log In to Your Account</title>
+    <meta name="description" content="Log in to Shimi and continue learning English B1.">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .header {
+        .page-header {
             display: flex;
             align-items: center;
             margin-bottom: var(--spacing-xl);
             padding-top: var(--spacing-md);
-        }
-        .back-btn {
-            font-size: 1.5rem;
-            color: var(--text-muted);
-            margin-right: var(--spacing-md);
-            text-decoration: none;
-        }
-        .error-message {
-            color: var(--error-color);
-            font-size: 0.9rem;
-            margin-top: var(--spacing-sm);
-            text-align: center;
-            display: none;
+            gap: var(--spacing-sm);
         }
     </style>
 </head>
 <body>
+    <!-- WCAG 2.4.1 — Skip link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <div class="container fade-in">
-        <div class="header">
-            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
-            <h2>Login</h2>
-        </div>
+        <!-- WCAG 2.4.4 — Back button with aria-label (icon-only) -->
+        <header class="page-header" role="banner">
+            <a href="../index.html"
+               class="icon-btn"
+               aria-label="Back to home">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i>
+            </a>
+            <!-- WCAG 1.3.1 — h1 for main heading of the page -->
+            <h1 style="font-size: 1.5rem; margin-bottom: 0;">Log In</h1>
+        </header>
 
-        <form id="loginForm">
-            <div class="input-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" placeholder="you@email.com" required>
-            </div>
-            <div class="input-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="••••••••" required>
-            </div>
-            
-            <div id="errorMessage" class="error-message"></div>
-            <button type="submit" id="submitBtn" class="btn btn-primary" style="margin-top: var(--spacing-lg);">LOGIN</button>
-        </form>
+        <main id="main-content">
+            <!-- WCAG 1.3.1, 1.3.5 — form with proper labels and autocomplete -->
+            <form id="loginForm" novalidate>
+                <div class="input-group">
+                    <label for="email">Email address</label>
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           autocomplete="email"
+                           placeholder="you@email.com"
+                           required
+                           aria-required="true"
+                           aria-describedby="email-hint">
+                    <span id="email-hint" class="sr-only">Enter the email address you used to register.</span>
+                </div>
 
-        <div style="text-align: center; margin-top: var(--spacing-xl);">
-            <p style="color: var(--text-muted);">Don't have an account? <a href="register.html" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Sign up</a></p>
-        </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           autocomplete="current-password"
+                           placeholder="••••••••"
+                           required
+                           aria-required="true">
+                </div>
+
+                <!-- WCAG 4.1.3 — Live region for dynamic errors (role="alert" announces on change) -->
+                <div id="errorMessage"
+                     class="alert-message"
+                     role="alert"
+                     aria-live="assertive"
+                     aria-atomic="true"></div>
+
+                <button type="submit"
+                        id="submitBtn"
+                        class="btn btn-primary"
+                        style="margin-top: var(--spacing-lg);">
+                    LOG IN
+                </button>
+            </form>
+
+            <p style="text-align: center; margin-top: var(--spacing-xl); color: var(--text-muted);">
+                Don't have an account?
+                <!-- WCAG 2.4.4 — Descriptive link text -->
+                <a href="register.html"
+                   style="color: var(--primary-color); font-weight: 600; text-decoration: underline;">
+                    Sign up for free
+                </a>
+            </p>
+        </main>
     </div>
 
     <!-- Supabase SDK -->
@@ -60,28 +93,58 @@
     <script src="../js/auth.js"></script>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        const loginForm = document.getElementById('loginForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const errorDiv  = document.getElementById('errorMessage');
+        const emailInput    = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const submitBtn = document.getElementById('submitBtn');
-            const errorDiv = document.getElementById('errorMessage');
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+
+            // Clear previous errors and invalid states
+            errorDiv.className = 'alert-message';
+            errorDiv.textContent = '';
+            emailInput.removeAttribute('aria-invalid');
+            passwordInput.removeAttribute('aria-invalid');
+
+            const email    = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            // Basic client-side validation
+            if (!email) {
+                showError('Please enter your email address.');
+                emailInput.setAttribute('aria-invalid', 'true');
+                emailInput.focus();
+                return;
+            }
+            if (!password) {
+                showError('Please enter your password.');
+                passwordInput.setAttribute('aria-invalid', 'true');
+                passwordInput.focus();
+                return;
+            }
 
             submitBtn.disabled = true;
-            submitBtn.innerText = 'LOGGING IN...';
-            errorDiv.style.display = 'none';
+            // WCAG 4.1.3 — announce loading state
+            submitBtn.setAttribute('aria-busy', 'true');
+            submitBtn.textContent = 'Logging in…';
 
             try {
                 await signIn(email, password);
                 window.location.href = 'levels.html';
             } catch (error) {
-                errorDiv.innerText = error.message;
-                errorDiv.style.display = 'block';
+                showError(error.message || 'Login failed. Please try again.');
                 submitBtn.disabled = false;
-                submitBtn.innerText = 'LOGIN';
+                submitBtn.removeAttribute('aria-busy');
+                submitBtn.textContent = 'LOG IN';
             }
         });
+
+        function showError(message) {
+            errorDiv.textContent = message;
+            errorDiv.className = 'alert-message alert-error';
+        }
     </script>
 </body>
 </html>

@@ -3,64 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shimi - Levels</title>
+    <!-- WCAG 2.4.2 — Descriptive page title -->
+    <title>Shimi – Select a Lesson</title>
+    <meta name="description" content="Choose your next English B1 lesson and track your progress.">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .levels-header {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
+            align-items: flex-start;
+            gap: var(--spacing-md);
             padding: var(--spacing-md) 0;
             margin-bottom: var(--spacing-lg);
         }
 
-        .header-section-name {
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        .progress-container {
-            flex: 0.8;
+        .header-info {
+            flex: 1;
             display: flex;
             flex-direction: column;
+            gap: 4px;
+        }
+
+        .user-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .user-name {
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        .xp-badge {
+            display: inline-flex;
             align-items: center;
+            gap: 4px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            background: #FFF3E0;
+            border: 1px solid #FFE0B2;
+        }
+
+        .xp-badge i  { font-size: 0.75rem; color: #E67E22; }
+        .xp-badge span { font-size: 0.75rem; color: #E67E22; font-weight: 800; }
+
+        .progress-container {
+            width: 100%;
+            margin: 4px 0;
         }
 
         .progress-bar-bg {
-            width: 100%;
-            height: 10px;
-            background-color: #E0E0E0;
-            border-radius: 5px;
-            overflow: hidden;
+            height: 8px;
             margin-bottom: 4px;
         }
 
-        .progress-bar-fill {
-            width: 90%;
-            height: 100%;
-            background-color: var(--success-color);
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
         }
 
         .progress-text {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
-            font-weight: 600;
-        }
-
-        .settings-btn {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            cursor: pointer;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .main-title {
             text-align: center;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             margin-bottom: var(--spacing-xl);
         }
 
-        /* Level Grid */
+        /* Level Grid — 3 columns desktop, 2 on narrow */
         .levels-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -68,24 +86,37 @@
             margin-bottom: var(--spacing-xl);
         }
 
+        @media (max-width: 360px) {
+            .levels-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* WCAG 2.1.1, 2.5.8 — level items are <button>s with min 44px */
         .level-item {
             aspect-ratio: 1/1;
             background: white;
-            border: 2px solid #E0E0E0;
+            border: 2px solid var(--border-color);
             border-radius: var(--radius);
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 0px #E0E0E0;
+            box-shadow: 0 4px 0px #CACFD2;
             cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.1s, box-shadow 0.1s;
+            padding: 0;
+            min-height: 44px;
+        }
+
+        .level-item:hover:not(:disabled) {
+            transform: translateY(-2px);
         }
 
         .level-circle {
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            border: 2px solid #E0E0E0;
+            border: 2px solid var(--border-color);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -93,15 +124,17 @@
             font-size: 1.2rem;
         }
 
-        /* Completed Status */
+        /* WCAG 1.4.1 — completed uses icon + color, not color alone */
         .level-item.completed {
             border-color: var(--success-color);
             box-shadow: 0 4px 0px #00a383;
         }
+
         .level-item.completed .level-circle {
             border-color: var(--success-color);
             color: var(--success-color);
         }
+
         .check-badge {
             position: absolute;
             top: 5px;
@@ -110,7 +143,7 @@
             font-size: 0.9rem;
         }
 
-        /* Active/Large Level */
+        /* Active — spans full width */
         .level-item.active-level {
             grid-column: span 3;
             aspect-ratio: auto;
@@ -121,6 +154,10 @@
             color: white;
             flex-direction: row;
             gap: var(--spacing-md);
+        }
+
+        @media (max-width: 360px) {
+            .level-item.active-level { grid-column: span 2; }
         }
 
         .active-level .level-circle {
@@ -134,34 +171,20 @@
             font-size: 1.1rem;
         }
 
-        /* Locked Status */
+        /* WCAG 1.4.1 — locked: icon + text, not only grey color */
         .level-item.locked {
             background-color: #F0F0F0;
-            border-color: #E0E0E0;
-            color: #BDBDBD;
+            border-color: #BDBDBD;
+            color: #9E9E9E;
             box-shadow: 0 4px 0px #D0D0D0;
             cursor: not-allowed;
         }
+
         .level-item.locked .level-circle {
-            border-color: #D0D0D0;
+            border-color: #BDBDBD;
         }
 
-        /* Section 6 Area */
-        .section-separator {
-            background-color: #F8F9FA;
-            border: 2px solid #E0E0E0;
-            border-radius: var(--radius);
-            padding: var(--spacing-md);
-            margin-top: var(--spacing-xl);
-        }
-
-        .section-separator-title {
-            font-weight: 800;
-            margin-bottom: var(--spacing-md);
-            color: var(--text-muted);
-        }
-
-        /* Navigation Footer */
+        /* Section navigation */
         .nav-footer {
             display: flex;
             justify-content: center;
@@ -170,75 +193,107 @@
             margin-top: auto;
         }
 
+        /* WCAG 2.5.8 — 44×44px circular navigation buttons */
         .nav-circle-btn {
-            width: 50px;
-            height: 50px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
-            border: 2px solid #E0E0E0;
+            border: 2px solid var(--border-color);
             background: white;
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 1.2rem;
             color: var(--text-muted);
-            box-shadow: 0 4px 0px #E0E0E0;
+            box-shadow: 0 4px 0px #CACFD2;
             cursor: pointer;
             transition: all 0.2s;
+            font-family: inherit;
         }
 
-        .nav-circle-btn:hover {
+        .nav-circle-btn:hover:not(:disabled) {
             border-color: var(--primary-color);
             color: var(--primary-color);
+        }
+
+        .nav-circle-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            box-shadow: none;
         }
     </style>
 </head>
 <body>
+    <!-- WCAG 2.4.1 — Skip link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <div class="container fade-in">
-        <!-- Cabecera Optimizada -->
-        <header class="levels-header" style="align-items: flex-start; gap: var(--spacing-md);">
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
-                <div style="display: flex; align-items: baseline; gap: 8px;">
-                    <span class="user-name" id="userNameDisplay" style="font-size: 1.2rem; font-weight: 800;">Loading...</span>
-                    <div class="xp-badge" style="padding: 2px 10px; border-radius: 12px; background: #FFF3E0; border: 1px solid #FFE0B2;">
-                        <i class="fas fa-bolt" style="font-size: 0.75rem; color: #E67E22;"></i>
-                        <span id="userXP" style="font-size: 0.75rem; color: #E67E22; font-weight: 800;">0 XP</span>
+        <header class="levels-header" role="banner">
+            <div class="header-info">
+                <div class="user-row">
+                    <!-- Populated by JS -->
+                    <span class="user-name" id="userNameDisplay" aria-live="polite">Loading…</span>
+                    <div class="xp-badge" aria-label="XP points">
+                        <i class="fas fa-bolt" aria-hidden="true"></i>
+                        <span id="userXP" aria-live="polite">0 XP</span>
                     </div>
                 </div>
-                
-                <div class="progress-container" style="width: 100%; margin: 4px 0;">
-                    <div class="progress-bar-bg" style="height: 8px;">
-                        <div class="progress-bar-fill" style="width: 15%;"></div>
+
+                <!-- WCAG 1.3.1, 4.1.2 — progress bar with ARIA semantics -->
+                <div class="progress-container">
+                    <div class="progress-bar-bg"
+                         role="progressbar"
+                         aria-valuenow="0"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         aria-label="Section progress"
+                         id="progressBarWrapper">
+                        <div class="progress-bar-fill" id="progressBarFill" style="width:0%"></div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; width: 100%;">
-                        <span class="progress-text" style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Section 5</span>
-                        <span class="progress-text" style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">15%</span>
+                    <div class="progress-labels">
+                        <span class="progress-text" id="sectionLabel">Section —</span>
+                        <span class="progress-text" id="progressPercent">0%</span>
                     </div>
                 </div>
             </div>
 
-            <a href="settings.html" style="color: var(--text-muted); text-decoration: none; padding: 5px; font-size: 1.3rem;">
-                <i class="fas fa-cog"></i>
+            <!-- WCAG 2.4.4, 2.5.8 — settings link with aria-label -->
+            <a href="settings.html"
+               class="icon-btn"
+               aria-label="Open settings">
+                <i class="fas fa-cog" aria-hidden="true"></i>
             </a>
         </header>
 
-        <h2 class="main-title" style="margin-top: var(--spacing-md); font-size: 1.4rem;">Select a lesson</h2>
+        <main id="main-content">
+            <h1 class="main-title">Select a lesson</h1>
 
-        <!-- Contenedor Dinámico de Niveles -->
-        <div id="dynamicLevelsContainer">
-            <!-- Populated by JS -->
-        </div>
+            <!-- Dynamic level cards inserted here by JS -->
+            <div id="dynamicLevelsContainer" aria-live="polite" aria-atomic="true"></div>
+        </main>
 
-        <!-- Footer Navegación -->
-        <footer class="nav-footer">
-            <div class="nav-circle-btn"><i class="fas fa-chevron-left"></i></div>
-            <div class="nav-circle-btn"><i class="fas fa-chevron-right"></i></div>
-        </footer>
+        <!-- WCAG 2.1.1 — nav buttons are <button> elements, keyboard accessible -->
+        <nav aria-label="Section navigation">
+            <div class="nav-footer">
+                <button class="nav-circle-btn"
+                        id="prevSectionBtn"
+                        aria-label="Previous section"
+                        disabled>
+                    <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                </button>
+                <button class="nav-circle-btn"
+                        id="nextSectionBtn"
+                        aria-label="Next section">
+                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                </button>
+            </div>
+        </nav>
     </div>
+
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/supabase-config.js"></script>
     <script src="../js/profile.js"></script>
-
     <script src="../js/exercises.js"></script>
 
     <script>
@@ -251,33 +306,31 @@
             const { data: { session } } = await window.supabaseClient.auth.getSession();
             if (!session) { window.location.href = 'login.html'; return; }
 
-            const profile = await getProfile();
+            const profile    = await getProfile();
             const levelsData = await getAllLevels();
 
             if (!profile) { window.location.href = 'login.html'; return; }
 
-            const name = profile.nickname || 'User';
-            document.getElementById('userNameDisplay').innerText = name;
-            document.getElementById('userXP').innerText = (profile.xp || 0) + ' XP';
+            document.getElementById('userNameDisplay').textContent = profile.nickname || 'User';
+            document.getElementById('userXP').textContent = (profile.xp || 0) + ' XP';
 
-            allLevelsData = levelsData;
-            completedLevelsGlobal = profile.completed_levels || [];
+            allLevelsData          = levelsData;
+            completedLevelsGlobal  = profile.completed_levels || [];
 
-            // Get unique section numbers, sorted
             const sectionNums = [...new Set(levelsData.map(l => l.section_number))].sort((a, b) => a - b);
             allSections = sectionNums;
 
-            // Start at the section that has the next uncompleted level
+            // Start at the section containing the next uncompleted level
             const completedIds = new Set(completedLevelsGlobal);
-            const nextLevel = levelsData.find(l => !completedIds.has(l.id));
+            const nextLevel    = levelsData.find(l => !completedIds.has(l.id));
             if (nextLevel) {
                 currentSectionIndex = allSections.indexOf(nextLevel.section_number);
                 if (currentSectionIndex < 0) currentSectionIndex = 0;
             }
 
             // Wire up nav buttons
-            document.querySelectorAll('.nav-circle-btn')[0].onclick = () => navigateSection(-1);
-            document.querySelectorAll('.nav-circle-btn')[1].onclick = () => navigateSection(1);
+            document.getElementById('prevSectionBtn').addEventListener('click', () => navigateSection(-1));
+            document.getElementById('nextSectionBtn').addEventListener('click', () => navigateSection(1));
 
             renderCurrentSection();
         }
@@ -291,24 +344,25 @@
         }
 
         function renderCurrentSection() {
-            const sectionNum = allSections[currentSectionIndex];
-            const sectionLevels = allLevelsData.filter(l => l.section_number === sectionNum);
+            const sectionNum        = allSections[currentSectionIndex];
+            const sectionLevels     = allLevelsData.filter(l => l.section_number === sectionNum);
             const completedInSection = sectionLevels.filter(l => completedLevelsGlobal.includes(l.id)).length;
-            const progressPct = sectionLevels.length > 0
+            const progressPct       = sectionLevels.length > 0
                 ? Math.round((completedInSection / sectionLevels.length) * 100)
                 : 0;
 
-            // Update header
-            document.querySelector('.progress-bar-fill').style.width = progressPct + '%';
-            document.querySelectorAll('.progress-text')[0].innerText = 'Section ' + sectionNum;
-            document.querySelectorAll('.progress-text')[1].innerText = progressPct + '%';
+            // Update progress bar — WCAG 1.3.1 ARIA attributes
+            const wrapper = document.getElementById('progressBarWrapper');
+            wrapper.setAttribute('aria-valuenow', progressPct);
+            document.getElementById('progressBarFill').style.width = progressPct + '%';
+            document.getElementById('sectionLabel').textContent    = 'Section ' + sectionNum;
+            document.getElementById('progressPercent').textContent  = progressPct + '%';
 
-            // Update nav button states
-            const btns = document.querySelectorAll('.nav-circle-btn');
-            btns[0].style.opacity = currentSectionIndex === 0 ? '0.3' : '1';
-            btns[0].style.cursor = currentSectionIndex === 0 ? 'not-allowed' : 'pointer';
-            btns[1].style.opacity = currentSectionIndex === allSections.length - 1 ? '0.3' : '1';
-            btns[1].style.cursor = currentSectionIndex === allSections.length - 1 ? 'not-allowed' : 'pointer';
+            // Update nav button disabled states
+            const prevBtn = document.getElementById('prevSectionBtn');
+            const nextBtn = document.getElementById('nextSectionBtn');
+            prevBtn.disabled = (currentSectionIndex === 0);
+            nextBtn.disabled = (currentSectionIndex === allSections.length - 1);
 
             renderLevels(completedLevelsGlobal, sectionLevels);
         }
@@ -324,24 +378,54 @@
 
             sectionLevels.forEach(levelFromDb => {
                 const i = levelFromDb.id;
-                const levelItem = document.createElement('div');
 
                 if (completedLevels.includes(i)) {
-                    levelItem.className = 'level-item completed';
-                    levelItem.innerHTML = `<i class="fas fa-check-circle check-badge"></i><div class="level-circle">${levelFromDb.level_number}</div>`;
-                    levelItem.title = levelFromDb.title || '';
-                    levelItem.onclick = () => window.location.href = `exercise.html?level=${i}`;
+                    // ── Completed ──
+                    // WCAG 2.1.1 — <button> for keyboard access
+                    // WCAG 1.4.1 — check icon + "Completed" SR text (not only green color)
+                    const btn = document.createElement('button');
+                    btn.className = 'level-item completed';
+                    btn.setAttribute('aria-label',
+                        `Lesson ${levelFromDb.level_number}${levelFromDb.title ? ' – ' + levelFromDb.title : ''}, completed. Play again.`);
+                    btn.innerHTML = `
+                        <i class="fas fa-check-circle check-badge" aria-hidden="true"></i>
+                        <div class="level-circle" aria-hidden="true">${levelFromDb.level_number}</div>
+                        <span class="sr-only">Completed</span>`;
+                    btn.addEventListener('click', () => {
+                        window.location.href = `exercise.html?level=${i}`;
+                    });
+                    grid.appendChild(btn);
+
                 } else if (!foundNext) {
-                    levelItem.className = 'level-item active-level';
-                    levelItem.innerHTML = `<div class="level-circle">${levelFromDb.level_number}</div><span>${levelFromDb.title || 'Start'}</span>`;
-                    levelItem.onclick = () => window.location.href = `exercise.html?level=${i}`;
+                    // ── Active (next to complete) ──
+                    const btn = document.createElement('button');
+                    btn.className = 'level-item active-level';
+                    btn.setAttribute('aria-label',
+                        `Lesson ${levelFromDb.level_number}${levelFromDb.title ? ' – ' + levelFromDb.title : ''}, current lesson. Press to start.`);
+                    btn.innerHTML = `
+                        <div class="level-circle" aria-hidden="true">${levelFromDb.level_number}</div>
+                        <span>${levelFromDb.title || 'Start'}</span>`;
+                    btn.addEventListener('click', () => {
+                        window.location.href = `exercise.html?level=${i}`;
+                    });
+                    grid.appendChild(btn);
                     foundNext = true;
+
                 } else {
-                    levelItem.className = 'level-item locked';
-                    levelItem.innerHTML = `<i class="fas fa-lock"></i>`;
-                    levelItem.title = 'Complete previous levels first';
+                    // ── Locked ──
+                    // WCAG 1.4.1 — lock icon + SR text, not only grey color
+                    // WCAG 2.1.1 — disabled button still in tab order with aria-disabled
+                    const btn = document.createElement('button');
+                    btn.className = 'level-item locked';
+                    btn.disabled = true;
+                    btn.setAttribute('aria-disabled', 'true');
+                    btn.setAttribute('aria-label',
+                        `Lesson ${levelFromDb.level_number}, locked. Complete previous lessons first.`);
+                    btn.innerHTML = `
+                        <i class="fas fa-lock" aria-hidden="true"></i>
+                        <span class="sr-only">Locked</span>`;
+                    grid.appendChild(btn);
                 }
-                grid.appendChild(levelItem);
             });
 
             container.appendChild(grid);

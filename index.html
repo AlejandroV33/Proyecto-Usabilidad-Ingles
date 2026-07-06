@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shimi - Home</title>
+    <!-- WCAG 2.4.2 — Descriptive page title -->
+    <title>Shimi – Learn English B1</title>
+    <meta name="description" content="Shimi: your English B1 learning companion. Start your journey today.">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -64,19 +66,32 @@
     </style>
 </head>
 <body>
+    <!-- WCAG 2.4.1 — Skip link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <div class="container fade-in">
-        <div class="splash-container">
+        <main id="main-content" class="splash-container">
             <div class="logo-section">
-                <div class="logo-box">
-                    <i class="fas fa-dove"></i>
+                <!-- WCAG 1.1.1 — Decorative icon hidden from screen readers -->
+                <div class="logo-box" role="img" aria-label="Shimi app logo">
+                    <i class="fas fa-dove" aria-hidden="true"></i>
                 </div>
-                <h1 class="main-title">ready to learn English?</h1>
+                <h1 class="main-title">Ready to learn English?</h1>
             </div>
-            
+
             <div class="footer-section">
-                <a href="pages/register.html" class="btn btn-primary btn-start">GET STARTED</a>
+                <!-- WCAG 2.4.4 — Descriptive link purpose -->
+                <a href="pages/register.html" class="btn btn-primary btn-start">
+                    GET STARTED
+                </a>
+                <p style="margin-top: var(--spacing-md); color: var(--text-muted); font-size: 0.9rem;">
+                    Already have an account?
+                    <a href="pages/login.html" style="color: var(--primary-color); font-weight: 600;">
+                        Log in here
+                    </a>
+                </p>
             </div>
-        </div>
+        </main>
     </div>
 </body>
 </html>

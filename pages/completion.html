@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shimi - Level Completed!</title>
+    <!-- WCAG 2.4.2 — Descriptive page title -->
+    <title>Shimi – Level Completed!</title>
+    <meta name="description" content="Congratulations! You completed a lesson. Review your score and continue learning.">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -17,6 +19,7 @@
             padding: var(--spacing-xl);
         }
 
+        /* WCAG 2.3.3 — bounce respects prefers-reduced-motion (global CSS handles it) */
         .celebration-icon {
             font-size: 5rem;
             color: var(--primary-color);
@@ -25,9 +28,9 @@
         }
 
         @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-20px);}
-            60% {transform: translateY(-10px);}
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40%  { transform: translateY(-20px); }
+            60%  { transform: translateY(-10px); }
         }
 
         .completion-title {
@@ -45,7 +48,6 @@
             margin-bottom: var(--spacing-xl);
         }
 
-        /* Summary Card */
         .summary-card {
             width: 100%;
             background-color: #FFF9F0;
@@ -62,8 +64,12 @@
             color: var(--text-color);
         }
 
-        .summary-stat b {
-            color: var(--text-color);
+        /* WCAG 1.4.3 — XP text needs enough contrast on #FFF9F0 bg */
+        .xp-stat {
+            color: #9C6A00;   /* Darker than primary for contrast */
+            margin-top: 10px;
+            font-size: 1.4rem;
+            font-weight: 700;
         }
 
         .motivational-msg {
@@ -82,8 +88,8 @@
         .btn-exit {
             background-color: #EEEEEE;
             color: var(--text-color);
-            border: none;
-            box-shadow: 0 4px 0px #CCCCCC;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 4px 0px #CACFD2;
         }
 
         .btn-exit:hover {
@@ -92,27 +98,54 @@
     </style>
 </head>
 <body>
+    <!-- WCAG 2.4.1 — Skip link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <div class="container fade-in">
-        <div class="completion-container">
-            <div class="celebration-icon">
-                <i class="fas fa-trophy"></i>
-            </div>
-            
-            <h1 class="completion-title" id="completionTitle">Well done!</h1>
-            <h2 class="completion-subtitle">Level completed</h2>
+        <main id="main-content">
+            <div class="completion-container">
+                <!-- WCAG 1.1.1 — decorative trophy icon; the heading conveys the meaning -->
+                <div class="celebration-icon" aria-hidden="true">
+                    <i class="fas fa-trophy"></i>
+                </div>
 
-            <div class="summary-card">
-                <p class="summary-stat"><b>Correct:</b> <span id="statCorrect">0</span></p>
-                <p class="summary-stat"><b>Incorrect:</b> <span id="statIncorrect">0</span></p>
-                <p class="summary-stat" style="color: var(--primary-color); margin-top: 10px; font-size: 1.4rem;"><b>+ <span id="statXP">0</span> XP</b></p>
-                <p class="motivational-msg" id="motivationalMsg">"Keep it up, you're on the right track"</p>
-            </div>
+                <!-- WCAG 1.3.1 — h1 is the primary heading; populated by JS -->
+                <h1 class="completion-title" id="completionTitle" aria-live="polite">Well done!</h1>
+                <p class="completion-subtitle">Level completed</p>
 
-            <div class="actions-section">
-                <a href="levels.html" class="btn btn-primary">CONTINUE TO NEXT LEVEL</a>
-                <a href="levels.html" class="btn btn-exit" style="margin-top: var(--spacing-md);">EXIT</a>
+                <!-- WCAG 1.3.1 — summary table-like structure with semantic bold labels -->
+                <div class="summary-card" role="region" aria-label="Lesson summary">
+                    <p class="summary-stat">
+                        <strong>Correct:</strong>
+                        <span id="statCorrect">0</span>
+                    </p>
+                    <p class="summary-stat">
+                        <strong>Incorrect:</strong>
+                        <span id="statIncorrect">0</span>
+                    </p>
+                    <p class="xp-stat" aria-label="XP earned">
+                        <strong>+ <span id="statXP">0</span> XP</strong>
+                    </p>
+                    <!-- aria-live so the motivational message is announced when set -->
+                    <p class="motivational-msg"
+                       id="motivationalMsg"
+                       aria-live="polite">"Keep it up, you're on the right track"</p>
+                </div>
+
+                <div class="actions-section">
+                    <!-- WCAG 2.4.4 — descriptive link text -->
+                    <a href="levels.html" class="btn btn-primary">
+                        CONTINUE TO NEXT LEVEL
+                    </a>
+                    <a href="levels.html"
+                       class="btn btn-exit"
+                       style="margin-top: var(--spacing-md);"
+                       aria-label="Exit to lesson list">
+                        EXIT
+                    </a>
+                </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <!-- Supabase SDK -->
@@ -123,28 +156,29 @@
     <script>
         async function initCompletion() {
             const urlParams = new URLSearchParams(window.location.search);
-            const correct = urlParams.get('correct') || 0;
-            const incorrect = urlParams.get('incorrect') || 0;
-            const xp = urlParams.get('xp') || 0;
+            const correct   = parseInt(urlParams.get('correct'))   || 0;
+            const incorrect = parseInt(urlParams.get('incorrect')) || 0;
+            const xp        = parseInt(urlParams.get('xp'))        || 0;
 
-            document.getElementById('statCorrect').innerText = correct;
-            document.getElementById('statIncorrect').innerText = incorrect;
-            document.getElementById('statXP').innerText = xp;
+            document.getElementById('statCorrect').textContent   = correct;
+            document.getElementById('statIncorrect').textContent = incorrect;
+            document.getElementById('statXP').textContent        = xp;
 
+            // Personalise title with user name
             const profile = await getProfile();
-            if (profile) {
-                const name = profile.nickname || '';
-                document.getElementById('completionTitle').innerText = `Well done ${name}!`;
+            if (profile && profile.nickname) {
+                document.getElementById('completionTitle').textContent =
+                    `Well done, ${profile.nickname}!`;
             }
 
-            // Simple motivational logic
+            // Motivational message (also announced via aria-live)
             const msg = document.getElementById('motivationalMsg');
-            if (incorrect == 0) {
-                msg.innerText = '"Perfect score! You are a natural!"';
+            if (incorrect === 0) {
+                msg.textContent = '"Perfect score! You are a natural!"';
             } else if (correct > incorrect) {
-                msg.innerText = '"Great job! Keep practicing to get even better."';
+                msg.textContent = '"Great job! Keep practising to get even better."';
             } else {
-                msg.innerText = '"Practice makes perfect. Don\'t give up!"';
+                msg.textContent = '"Practice makes perfect. Don\'t give up!"';
             }
         }
 
