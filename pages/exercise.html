@@ -493,7 +493,12 @@
 
             <!-- ── TYPE 3: GRAMMAR ── -->
             <section id="exercise-grammar" class="exercise-type hidden" aria-labelledby="grammar-instruction">
-                <p class="instruction" id="grammar-instruction">Arrange the words to form a correct sentence</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-sm);">
+                    <p class="instruction" id="grammar-instruction" style="margin-bottom: 0;">Arrange the words to form a correct sentence</p>
+                    <button class="btn btn-secondary" id="resetGrammarBtn" type="button" style="padding: 4px 12px; min-height: 32px; font-size: 0.85rem; width: auto; margin-bottom: 0;" onclick="resetGrammar()">
+                        <i class="fas fa-undo" aria-hidden="true"></i> Reset
+                    </button>
+                </div>
 
                 <!-- WCAG 1.3.1 — labelled answer area -->
                 <div class="answer-area"
@@ -736,16 +741,35 @@
                 }
             } catch (err) {
                 console.error('Error initializing exercise:', err);
-                showGlobalError('Connection error. Please try again.');
+                showGlobalError('Connection error. Please try again.', true);
             }
         }
 
-        function showGlobalError(msg) {
+        function showGlobalError(msg, showRetry = false) {
             const el = document.createElement('div');
             el.setAttribute('role', 'alert');
             el.className = 'alert-message alert-error';
             el.style.margin = 'var(--spacing-md) 0';
-            el.textContent = msg;
+            el.style.display = 'flex';
+            el.style.flexDirection = 'column';
+            el.style.alignItems = 'center';
+            el.style.gap = '10px';
+            
+            const txt = document.createElement('span');
+            txt.textContent = msg;
+            el.appendChild(txt);
+            
+            if (showRetry) {
+                const retryBtn = document.createElement('button');
+                retryBtn.className = 'btn btn-secondary';
+                retryBtn.textContent = 'Retry Connection';
+                retryBtn.onclick = () => { el.remove(); initExercise(); };
+                retryBtn.style.width = 'auto';
+                retryBtn.style.minHeight = '32px';
+                retryBtn.style.padding = '8px 16px';
+                el.appendChild(retryBtn);
+            }
+            
             document.getElementById('main-content').prepend(el);
         }
 
@@ -991,6 +1015,22 @@
             el.classList.add('used');
             el.setAttribute('aria-label', `${el.textContent} (used)`);
             setCheckBtn(false);
+        }
+
+        function resetGrammar() {
+            const area = document.getElementById('answerArea');
+            const pool = document.getElementById('wordPool');
+            
+            while (area.firstChild) {
+                area.removeChild(area.firstChild);
+            }
+            
+            Array.from(pool.children).forEach(chip => {
+                chip.disabled = false;
+                chip.classList.remove('used');
+                chip.setAttribute('aria-label', `Add word: ${chip.textContent}`);
+            });
+            setCheckBtn(true);
         }
 
         async function handleNext() {

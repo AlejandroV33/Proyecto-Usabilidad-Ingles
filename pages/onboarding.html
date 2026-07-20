@@ -156,6 +156,7 @@
                                placeholder="e.g. Alex"
                                required
                                aria-required="true">
+                        <span id="nickname-error" class="password-hint" style="color: var(--error-color); display: none;"></span>
                     </div>
 
                     <!-- WCAG 1.3.1 — label bound to input -->
@@ -175,6 +176,7 @@
                                aria-required="true"
                                min="1"
                                max="120">
+                        <span id="age-error" class="password-hint" style="color: var(--error-color); display: none;"></span>
                     </div>
 
                     <!-- WCAG 1.3.1 — fieldset/legend groups the radio-like buttons -->
@@ -214,6 +216,7 @@
                                 30 min
                             </button>
                         </div>
+                        <span id="time-error" class="password-hint" style="color: var(--error-color); display: none;"></span>
                     </fieldset>
                 </div>
 
@@ -259,36 +262,72 @@
             selectedDailyTime = element.dataset.value;
         }
 
+        let lastSaveData = null;
+
+        function showInputError(input, errorId, message) {
+            const errorSpan = document.getElementById(errorId);
+            if(errorSpan) {
+                errorSpan.textContent = message;
+                errorSpan.style.display = 'block';
+            }
+            if(input && input.setAttribute) input.setAttribute('aria-invalid', 'true');
+        }
+
+        function clearInputError(input, errorId) {
+            const errorSpan = document.getElementById(errorId);
+            if(errorSpan) {
+                errorSpan.textContent = '';
+                errorSpan.style.display = 'none';
+            }
+            if(input && input.removeAttribute) input.removeAttribute('aria-invalid');
+        }
+
+        document.getElementById('nickname').addEventListener('input', () => clearInputError(document.getElementById('nickname'), 'nickname-error'));
+        document.getElementById('age').addEventListener('input', () => clearInputError(document.getElementById('age'), 'age-error'));
+
         document.getElementById('onboardingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            await submitOnboarding();
+        });
 
+        async function submitOnboarding(isRetry = false) {
             const submitBtn   = document.getElementById('submitBtn');
             const statusDiv   = document.getElementById('statusMessage');
-            const nicknameVal = document.getElementById('nickname').value.trim();
-            const ageVal      = parseInt(document.getElementById('age').value);
+            const nicknameInput = document.getElementById('nickname');
+            const ageInput      = document.getElementById('age');
+            const nicknameVal = nicknameInput.value.trim();
+            const ageVal      = parseInt(ageInput.value);
 
             statusDiv.className = 'alert-message';
             statusDiv.textContent = '';
+            
+            clearInputError(nicknameInput, 'nickname-error');
+            clearInputError(ageInput, 'age-error');
+            clearInputError(null, 'time-error');
+
+            let hasError = false;
 
             if (!nicknameVal) {
-                showStatus('Please enter your name or nickname.', 'error');
-                document.getElementById('nickname').focus();
-                return;
+                showInputError(nicknameInput, 'nickname-error', 'Please enter your name or nickname.');
+                nicknameInput.focus();
+                hasError = true;
             }
             if (!ageVal || ageVal < 1 || ageVal > 120) {
-                showStatus('Please enter a valid age.', 'error');
-                document.getElementById('age').focus();
-                return;
+                showInputError(ageInput, 'age-error', 'Please enter a valid age.');
+                if(!hasError) ageInput.focus();
+                hasError = true;
             }
             if (!selectedDailyTime) {
-                showStatus('Please select a daily study time goal.', 'error');
-                document.querySelector('.time-option').focus();
-                return;
+                showInputError(null, 'time-error', 'Please select a daily study time goal.');
+                if(!hasError) document.querySelector('.time-option').focus();
+                hasError = true;
             }
+
+            if(hasError) return;
 
             submitBtn.disabled = true;
             submitBtn.setAttribute('aria-busy', 'true');
-            submitBtn.textContent = 'Saving…';
+            submitBtn.textContent = isRetry ? 'Retrying…' : 'Saving…';
 
             try {
                 await updateProfile({
@@ -298,17 +337,38 @@
                 });
                 window.location.href = 'levels.html';
             } catch (error) {
-                showStatus('Error saving profile: ' + (error.message || 'Please try again.'), 'error');
+                showStatus('Error saving profile: ' + (error.message || 'Please try again.'), 'error', true);
                 submitBtn.disabled = false;
                 submitBtn.removeAttribute('aria-busy');
                 submitBtn.textContent = 'CONTINUE';
             }
-        });
+        }
 
-        function showStatus(message, type) {
+        function showStatus(message, type, showRetry = false) {
             const statusDiv = document.getElementById('statusMessage');
-            statusDiv.textContent = message;
+            statusDiv.innerHTML = '';
             statusDiv.className = `alert-message alert-${type}`;
+            statusDiv.style.display = 'flex';
+            statusDiv.style.flexDirection = 'column';
+            statusDiv.style.alignItems = 'center';
+            statusDiv.style.gap = '8px';
+
+            const txt = document.createElement('span');
+            txt.textContent = message;
+            statusDiv.appendChild(txt);
+
+            if (showRetry) {
+                const retryBtn = document.createElement('button');
+                retryBtn.type = 'button';
+                retryBtn.className = 'btn btn-secondary';
+                retryBtn.textContent = 'Retry Save';
+                retryBtn.onclick = () => { statusDiv.style.display = 'none'; submitOnboarding(true); };
+                retryBtn.style.padding = '4px 12px';
+                retryBtn.style.minHeight = '32px';
+                retryBtn.style.width = 'auto';
+                retryBtn.style.marginTop = '4px';
+                statusDiv.appendChild(retryBtn);
+            }
         }
     </script>
 </body>

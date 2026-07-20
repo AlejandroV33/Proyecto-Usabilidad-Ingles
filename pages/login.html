@@ -48,6 +48,7 @@
                            aria-required="true"
                            aria-describedby="email-hint">
                     <span id="email-hint" class="sr-only">Enter the email address you used to register.</span>
+                    <span id="email-error" class="password-hint" style="color: var(--error-color); display: none;"></span>
                 </div>
 
                 <div class="input-group">
@@ -59,6 +60,7 @@
                            placeholder="••••••••"
                            required
                            aria-required="true">
+                    <span id="password-error" class="password-hint" style="color: var(--error-color); display: none;"></span>
                 </div>
 
                 <!-- WCAG 4.1.3 — Live region for dynamic errors (role="alert" announces on change) -->
@@ -67,6 +69,10 @@
                      role="alert"
                      aria-live="assertive"
                      aria-atomic="true"></div>
+
+                <div id="forgotPasswordSuggestion" style="display: none; text-align: center; margin-top: var(--spacing-sm);">
+                    <a href="#" style="color: var(--primary-color); font-weight: 600; font-size: 0.9rem; text-decoration: underline;">Trouble logging in? Reset your password</a>
+                </div>
 
                 <button type="submit"
                         id="submitBtn"
@@ -99,31 +105,55 @@
         const emailInput    = document.getElementById('email');
         const passwordInput = document.getElementById('password');
 
+        let loginFailCount = 0;
+
+        function showInputError(input, errorId, message) {
+            const errorSpan = document.getElementById(errorId);
+            if(errorSpan) {
+                errorSpan.textContent = message;
+                errorSpan.style.display = 'block';
+            }
+            if(input) input.setAttribute('aria-invalid', 'true');
+        }
+
+        function clearInputError(input, errorId) {
+            const errorSpan = document.getElementById(errorId);
+            if(errorSpan) {
+                errorSpan.textContent = '';
+                errorSpan.style.display = 'none';
+            }
+            if(input) input.removeAttribute('aria-invalid');
+        }
+
+        emailInput.addEventListener('input', () => clearInputError(emailInput, 'email-error'));
+        passwordInput.addEventListener('input', () => clearInputError(passwordInput, 'password-error'));
+
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             // Clear previous errors and invalid states
             errorDiv.className = 'alert-message';
             errorDiv.textContent = '';
-            emailInput.removeAttribute('aria-invalid');
-            passwordInput.removeAttribute('aria-invalid');
+            clearInputError(emailInput, 'email-error');
+            clearInputError(passwordInput, 'password-error');
 
             const email    = emailInput.value.trim();
             const password = passwordInput.value;
+            let hasError = false;
 
             // Basic client-side validation
             if (!email) {
-                showError('Please enter your email address.');
-                emailInput.setAttribute('aria-invalid', 'true');
+                showInputError(emailInput, 'email-error', 'Please enter your email address.');
                 emailInput.focus();
-                return;
+                hasError = true;
             }
             if (!password) {
-                showError('Please enter your password.');
-                passwordInput.setAttribute('aria-invalid', 'true');
-                passwordInput.focus();
-                return;
+                showInputError(passwordInput, 'password-error', 'Please enter your password.');
+                if(!hasError) passwordInput.focus();
+                hasError = true;
             }
+
+            if(hasError) return;
 
             submitBtn.disabled = true;
             // WCAG 4.1.3 — announce loading state
@@ -134,7 +164,13 @@
                 await signIn(email, password);
                 window.location.href = 'levels.html';
             } catch (error) {
+                loginFailCount++;
                 showError(error.message || 'Login failed. Please try again.');
+                
+                if (loginFailCount >= 2) {
+                    document.getElementById('forgotPasswordSuggestion').style.display = 'block';
+                }
+
                 submitBtn.disabled = false;
                 submitBtn.removeAttribute('aria-busy');
                 submitBtn.textContent = 'LOG IN';

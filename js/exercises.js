@@ -17,7 +17,8 @@ async function getAllLevels() {
     const { data, error } = await window.supabaseClient
         .from('levels')
         .select('id, section_number, level_number, title')
-        .order('id', { ascending: true });
+        .order('section_number', { ascending: true })
+        .order('level_number', { ascending: true });
 
     if (error) {
         console.error('Error fetching levels:', error);
