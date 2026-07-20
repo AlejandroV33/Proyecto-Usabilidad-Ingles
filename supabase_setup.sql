@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   current_level TEXT DEFAULT 'Beginner',
   xp INTEGER DEFAULT 0,
   completed_levels INTEGER[] DEFAULT '{}',
+  timer_enabled BOOLEAN DEFAULT TRUE NOT NULL,   -- Exercise countdown timer on/off
 
   CONSTRAINT nickname_length CHECK (char_length(nickname) >= 2)
 );
@@ -88,8 +89,8 @@ CREATE POLICY "Users can insert their own profile." ON public.profiles
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN
-  INSERT INTO public.profiles (id, nickname)
-  VALUES (new.id, new.raw_user_meta_data->>'nickname');
+  INSERT INTO public.profiles (id, nickname, timer_enabled)
+  VALUES (new.id, new.raw_user_meta_data->>'nickname', TRUE);
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

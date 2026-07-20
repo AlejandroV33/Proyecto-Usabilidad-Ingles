@@ -14,7 +14,7 @@
             align-items: center;
             gap: var(--spacing-md);
             padding-top: var(--spacing-md);
-            margin-bottom: var(--spacing-lg);
+            margin-bottom: var(--spacing-sm);
         }
 
         .progress-wrapper {
@@ -41,6 +41,69 @@
             font-size: 0.8rem;
             color: var(--text-muted);
             font-weight: 700;
+        }
+
+        /* ── Countdown timer bar ── */
+        .timer-row {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            padding: 0 2px;
+        }
+
+        .timer-icon {
+            font-size: 1rem;
+            flex-shrink: 0;
+            transition: color 0.4s ease;
+            color: var(--text-muted);
+        }
+
+        .timer-track {
+            flex: 1;
+            height: 10px;
+            background-color: #E8EAED;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        /* Fill drains right-to-left as time runs out */
+        .timer-fill {
+            height: 100%;
+            width: 100%;
+            border-radius: 5px;
+            /* Smooth color transition: orange → amber → red */
+            background: linear-gradient(90deg, #FF4757 0%, #FF6B35 40%, #FFB347 100%);
+            background-size: 200% 100%;
+            background-position: right center;
+            transform-origin: left;
+            transition: transform 1s linear, background-position 1s linear;
+        }
+
+        /* Warning pulse when ≤ 20 s remaining (respects reduced-motion via global CSS) */
+        .timer-fill.warning {
+            animation: timer-warn 0.8s ease-in-out infinite alternate;
+        }
+
+        @keyframes timer-warn {
+            from { opacity: 1; }
+            to   { opacity: 0.65; }
+        }
+
+        .timer-label {
+            font-size: 0.78rem;
+            font-weight: 800;
+            min-width: 36px;
+            text-align: right;
+            flex-shrink: 0;
+            transition: color 0.4s ease;
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Timer hidden when disabled */
+        .timer-row.hidden {
+            display: none !important;
         }
 
         .instruction {
@@ -460,7 +523,8 @@
                 CHECK
             </button>
         </div>
-    </div>
+    </div><!-- /.container -->
+
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/supabase-config.js"></script>
@@ -468,26 +532,167 @@
     <script src="../js/exercises.js"></script>
 
     <script>
-        let currentStep        = 0;
-        let exercises          = [];
-        let xpReward           = 10;
-        let correctCount       = 0;
-        let incorrectCount     = 0;
+        let currentStep         = 0;
+        let exercises           = [];
+        let xpReward            = 10;
+        let correctCount        = 0;
+        let incorrectCount      = 0;
         let selectedOptionIndex = -1;
-        let lastTranscript     = '';
-        let recognition        = null;
-        let isRecording        = false;
+        let lastTranscript      = '';
+        let recognition         = null;
+        let isRecording         = false;
 
-        const urlParams   = new URLSearchParams(window.location.search);
-        const levelId     = parseInt(urlParams.get('level')) || 1;
-        const startStep   = parseInt(urlParams.get('step'))  || 0;
+        const urlParams    = new URLSearchParams(window.location.search);
+        const levelId      = parseInt(urlParams.get('level')) || 1;
+        const startStep    = parseInt(urlParams.get('step'))  || 0;
         const initialStats = urlParams.get('stats') ? urlParams.get('stats').split(',') : null;
 
-        /* ── Session guard ── */
+        /* ══════════════════════════════════════════════
+           COUNTDOWN TIMER
+           Duration: 1 min 40 s = 100 seconds
+           Reads user's timer_enabled preference from DB.
+           WCAG 2.2.1 — user can disable time limit from
+           the timeout screen or from Settings.
+        ══════════════════════════════════════════════ */
+        const TIMER_DURATION  = 100; // seconds
+        let timerEnabled      = true;
+        let timeRemaining     = TIMER_DURATION;
+        let timerInterval     = null;
+
+        function buildTimerBar() {
+            const row = document.createElement('div');
+            row.className = 'timer-row';
+            row.id        = 'timerRow';
+            row.setAttribute('role', 'timer');       // ARIA landmark for countdown
+            row.setAttribute('aria-label', 'Time remaining for this level');
+            row.setAttribute('aria-live', 'off');    // We announce manually at key moments
+
+            row.innerHTML = `
+                <i class="fas fa-hourglass-half timer-icon" id="timerIcon" aria-hidden="true"></i>
+                <div class="timer-track" role="presentation">
+                    <div class="timer-fill" id="timerFill"></div>
+                </div>
+                <span class="timer-label" id="timerLabel" aria-hidden="true">1:40</span>
+                <!-- Polite live announcements at 1 min and 30 s -->
+                <span id="timerAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></span>
+            `;
+
+            // Insert right before <main>
+            const main = document.getElementById('main-content');
+            main.parentNode.insertBefore(row, main);
+        }
+
+        function updateTimerDisplay() {
+            const fill  = document.getElementById('timerFill');
+            const label = document.getElementById('timerLabel');
+            const icon  = document.getElementById('timerIcon');
+
+            if (!fill) return;
+
+            const pct     = timeRemaining / TIMER_DURATION;          // 1 → 0
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const mmss    = minutes + ':' + String(seconds).padStart(2, '0');
+
+            // Shrink the bar from right (transform scaleX)
+            fill.style.transform = `scaleX(${pct})`;
+
+            // Slide gradient so the red end leads as time runs out
+            const bgPos = (1 - pct) * 100;   // 0% → 100%
+            fill.style.backgroundPosition = bgPos + '% center';
+
+            label.textContent = mmss;
+
+            // Colour & urgency states
+            if (timeRemaining <= 20) {
+                fill.classList.add('warning');
+                icon.style.color  = 'var(--error-color)';
+                label.style.color = 'var(--error-color)';
+                icon.className = 'fas fa-hourglass-end timer-icon';
+            } else if (timeRemaining <= 40) {
+                icon.style.color  = '#E67E22';
+                label.style.color = '#E67E22';
+                icon.className = 'fas fa-hourglass-half timer-icon';
+            } else {
+                icon.style.color  = 'var(--text-muted)';
+                label.style.color = 'var(--text-muted)';
+            }
+
+            // Announce at 60 s and 30 s remaining (polite, non-interrupting)
+            const announcer = document.getElementById('timerAnnouncer');
+            if (timeRemaining === 60) {
+                announcer.textContent = '1 minute remaining.';
+            } else if (timeRemaining === 30) {
+                announcer.textContent = '30 seconds remaining.';
+            } else if (timeRemaining === 10) {
+                announcer.textContent = '10 seconds remaining!';
+            }
+        }
+
+        function startTimer() {
+            if (!timerEnabled) return;
+
+            buildTimerBar();
+            updateTimerDisplay();
+
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    onTimerExpired();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        function resumeTimer() {
+            if (timerEnabled && timeRemaining > 0 && !timerInterval) {
+                timerInterval = setInterval(() => {
+                    timeRemaining--;
+                    updateTimerDisplay();
+                    if (timeRemaining <= 0) {
+                        clearInterval(timerInterval);
+                        timerInterval = null;
+                        onTimerExpired();
+                    }
+                }, 1000);
+            }
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+
+        function onTimerExpired() {
+            // Stop any active speech recognition
+            if (recognition && isRecording) {
+                recognition.stop();
+                stopRecording();
+            }
+            // Navigate to the time's-up page
+            window.location.href = `timeout.html?level=${levelId}`;
+        }
+
+        /* ── Session guard + timer init ── */
         async function initExercise() {
             try {
                 const { data: { session } } = await window.supabaseClient.auth.getSession();
                 if (!session) { window.location.href = 'login.html'; return; }
+
+                // Load timer preference from profile (WCAG 2.2.1)
+                const profile = await getProfile();
+                // Default to true if field is null/undefined (migration not yet applied)
+                timerEnabled = (profile && profile.timer_enabled !== false);
 
                 const levelData = await getExercisesForLevel(levelId);
                 if (levelData && levelData.exercises) {
@@ -504,6 +709,7 @@
                     } else {
                         showExercise(currentStep);
                         updateProgress();
+                        startTimer(); // start countdown after content is ready
                     }
                 } else {
                     showGlobalError('Level content not found.');

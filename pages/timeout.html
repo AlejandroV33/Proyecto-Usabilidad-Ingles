@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shimi – Time's Up!</title>
+    <meta name="description" content="Time ran out for this level. Retry, exit to menu, or disable the timer.">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* ── Full-page centred layout ── */
+        .timeout-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: var(--spacing-xl);
+            gap: var(--spacing-lg);
+        }
+
+        /* ── Animated clock icon ── */
+        .timeout-icon-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF4757 100%);
+            box-shadow: 0 8px 0px #c0392b, 0 0 0 12px rgba(255, 71, 87, 0.15);
+            animation: pulse-icon 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-icon {
+            0%, 100% { transform: scale(1); box-shadow: 0 8px 0px #c0392b, 0 0 0 12px rgba(255,71,87,0.15); }
+            50%       { transform: scale(1.06); box-shadow: 0 8px 0px #c0392b, 0 0 0 20px rgba(255,71,87,0.08); }
+        }
+
+        .timeout-icon-wrap i {
+            font-size: 3.5rem;
+            color: white;
+        }
+
+        /* ── Text ── */
+        .timeout-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text-color);
+            line-height: 1.2;
+            margin: 0;
+        }
+
+        .timeout-subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+            max-width: 280px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* ── Divider ── */
+        .divider {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), #FF6B6B);
+            border-radius: 3px;
+        }
+
+        /* ── Action buttons ── */
+        .actions {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .btn-retry {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #FFA022 100%);
+            color: white;
+            box-shadow: 0 5px 0px #e6952d;
+            font-size: 1.05rem;
+        }
+
+        .btn-retry:hover {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0px #e6952d;
+        }
+
+        .btn-retry:active {
+            transform: translateY(5px);
+            box-shadow: none;
+        }
+
+        .btn-exit-menu {
+            background: white;
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+            box-shadow: 0 4px 0px #CACFD2;
+        }
+
+        .btn-exit-menu:hover {
+            background: #F5F5F5;
+            transform: translateY(1px);
+            box-shadow: 0 3px 0px #CACFD2;
+        }
+
+        /* Disable-timer button — looks like a subtle link-button */
+        .btn-disable-timer {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: underline;
+            cursor: pointer;
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-family: inherit;
+            width: 100%;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border-radius: var(--radius);
+        }
+
+        .btn-disable-timer:hover {
+            color: var(--text-color);
+            background: rgba(0,0,0,0.04);
+        }
+
+        /* Loading/saving state */
+        .status-msg {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            min-height: 20px;
+            font-style: italic;
+            aria-live: polite;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <div class="container fade-in">
+        <main id="main-content" class="timeout-container">
+
+            <!-- Animated clock icon (decorative — the heading conveys meaning) -->
+            <div class="timeout-icon-wrap" aria-hidden="true">
+                <i class="fas fa-hourglass-end"></i>
+            </div>
+
+            <!-- WCAG 1.3.1 — h1 as primary heading -->
+            <h1 class="timeout-title">Time's Up!</h1>
+
+            <p class="timeout-subtitle">
+                You ran out of time for this level. No worries — try again or
+                practice without a timer.
+            </p>
+
+            <div class="divider" role="presentation"></div>
+
+            <!-- WCAG 2.2.1 — user has control over time limit via these options -->
+            <div class="actions" role="group" aria-label="What would you like to do?">
+
+                <!-- Option 1: Retry the level -->
+                <button id="retryBtn"
+                        class="btn btn-retry"
+                        type="button">
+                    <i class="fas fa-redo" aria-hidden="true" style="margin-right:8px;"></i>
+                    Retry Level
+                </button>
+
+                <!-- Option 2: Exit to main menu -->
+                <a id="exitBtn"
+                   href="levels.html"
+                   class="btn btn-exit-menu">
+                    <i class="fas fa-home" aria-hidden="true" style="margin-right:8px;"></i>
+                    Exit to Menu
+                </a>
+
+                <!-- Option 3: Disable timer — WCAG 2.2.1 requires a way to turn off time limits -->
+                <button id="disableTimerBtn"
+                        class="btn-disable-timer"
+                        type="button"
+                        aria-describedby="disable-hint">
+                    <i class="fas fa-clock" aria-hidden="true"></i>
+                    Disable timer for levels
+                </button>
+                <p id="disable-hint" class="sr-only">
+                    This will turn off the countdown timer for all future exercises.
+                    You can re-enable it anytime in Settings.
+                </p>
+            </div>
+
+            <!-- Live region for async status (saving, errors) -->
+            <p id="statusMsg"
+               class="status-msg"
+               role="status"
+               aria-live="polite"
+               aria-atomic="true"></p>
+
+        </main>
+    </div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/profile.js"></script>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const levelId   = urlParams.get('level') || '1';
+
+        // ── Retry: go back to the same level from step 0 ──
+        document.getElementById('retryBtn').addEventListener('click', () => {
+            window.location.href = `exercise.html?level=${levelId}`;
+        });
+
+        // ── Disable timer: save preference then redirect to level menu ──
+        document.getElementById('disableTimerBtn').addEventListener('click', async () => {
+            const btn       = document.getElementById('disableTimerBtn');
+            const statusMsg = document.getElementById('statusMsg');
+
+            btn.disabled = true;
+            btn.setAttribute('aria-busy', 'true');
+            statusMsg.textContent = 'Saving preference…';
+
+            try {
+                await updateProfile({ timer_enabled: false });
+                statusMsg.textContent = 'Timer disabled! Redirecting to menu…';
+                setTimeout(() => window.location.href = 'levels.html', 1200);
+            } catch (err) {
+                statusMsg.textContent = 'Could not save. Please try from Settings.';
+                btn.disabled = false;
+                btn.removeAttribute('aria-busy');
+            }
+        });
+    </script>
+</body>
+</html>

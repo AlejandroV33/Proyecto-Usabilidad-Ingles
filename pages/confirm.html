@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shimi – Email Confirmed!</title>
+    <meta name="description" content="Your Shimi account is now confirmed. Let's get started!">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* ── States ── */
+        .confirm-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+            justify-content: center;
+            padding: var(--spacing-xl) var(--spacing-md);
+            gap: var(--spacing-lg);
+        }
+
+        .confirm-screen.active {
+            display: flex;
+        }
+
+        /* ── Icon badges ── */
+        .badge-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .badge-success {
+            background: linear-gradient(135deg, #00C9A7 0%, #00A383 100%);
+            box-shadow: 0 8px 0px #007d65, 0 0 0 12px rgba(0,163,131,0.12);
+            animation: pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        }
+
+        .badge-loading {
+            background: linear-gradient(135deg, #FFB347 0%, #FFA022 100%);
+            box-shadow: 0 8px 0px #D4891A;
+            animation: spin-pulse 1.5s ease-in-out infinite;
+        }
+
+        .badge-error {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF4757 100%);
+            box-shadow: 0 8px 0px #c0392b;
+        }
+
+        @keyframes pop-in {
+            0%   { transform: scale(0.5); opacity: 0; }
+            80%  { transform: scale(1.1); }
+            100% { transform: scale(1);   opacity: 1; }
+        }
+
+        @keyframes spin-pulse {
+            0%, 100% { transform: scale(1)   rotate(0deg); }
+            50%       { transform: scale(1.05) rotate(10deg); }
+        }
+
+        .badge-icon i { color: white; }
+
+        /* ── Typography ── */
+        .screen-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-color);
+            line-height: 1.2;
+            margin: 0;
+        }
+
+        .screen-subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+            max-width: 300px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* ── XP earned badge (success state) ── */
+        .xp-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #FFF9F0;
+            border: 2px solid #FFE0B2;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 800;
+            color: #995C00;
+        }
+
+        .xp-badge i { color: var(--primary-color); }
+
+        /* ── Step pills (loading state) ── */
+        .steps-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .steps-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .steps-list li i {
+            width: 20px;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        /* ── Divider ── */
+        .divider {
+            width: 48px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), #FFD580);
+            border-radius: 3px;
+        }
+
+        /* ── Actions ── */
+        .action-area {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <div class="container fade-in">
+        <main id="main-content" style="display:flex;flex-direction:column;flex:1;">
+
+            <!-- ── STATE 1: Processing (shown while JS checks) ── -->
+            <div id="screen-loading" class="confirm-screen active" aria-live="polite">
+                <div class="badge-icon badge-loading" aria-hidden="true">
+                    <i class="fas fa-hourglass-half"></i>
+                </div>
+                <h1 class="screen-title">Confirming…</h1>
+                <p class="screen-subtitle">Hang on while we verify your account.</p>
+                <ul class="steps-list" aria-label="Verification steps">
+                    <li><i class="fas fa-check-circle" aria-hidden="true"></i> Email link received</li>
+                    <li><i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Verifying your account…</li>
+                    <li style="opacity:0.4;"><i class="fas fa-circle-notch" aria-hidden="true"></i> Redirecting to Shimi</li>
+                </ul>
+            </div>
+
+            <!-- ── STATE 2: Success ── -->
+            <div id="screen-success" class="confirm-screen" aria-live="assertive">
+                <div class="badge-icon badge-success" aria-hidden="true">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h1 class="screen-title">You're in! 🎉</h1>
+                <div class="divider" role="presentation"></div>
+                <p class="screen-subtitle">
+                    Your email is confirmed and your Shimi account is ready.
+                    Time to start learning English B1!
+                </p>
+                <div class="xp-badge" aria-label="Welcome bonus XP earned">
+                    <i class="fas fa-bolt" aria-hidden="true"></i>
+                    Welcome bonus ready
+                </div>
+                <div class="action-area">
+                    <a id="continueBtn" href="onboarding.html" class="btn btn-primary">
+                        Set up my profile →
+                    </a>
+                </div>
+            </div>
+
+            <!-- ── STATE 3: Already logged in / session exists ── -->
+            <div id="screen-already" class="confirm-screen" aria-live="polite">
+                <div class="badge-icon badge-success" aria-hidden="true">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <h1 class="screen-title">Already confirmed!</h1>
+                <p class="screen-subtitle">
+                    Your account is already active. Head to your lessons and keep practising.
+                </p>
+                <div class="action-area">
+                    <a href="levels.html" class="btn btn-primary">Go to my lessons</a>
+                    <a href="login.html" class="btn" style="background:white;border:2px solid var(--border-color);box-shadow:0 4px 0 #CACFD2;">Log in with another account</a>
+                </div>
+            </div>
+
+            <!-- ── STATE 4: Error ── -->
+            <div id="screen-error" class="confirm-screen" aria-live="assertive">
+                <div class="badge-icon badge-error" aria-hidden="true">
+                    <i class="fas fa-times"></i>
+                </div>
+                <h1 class="screen-title">Link expired</h1>
+                <div class="divider" style="background:linear-gradient(90deg,#FF4757,#FF6B6B);" role="presentation"></div>
+                <p class="screen-subtitle" id="errorDetail">
+                    This confirmation link has expired or already been used.
+                    Please register again or request a new link.
+                </p>
+                <div class="action-area">
+                    <a href="register.html" class="btn btn-primary">Register again</a>
+                    <a href="login.html" class="btn" style="background:white;border:2px solid var(--border-color);box-shadow:0 4px 0 #CACFD2;">Log in instead</a>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/profile.js"></script>
+
+    <script>
+        /* ──────────────────────────────────────────────────────
+           HOW THIS PAGE WORKS
+           ─────────────────────────────────────────────────────
+           Supabase sends a confirmation email whose link looks like:
+             https://[project].supabase.co/auth/v1/verify
+               ?token=…&type=signup
+               &redirect_to=YOUR_SITE/pages/confirm.html
+
+           After Supabase verifies the token it redirects to this
+           page. Two possible cases:
+
+           CASE A – Implicit-flow (Supabase JS v2 default for browsers):
+             The URL fragment contains:
+             #access_token=…&refresh_token=…&type=signup
+             → supabase-js automatically picks up the session.
+
+           CASE B – Already has a valid session:
+             getSession() returns a non-null session right away.
+        ──────────────────────────────────────────────────────── */
+
+        function showScreen(id) {
+            document.querySelectorAll('.confirm-screen').forEach(s => {
+                s.classList.toggle('active', s.id === id);
+            });
+        }
+
+        async function handleConfirmation() {
+            try {
+                // 1. Let supabase-js parse the URL hash and exchange the token
+                const { data: { session }, error } = await window.supabaseClient.auth.getSession();
+
+                if (error) {
+                    console.error('Confirm error:', error);
+                    document.getElementById('errorDetail').textContent =
+                        error.message || 'The confirmation link is invalid or has expired.';
+                    showScreen('screen-error');
+                    return;
+                }
+
+                if (session) {
+                    const isNewSignup =
+                        new URLSearchParams(window.location.search).get('type') === 'signup' ||
+                        window.location.hash.includes('type=signup');
+
+                    if (isNewSignup) {
+                        // ── Fresh confirmation ──
+                        showScreen('screen-success');
+                    } else {
+                        // ── Already confirmed / already logged in ──
+                        showScreen('screen-already');
+                    }
+                } else {
+                    // No session and no error — link was already used or is invalid
+                    // Check if there's an error in the hash (Supabase sometimes puts it there)
+                    const hashParams = new URLSearchParams(window.location.hash.slice(1));
+                    const hashError  = hashParams.get('error_description') || hashParams.get('error');
+
+                    if (hashError) {
+                        document.getElementById('errorDetail').textContent = decodeURIComponent(hashError);
+                    }
+                    showScreen('screen-error');
+                }
+
+            } catch (err) {
+                console.error('Unexpected error during confirmation:', err);
+                showScreen('screen-error');
+            }
+        }
+
+
+        // Also listen for the onAuthStateChange event — this fires when supabase-js
+        // automatically exchanges the token from the URL hash.
+        window.supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session) {
+                showScreen('screen-success');
+            }
+        });
+
+        handleConfirmation();
+    </script>
+</body>
+</html>

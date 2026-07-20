@@ -125,6 +125,73 @@
             margin-top: auto;
             margin-bottom: var(--spacing-xl);
         }
+
+        /* ── Timer toggle switch ── */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) 0;
+            border-top: 1px solid #EBEBEB;
+            margin-top: var(--spacing-sm);
+        }
+
+        .toggle-label-group {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .toggle-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .toggle-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* WCAG 2.1.1 — custom toggle is a <button role="switch"> */
+        .toggle-switch {
+            position: relative;
+            width: 52px;
+            height: 28px;
+            flex-shrink: 0;
+            border: none;
+            border-radius: 14px;
+            background: #CCCCCC;
+            cursor: pointer;
+            transition: background 0.25s ease;
+            padding: 0;
+            font-family: inherit;
+        }
+
+        .toggle-switch[aria-checked="true"] {
+            background: var(--primary-color);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+            transition: transform 0.25s ease;
+        }
+
+        .toggle-switch[aria-checked="true"]::after {
+            transform: translateX(24px);
+        }
     </style>
 </head>
 <body>
@@ -229,6 +296,35 @@
                             </button>
                         </div>
                     </fieldset>
+
+                    <!-- ── Timer toggle — WCAG 2.2.1 user control over time limits ── -->
+                    <fieldset style="border: none; padding: 0; margin: 0;">
+                        <legend class="sr-only">Exercise timer setting</legend>
+
+                        <div class="toggle-row">
+                            <div class="toggle-label-group">
+                                <span class="toggle-title" id="timer-toggle-label">
+                                    <i class="fas fa-hourglass-half" aria-hidden="true"
+                                       style="color: var(--primary-color);"></i>
+                                    Exercise countdown timer
+                                </span>
+                                <span class="toggle-desc" id="timer-toggle-desc">
+                                    1 min 40 s per level. You can always retry if you run out.
+                                </span>
+                            </div>
+
+                            <!-- WCAG 2.1.1 — role="switch" for toggle semantics -->
+                            <button type="button"
+                                    id="timerToggle"
+                                    class="toggle-switch"
+                                    role="switch"
+                                    aria-checked="true"
+                                    aria-labelledby="timer-toggle-label"
+                                    aria-describedby="timer-toggle-desc">
+                                <span class="sr-only" id="timer-toggle-state">Enabled</span>
+                            </button>
+                        </div>
+                    </fieldset>
                 </div>
 
                 <!-- WCAG 4.1.3 — Live status for save feedback (replaces native alert()) -->
@@ -242,6 +338,14 @@
                         id="saveBtn"
                         class="btn btn-primary btn-save">
                     SAVE CHANGES
+                </button>
+
+                <button type="button"
+                        id="signOutBtn"
+                        class="btn btn-secondary btn-save"
+                        style="background-color: #f44336; color: white; border: none; margin-bottom: var(--spacing-xl);"
+                        onclick="signOut()">
+                    SIGN OUT
                 </button>
             </form>
         </main>
@@ -286,6 +390,10 @@
                         opt.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
                     });
                 }
+
+                // Pre-set the timer toggle (default true if field missing)
+                const timerOn = (profile.timer_enabled !== false);
+                setToggle(timerOn);
             }
         }
 
@@ -325,7 +433,8 @@
                 await updateProfile({
                     nickname: nicknameVal,
                     age: ageVal,
-                    daily_time: selectedDailyTime
+                    daily_time: selectedDailyTime,
+                    timer_enabled: getToggleValue()    // save timer preference
                 });
                 showStatus('Settings saved successfully! Redirecting…', 'success');
                 setTimeout(() => window.location.href = 'levels.html', 1500);
@@ -342,6 +451,24 @@
             statusDiv.textContent = message;
             statusDiv.className = `alert-message alert-${type}`;
         }
+
+        /* ── Timer toggle helpers ── */
+        function setToggle(isOn) {
+            const btn   = document.getElementById('timerToggle');
+            const label = document.getElementById('timer-toggle-state');
+            btn.setAttribute('aria-checked', isOn ? 'true' : 'false');
+            label.textContent = isOn ? 'Enabled' : 'Disabled';
+        }
+
+        function getToggleValue() {
+            return document.getElementById('timerToggle').getAttribute('aria-checked') === 'true';
+        }
+
+        // WCAG 2.1.1 — Space and Enter both activate the switch
+        document.getElementById('timerToggle').addEventListener('click', () => {
+            const current = getToggleValue();
+            setToggle(!current);
+        });
 
         initSettings();
     </script>
