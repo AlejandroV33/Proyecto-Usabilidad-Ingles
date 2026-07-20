@@ -269,6 +269,11 @@ h1, h2, h3 {
     color: var(--text-color);
 }
 
+.required-asterisk {
+    color: var(--error-color);
+    margin-left: 2px;
+}
+
 input[type="text"],
 input[type="email"],
 input[type="password"],
