@@ -1,33 +1,33 @@
 # Análisis de Heurísticas de Nielsen - Proyecto Shimi
 
-Este documento detalla cómo la aplicación de aprendizaje de inglés **Shimi** cumple con las 10 heurísticas de usabilidad de Jakob Nielsen.
+Este documento detalla cómo la aplicación de aprendizaje de inglés **Shimi** cumple con las 10 heurísticas de usabilidad de Jakob Nielsen en su versión actual.
 
 ## 1. Visibilidad del estado del sistema
-**Ejemplo:** En la pantalla de ejercicios, la **barra de progreso** superior se llena dinámicamente (ej. "1/3 completed") y cambia su ancho en tiempo real. Esto permite que el usuario sepa exactamente cuánto le falta para terminar la lección.
+**Ejemplo:** En la pantalla de ejercicios, la **barra de progreso** superior se llena dinámicamente ("1/3 completed"). Además, existe un **temporizador visual** interactivo que disminuye e informa el tiempo restante, cambiando de color (verde a rojo) a medida que el tiempo se acaba, de modo que el usuario sepa siempre cuánto le queda.
 
 ## 2. Relación entre el sistema y el mundo real
-**Ejemplo:** El uso de iconos familiares como el **rayo (bolt)** para la experiencia (XP) y el **trofeo** para la finalización del nivel. El lenguaje utilizado ("Start lesson", "Try again") es natural y directo, evitando tecnicismos.
+**Ejemplo:** El uso de iconos familiares como el **rayo (bolt)** para la experiencia (XP) y el **micrófono** o **auriculares** para ejercicios auditivos y orales. El lenguaje utilizado ("Start lesson", "Try again", "Oops, almost there!") es natural, conversacional y evita tecnicismos de programación.
 
 ## 3. Control y libertad del usuario
-**Ejemplo:** El botón de la **"X"** en la esquina superior izquierda en los ejercicios y ajustes. Permite al usuario abandonar una tarea o salir de una pantalla en cualquier momento sin procesos complicados, devolviéndolo a la pantalla de niveles.
+**Ejemplo:** El botón de la **"X"** en la esquina superior izquierda permite abandonar la tarea. Para evitar salidas accidentales, despliega un **modal de confirmación** ("Are you sure you want to leave?"). También destaca la opción de **"Skip this exercise"** en las pruebas orales, otorgando libertad de avanzar en caso de que el usuario no pueda o no desee grabar audio.
 
 ## 4. Consistencia y estándares
-**Ejemplo:** Todos los botones principales siguen el mismo estilo (naranja con sombra 3D) y los botones secundarios tienen el mismo borde gris. La navegación siempre se encuentra en la parte superior o inferior de forma predecible.
+**Ejemplo:** Todos los botones principales de llamada a la acción siguen el mismo estilo (naranja con sombra inferior y animaciones de "hundirse" al presionarse), los inputs mantienen formas coherentes, y la navegación y botones de cierre mantienen siempre el mismo color, tamaño de 44px (touch-friendly) e iconografía estándar de FontAwesome.
 
 ## 5. Prevención de errores
-**Ejemplo:** En el formulario de registro, el campo de contraseña tiene un `minlength="8"`, y el botón de "REGISTER" se deshabilita mientras se procesa la solicitud, evitando múltiples clics accidentales o registros incompletos.
+**Ejemplo:** Durante un ejercicio, el botón **"CHECK"** (revisar) permanece deshabilitado hasta que el usuario efectivamente seleccione una opción, ordene las palabras o grabe audio. Esto previene completamente que los usuarios envíen una respuesta vacía o incompleta por accidente. El modal de salida previene también pérdidas involuntarias del progreso.
 
 ## 6. Reconocimiento antes que recuerdo
-**Ejemplo:** En la pantalla de niveles, los niveles completados muestran un **check verde**. El usuario no tiene que recordar qué niveles hizo; el sistema le muestra visualmente su progreso y resalta el nivel actual con el texto "Start".
+**Ejemplo:** En los ejercicios de gramática, las palabras elegidas quedan en el área de respuesta y simultáneamente se marcan visualmente como "usadas" (opacas y no clickeables) en el panel inferior, por lo que el usuario no tiene que recordar qué palabra usó ya. En la pantalla de niveles, los ya superados lucen un "check".
 
 ## 7. Flexibilidad y eficiencia de uso
-**Ejemplo:** El sistema de "chips" en los ejercicios de gramática. Permite a los usuarios avanzados armar la frase rápidamente haciendo clic en las palabras, y permite corregir fácilmente haciendo clic en la palabra seleccionada para devolverla al grupo inicial.
+**Ejemplo:** El sistema de "chips" en los ejercicios de gramática permite armar la frase de manera rápida e intuitiva, a diferencia de tener que tipear el texto completo en teclado de móvil. Existe también un botón **"Reset"** que permite borrar de un solo toque toda la frase armada, acelerando así el flujo si se desea reiniciar.
 
 ## 8. Estética y diseño minimalista
-**Ejemplo:** La interfaz utiliza mucho espacio en blanco, tipografía clara y evita elementos innecesarios. Las pantallas de Onboarding y Feedback solo muestran la información crítica necesaria para esa tarea específica.
+**Ejemplo:** La interfaz se enfoca solo en la actividad a resolver (una pregunta y sus opciones) y hace uso amplio del espacio en blanco (`padding` y `gap` generosos). Se evitan elementos superfluos, y pantallas enteras (`feedback.html`) se dedican solo a una pieza de información a la vez para no abrumar al usuario.
 
 ## 9. Ayudar a los usuarios a reconocer, diagnosticar y recuperarse de errores
-**Ejemplo:** Si un usuario falla un ejercicio, aparece un **alert o mensaje** que no solo dice "Error", sino que muestra la respuesta correcta (ej: "The correct answer was: put off") para que el usuario aprenda y pueda continuar.
+**Ejemplo:** Si un usuario se equivoca, la aplicación lo redirige a una pantalla de retroalimentación constructiva (`feedback.html`). Allí se le indica que falló ("Oops, almost there!"), se le muestra de manera clara cuál era la respuesta correcta y se le ofrece una justificación del porqué en la sección **"Why?"** (explicación). Seguidamente, se le da la oportunidad de intentarlo de nuevo en `retry.html`.
 
 ## 10. Ayuda y documentación
-**Ejemplo:** En el ejercicio de gramática, se incluyó un pequeño **"Tip"** de ayuda: "(Tip: Use 'Hardly had...' inversion for B1/B2 level)". Esto proporciona ayuda contextual justo cuando el usuario la necesita para resolver un reto avanzado.
+**Ejemplo:** La ayuda es contextual, proveída en el momento de fallo mediante el bloque de explicaciones. Además, al inicio de diferentes tipos de ejercicios (como el Speaking), instrucciones breves orientan de inmediato sobre qué hacer de forma proactiva: "Tap 🎧 to listen, then 🎤 to speak", eliminando la necesidad de leer largos manuales para entender el sistema.
