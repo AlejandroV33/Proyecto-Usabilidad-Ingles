@@ -45,8 +45,8 @@
             border: 1px solid #FFE0B2;
         }
 
-        .xp-badge i  { font-size: 0.75rem; color: #E67E22; }
-        .xp-badge span { font-size: 0.75rem; color: #E67E22; font-weight: 800; }
+        .xp-badge i  { font-size: 0.75rem; color: var(--primary-text); }
+        .xp-badge span { font-size: 0.75rem; color: var(--primary-text); font-weight: 800; } /* AA fix: ≥6:1 sobre #FFF3E0 */
 
         .progress-container {
             width: 100%;
@@ -151,7 +151,7 @@
             background-color: var(--primary-color);
             border-color: var(--primary-color);
             box-shadow: 0 6px 0px #e6952d;
-            color: white;
+            color: #2D3436;   /* AA fix: texto oscuro sobre naranja (antes blanco = 1.78:1) */
             flex-direction: row;
             gap: var(--spacing-md);
         }
@@ -163,7 +163,7 @@
         .active-level .level-circle {
             border-color: white;
             background-color: white;
-            color: var(--primary-color);
+            color: var(--primary-text);   /* AA fix: número naranja oscuro sobre blanco (antes 1.78:1) */
         }
 
         .active-level span {
@@ -233,7 +233,7 @@
                 <div class="user-row">
                     <!-- Populated by JS -->
                     <span class="user-name" id="userNameDisplay" aria-live="polite">Loading…</span>
-                    <div class="xp-badge" aria-label="XP points">
+                    <div class="xp-badge" role="img" aria-label="XP points">
                         <i class="fas fa-bolt" aria-hidden="true"></i>
                         <span id="userXP" aria-live="polite">0 XP</span>
                     </div>
@@ -265,7 +265,7 @@
             </a>
         </header>
 
-        <main id="main-content">
+        <main id="main-content" tabindex="-1">
             <h1 class="main-title">Select a lesson</h1>
 
             <!-- Dynamic level cards inserted here by JS -->

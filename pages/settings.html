@@ -106,7 +106,7 @@
         .time-option[aria-pressed="true"],
         .time-option.selected {
             background-color: var(--primary-color);
-            color: white;
+            color: #2D3436;   /* AA fix: texto oscuro sobre naranja (antes 1.78:1) */
             border-color: var(--primary-color);
             box-shadow: 0 4px 0px #e6952d;
         }
@@ -220,7 +220,7 @@
             <p>Remember that changing your data may slightly modify your learning experience.</p>
         </div>
 
-        <main id="main-content">
+        <main id="main-content" tabindex="-1">
             <form id="settingsForm" novalidate>
                 <div class="form-content">
 
@@ -346,7 +346,7 @@
                 <button type="button"
                         id="signOutBtn"
                         class="btn btn-secondary btn-save"
-                        style="background-color: #f44336; color: white; border: none; margin-bottom: var(--spacing-xl);"
+                        style="background-color: #C62828; color: white; border: none; margin-bottom: var(--spacing-xl);"
                         onclick="signOut()">
                     SIGN OUT
                 </button>

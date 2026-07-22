@@ -7,6 +7,7 @@
     /* Colors */
     --primary-color: #FFB347;
     --primary-hover: #FFA022;
+    --primary-text: #8A5000;     /* AA fix: naranja oscuro para TEXTO sobre fondos claros → ≥6:1 */
     --secondary-color: #4A90E2;
     --background-color: #F8F9FA;
     --surface-color: #FFFFFF;
@@ -184,7 +185,7 @@ h1, h2, h3 {
 
 .btn-primary {
     background-color: var(--primary-color);
-    color: white;
+    color: #2D3436;   /* AA fix: texto oscuro sobre naranja → 7.1:1 (antes blanco = 1.78:1) */
     box-shadow: 0 4px 0px #e6952d;
 }
 

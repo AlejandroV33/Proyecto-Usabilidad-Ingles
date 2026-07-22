@@ -44,7 +44,7 @@
         .completion-subtitle {
             font-size: 1.5rem;
             font-weight: 600;
-            color: var(--primary-color);
+            color: var(--primary-text);   /* AA fix: naranja oscuro sobre fondo claro (antes 1.69:1) */
             margin-bottom: var(--spacing-xl);
         }
 
@@ -102,7 +102,7 @@
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <div class="container fade-in">
-        <main id="main-content">
+        <main id="main-content" tabindex="-1">
             <div class="completion-container">
                 <!-- WCAG 1.1.1 — decorative trophy icon; the heading conveys the meaning -->
                 <div class="celebration-icon" aria-hidden="true">
@@ -123,7 +123,7 @@
                         <strong>Incorrect:</strong>
                         <span id="statIncorrect">0</span>
                     </p>
-                    <p class="xp-stat" aria-label="XP earned">
+                    <p class="xp-stat" role="img" aria-label="XP earned">
                         <strong>+ <span id="statXP">0</span> XP</strong>
                     </p>
                     <!-- aria-live so the motivational message is announced when set -->

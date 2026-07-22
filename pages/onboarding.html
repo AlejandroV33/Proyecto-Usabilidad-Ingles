@@ -91,14 +91,14 @@
         /* Selected: bold border + background change + check icon in SR text */
         .time-option.selected {
             background-color: var(--primary-color);
-            color: white;
+            color: #2D3436;   /* AA fix: texto oscuro sobre naranja (antes 1.78:1) */
             border-color: var(--primary-color);
             box-shadow: 0 4px 0px #e6952d;
         }
 
         .time-option[aria-pressed="true"] {
             background-color: var(--primary-color);
-            color: white;
+            color: #2D3436;   /* AA fix: texto oscuro sobre naranja (antes 1.78:1) */
             border-color: var(--primary-color);
             box-shadow: 0 4px 0px #e6952d;
         }
@@ -137,7 +137,7 @@
             <div class="divider" role="presentation"></div>
         </header>
 
-        <main id="main-content">
+        <main id="main-content" tabindex="-1">
             <form id="onboardingForm" novalidate>
                 <div class="form-content">
 

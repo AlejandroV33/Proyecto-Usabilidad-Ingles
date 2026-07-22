@@ -1,5 +1,6 @@
 .idea/
 .DS_Store
+docs/
 wireframes iniciales
 idea
 js/supabase-config.js
