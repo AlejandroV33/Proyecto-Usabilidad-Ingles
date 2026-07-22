@@ -131,15 +131,15 @@
         }
 
         .level-item.completed .level-circle {
-            border-color: var(--success-color);
-            color: var(--success-color);
+            border-color: var(--success-text);
+            color: var(--success-text);   /* AA fix: antes #00B894 sobre blanco = 2.54:1 → ahora 5.38:1 */
         }
 
         .check-badge {
             position: absolute;
             top: 5px;
             right: 5px;
-            color: var(--success-color);
+            color: var(--success-text);   /* AA fix: mismo verde oscuro para el indicador de completado */
             font-size: 0.9rem;
         }
 

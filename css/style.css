@@ -15,6 +15,7 @@
     --text-muted: #5A6368;       /* AA fix: darkened from #636E72 → ratio ~4.6:1 */
     --error-color: #D63031;
     --success-color: #00B894;
+    --success-text: #00795F;     /* AA fix: verde oscuro para TEXTO/iconos sobre blanco → 5.38:1 */
     --border-color: #B0B8BD;    /* AA fix: from #E0E0E0 → ratio ~3.1:1 on white */
 
     /* Spacing & Borders */
